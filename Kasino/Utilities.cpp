@@ -52,7 +52,7 @@ void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aN
         DrawBreakerLine(false);
         WriteLine(aExtraOptions);
     }
-    
+
     DrawMenuLine();
 
     std::cin >> input;
@@ -170,7 +170,7 @@ void WriteLine(const char aTextToType[], bool aNewLine)
 void BroadcastDiceResult(Dice& aDice, bool aShowSum)
 {
     WriteLine("--------------- RESULT ---------------");
-    
+
     std::cout << "DIE 1 - " << aDice.die1 << std::endl;
     std::cout << "DIE 2 - " << aDice.die2 << std::endl;
 
@@ -182,7 +182,8 @@ void BroadcastDiceResult(Dice& aDice, bool aShowSum)
     DrawBreakerLine();
 }
 
-void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, int aWinAmount, int aLoseAmount, int& aMinigame)
+void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, int aWinAmount, int aLoseAmount,
+                        int& aMinigame)
 {
     Pause();
 
@@ -196,7 +197,7 @@ void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, in
     {
         WriteLine("You didn't win anything this time.");
         RemoveBalance(aLoseAmount, aMinigame);
-        
+
         if (aPlayer.myMoney == 0)
         {
             Pause();
@@ -207,7 +208,7 @@ void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, in
 
     AddPlayedGame(aStats, aIsWinner);
     BroadcastPlayerBalance(true);
-    
+
     Pause();
     AskPlayerAgain(true);
 }

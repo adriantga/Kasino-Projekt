@@ -18,8 +18,10 @@ int GetRoll();
 void DrawMenuLine();
 void DrawBreakerLine(bool aNewLine = true);
 void WriteLine(const char aTextToType[], bool aNewLine = true);
-void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions = 3, const char aExtraOptions[] = "");
+void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions = 3,
+              const char aExtraOptions[] = "");
 void DrawTitle(const char aTitleText[]);
 int GetBetAmount(Player& aPlayer);
 void BroadcastDiceResult(Dice& aDice, bool aShowSum = false);
-void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, int aWinAmount, int aLoseAmount, int& aMinigame);
+void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, int aWinAmount, int aLoseAmount,
+                        int& aMinigame);

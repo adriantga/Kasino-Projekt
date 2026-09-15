@@ -13,6 +13,18 @@ Dice globalDice;
 Rewards globalRewards;
 Game globalGame;
 
+int main()
+{
+    ResetStats(globalPlayerStats);
+    ResetBalance();
+    if (!globalGame.isQuitting)
+    {
+        ChangeState(EStates::MainMenu);
+    }
+
+    return 0;
+}
+
 void RefuseGame(bool& aCantPlay)
 {
     aCantPlay = true;
@@ -131,7 +143,7 @@ void TauntOrImpress(int aWinAmount, int aLossAmount, int aImpressWinAmt, int aTa
 bool AskPlayerAgain(bool aIsInGame)
 {
     ClearConsole();
-    
+
     if (globalGame.isGameOver)
     {
         globalGame.isGameOver = false;
@@ -227,7 +239,7 @@ void EnterGamePicker()
     DrawMenu(input, "GAME PICKER", "1. Guess The Dice Sum\n2. Odd or Even\n3. Yes or No",
              5, "\n4. Cash Out\n5. Back To Menu");
     DrawBreakerLine();
-    
+
     Pick(input, true, globalPlayer);
 }
 
@@ -264,16 +276,4 @@ void SwitchTo(EOptions aOption)
         Exit();
         break;
     }
-}
-
-int main()
-{
-    ResetStats(globalPlayerStats);
-    ResetBalance();
-    if (!globalGame.isQuitting)
-    {
-        ChangeState(EStates::MainMenu);
-    }
-
-    return 0;
 }
