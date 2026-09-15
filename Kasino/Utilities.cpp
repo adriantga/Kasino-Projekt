@@ -3,7 +3,7 @@
 #include <random>
 #include "Utilities.h"
 
-const int globalLowerCaseOffset = 32;
+constexpr int globalLowerCaseOffset = 32;
 
 // Initialize random number generator
 std::random_device rnd;

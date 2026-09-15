@@ -1,8 +1,8 @@
-﻿#include <iostream>
-#include "Stats.h"
+﻿#include "Stats.h"
 #include "Utilities.h"
-#include "Helpers.h"
 #include "Kasino.h"
+#include "Helpers.h"
+#include <iostream>
 
 void AddPlayedGame(PlayerStats& aStats, bool aIsWinner)
 {

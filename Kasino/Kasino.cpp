@@ -15,9 +15,8 @@ Game globalGame;
 void RefuseGame(bool& aCantPlay)
 {
     aCantPlay = true;
-    std::cout << "As you walk over to the table, the guards immediately escort you away." << std::endl;
-    std::cout << "You start to wonder why. You eventually land on the question 'Maybe I've won too much?'." <<
-        std::endl;
+    WriteLine("As you walk over to the table, the guards immediately escort you away.");
+    WriteLine("You start to wonder why. You eventually land on the question 'Maybe I've won too much?'.");
     Pause();
     ClearConsole();
     EnterGamePicker();
@@ -32,7 +31,7 @@ void BroadcastWinOrLoss(bool aIsWinner, int aWinAmount, int aLoseAmount, int& aM
 {
     Pause();
 
-    std::cout << "-------------------------" << std::endl;
+    DrawBreakerLine();
     if (aIsWinner)
     {
         std::cout << "You won $" << aWinAmount << "!" << std::endl;
@@ -40,7 +39,7 @@ void BroadcastWinOrLoss(bool aIsWinner, int aWinAmount, int aLoseAmount, int& aM
     }
     else
     {
-        std::cout << "You didn't win anything this time." << std::endl;
+        WriteLine("You didn't win anything this time.");
         RemoveBalance(aLoseAmount, aMinigame);
     }
 
@@ -51,13 +50,13 @@ void BroadcastWinOrLoss(bool aIsWinner, int aWinAmount, int aLoseAmount, int& aM
     AskPlayerAgain(true);
 }
 
-void BroadcastPlayerBalance(bool stylize)
+void BroadcastPlayerBalance(bool aStylize)
 {
     if (!globalGame.isGameOver)
     {
-        if (stylize)
+        if (aStylize)
         {
-            std::cout << "-------------------------" << std::endl;
+            DrawBreakerLine();
         }
 
         std::cout << "You currently have $" << globalPlayer.myMoney << std::endl;
@@ -92,7 +91,8 @@ void ResetGame()
 
 void BroadcastDiceResult(bool aShowSum = false)
 {
-    std::cout << "--------- RESULT --------" << std::endl;
+    WriteLine("--------------- RESULT ---------------");
+    
     std::cout << "DIE 1 - " << globalDice.die1 << std::endl;
     std::cout << "DIE 2 - " << globalDice.die2 << std::endl;
 
@@ -101,7 +101,7 @@ void BroadcastDiceResult(bool aShowSum = false)
         std::cout << "SUM - " << globalDice.diceSum << std::endl;
     }
 
-    std::cout << "-------------------------" << std::endl;
+    DrawBreakerLine();
 }
 
 void AddBalance(int aAmount, int& aMinigame)
@@ -126,27 +126,22 @@ void RemoveBalance(int aAmount, int& aMinigame)
     }
 }
 
-// TODO: Move all helpers to Utilities.h/Utilities.cpp
-
-
 void GameOver()
 {
     ClearConsole();
     globalGame.isGameOver = true;
     Exit();
 
-    std::cout << "SECURITY GUARD: 'Hey! You're completely out of cash!'" << std::endl;
+    WriteLine("SECURITY GUARD: 'Hey! You're completely out of cash!'");
     Pause();
-    std::cout << "Two burly guards lift you by your collar and throw you out onto the street into the rain." <<
-        std::endl;
+    WriteLine("Two burly guards lift you by your collar and throw you out onto the street into the rain.");
     Pause();
-    std::cout << "The heavy casino doors slam shut behind you!" << std::endl;
+    WriteLine("The heavy casino doors slam shut behind you!");
     Pause();
-    std::cout << "Are you proud of yourself?" << std::endl;
+    WriteLine("Are you proud of yourself?");
     Pause();
-    std::cout << "==========================================================================================" <<
-        std::endl;
-    std::cout << "GAME OVER. You have been kicked out of the casino.\n" << std::endl;
+    WriteLine("==========================================================================================");
+    WriteLine("GAME OVER. You have been kicked out of the casino.\n");
 
     Pause();
     ClearConsole();
@@ -166,15 +161,15 @@ void TauntOrImpress(int aWinAmount, int aLossAmount, int aImpressWinAmt, int aTa
 
     if (shouldBeImpressed)
     {
-        std::cout << "You're on a winning streak! Keep it up!" << std::endl;
+        WriteLine("You're on a winning streak! Keep it up!");
     }
     else if (shouldTaunt)
     {
-        std::cout << "Not sure if you're naive or just plain unlucky!" << std::endl;
+        WriteLine("Not sure if you're naive or just plain unlucky!");
     }
     else if (!shouldBeImpressed && !shouldTaunt)
     {
-        std::cout << "Welcome!" << std::endl;
+        WriteLine("Welcome!");
     }
 }
 
@@ -190,7 +185,7 @@ bool AskPlayerAgain(bool aIsInGame)
         return false;
     }
 
-    std::cout << "Would you like to play again? (y/n) " << std::endl;
+    WriteLine("Would you like to play again? (y/n) ");
     char input;
     std::cin >> input;
 
@@ -229,7 +224,7 @@ bool AskPlayerAgain(bool aIsInGame)
 
 int GetBetAmount()
 {
-    std::cout << "How much are you betting?" << std::endl;
+    WriteLine("How much are you betting?");
 
     int result = 0;
     std::cin >> result;
@@ -247,16 +242,16 @@ int GetBetAmount()
 
 void About()
 {
-    std::cout << "STORY" << std::endl;
+    WriteLine("STORY");
     DrawMenuLine();
-    std::cout << "In this game, you play as a gambling addict." << std::endl;
-    std::cout << "You told everyone in your family that you are a\nrecovering addict. But you lied." << std::endl;
+    WriteLine("In this game, you play as a gambling addict.");
+    WriteLine("You told everyone in your family that you are a\nrecovering addict. But you lied.");
     DrawMenuLine();
-    std::cout << "HOW TO PLAY" << std::endl;
+    WriteLine("HOW TO PLAY");
     DrawMenuLine();
-    std::cout << "Your goal is to win as much money as possible." << std::endl;
-    std::cout << "However, if you run out of money, you'll lose the game." << std::endl;
-    std::cout << "(Stats reset once you lose the game or cash out)" << std::endl;
+    WriteLine("Your goal is to win as much money as possible.");
+    WriteLine("However, if you run out of money, you'll lose the game.");
+    WriteLine("(Stats reset once you lose the game or cash out)");
 
     Pause();
     ClearConsole();
@@ -267,24 +262,22 @@ void CashOut()
 {
     if (!globalPlayer.cantPlayDiceSum || !globalPlayer.cantPlayOddEven || !globalPlayer.cantPlayYesNo)
     {
-        std::cout << "'It's too early to cash out' is what your inner voice is telling you." << std::endl;
-        std::cout << "Maybe your inside voice is right..." << std::endl;
-        std::cout << "(Get kicked out from every game to cash out!)" << std::endl;
+        WriteLine("'It's too early to cash out' is what your inner voice is telling you.");
+        WriteLine("Maybe your inside voice is right...");
+        WriteLine("(Get kicked out from every game to cash out!)");
         Pause();
         ClearConsole();
         EnterGamePicker();
         return;
     }
 
-    std::cout << "You decided to cash out $" << globalPlayer.myMoney << std::endl;
+    std::cout << "You decided to cash out $" << globalPlayer.myMoney << '\n';
     Pause();
-    std::cout << "Before you walk out the door, you turn around and the game master dead in the eye." << std::endl;
+    WriteLine("Before you walk out the door, you turn around and the game master dead in the eye.");
     Pause();
-    std::cout << "Your grin widens, as if you were to mock the casino for everything they put you through." <<
-        std::endl;
+    WriteLine("Your grin widens, as if you were to mock the casino for everything they put you through.");
     Pause();
-    std::cout << "You still didn't change your ways after coming home. You decided to go to a different casino." <<
-        std::endl;
+    WriteLine("You still didn't change your ways after coming home. You decided to go to a different casino.");
     Pause();
     ClearConsole();
     ResetGame();
@@ -338,19 +331,19 @@ void Pick(int aChoice, bool aIsInGame)
 void DrawTitle(const char aTitleText[])
 {
     DrawMenuLine();
-    std::cout << aTitleText << std::endl;
+    WriteLine(aTitleText);
     DrawMenuLine();
 }
 
 // This is the best I could do given the constraints in the tools section.
-void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions = 4, const char aExtraOptions[] = "")
+void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions, const char aExtraOptions[])
 {
     DrawTitle(aTitleText);
-    std::cout << aOptions << std::endl;
+    WriteLine(aOptions);
     if (std::strlen(aExtraOptions) > 0)
     {
         DrawBreakerLine(false);
-        std::cout << aExtraOptions << std::endl;
+        WriteLine(aExtraOptions);
     }
     
     DrawMenuLine();
@@ -360,7 +353,6 @@ void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aN
     {
         ClearInput();
         std::cin >> input;
-        continue;
     }
 
     input = Clamp(input, 1, aNumOptions);

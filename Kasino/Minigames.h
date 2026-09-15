@@ -1,6 +1,6 @@
-﻿#include "Helpers.h"
+﻿#pragma once
 
-#pragma once
+#include "Helpers.h"
 
 namespace GuessTheDiceSum
 {

@@ -1,5 +1,6 @@
-﻿void EnterGamePicker();
-void DrawMenuLine();
+﻿#pragma once
+
+void EnterGamePicker();
 void ResetBalance();
 void Exit();
 void BroadcastPlayerBalance(bool aStylize);
@@ -16,3 +17,4 @@ void BroadcastDiceResult(bool aShowSum);
 void BroadcastWinOrLoss(bool aIsWinner, int aWinAmount, int aLoseAmount, int& aMinigame);
 void SwitchTo(EOptions aOption);
 void ChangeState(EStates aTargetState);
+void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions = 3, const char aExtraOptions[] = "");
