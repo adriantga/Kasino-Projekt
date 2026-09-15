@@ -13,7 +13,7 @@ namespace GuessTheDiceSum
             return;
         }
 
-        int bet = GetBetAmount();
+        int bet = GetBetAmount(aPlayer);
 
         RollDice(aDice);
 
@@ -40,13 +40,13 @@ namespace GuessTheDiceSum
         playerGuess = Clamp(playerGuess, aDice.diceSumMin, aDice.diceSumMax);
         std::cout << playerGuess << std::endl;
 
-        BroadcastDiceResult(true);
+        BroadcastDiceResult(aDice, true);
 
         bool isWinner = playerGuess == aDice.diceSum;
 
         int winAmount = bet * aRewards.guessTheSumRewardMultiplier;
 
-        BroadcastWinOrLoss(isWinner, winAmount, bet,
+        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
                            isWinner ? aPlayerStats.diceSumWinAmount : aPlayerStats.diceSumLossAmount);
     }
 }
@@ -62,7 +62,7 @@ namespace OddOrEven
         }
 
 
-        int bet = GetBetAmount();
+        int bet = GetBetAmount(aPlayer);
 
         RollDice(aDice);
 
@@ -96,11 +96,11 @@ namespace OddOrEven
         bool isOdd = !IsEven(aDice.die1) && !IsEven(aDice.die2);
         bool isWinner = (isEvenPicked && isEven) || (!isEvenPicked && isOdd);
 
-        BroadcastDiceResult(false);
+        BroadcastDiceResult(aDice, false);
 
         int winAmount = bet * aRewards.oddOrEvenRewardMultiplier;
 
-        BroadcastWinOrLoss(isWinner, winAmount, bet,
+        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
                            isWinner ? aPlayerStats.oddEvenWinAmount : aPlayerStats.oddEvenLossAmount);
     }
 }
@@ -121,7 +121,7 @@ namespace YesOrNo
         char yes = 'Y';
         char no = 'N';
 
-        int bet = GetBetAmount();
+        int bet = GetBetAmount(aPlayer);
 
         int rewardMultiplierIncreaseThreshold = 3;
         int numConsecutiveCorrectGuesses = 0;
@@ -233,7 +233,7 @@ namespace YesOrNo
 
         bool isWinner = winAmount > 0 && isPlayerQuitting;
 
-        BroadcastWinOrLoss(isWinner, winAmount, bet,
+        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
                            isWinner ? aPlayerStats.yesNoWinAmount : aPlayerStats.yesNoLossAmount);
     }
 }

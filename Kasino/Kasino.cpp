@@ -4,6 +4,7 @@
 #include "Utilities.h"
 #include "Kasino.h"
 #include "Minigames.h"
+#include "StateController.h"
 #include "Stats.h"
 
 Player globalPlayer;
@@ -27,29 +28,6 @@ void ResetBalance()
     globalPlayer.myMoney = globalGame.startingBalance;
 }
 
-void BroadcastWinOrLoss(bool aIsWinner, int aWinAmount, int aLoseAmount, int& aMinigame)
-{
-    Pause();
-
-    DrawBreakerLine();
-    if (aIsWinner)
-    {
-        std::cout << "You won $" << aWinAmount << "!" << std::endl;
-        AddBalance(aWinAmount, aMinigame);
-    }
-    else
-    {
-        WriteLine("You didn't win anything this time.");
-        RemoveBalance(aLoseAmount, aMinigame);
-    }
-
-    AddPlayedGame(globalPlayerStats, aIsWinner);
-    BroadcastPlayerBalance(true);
-    
-    Pause();
-    AskPlayerAgain(true);
-}
-
 void BroadcastPlayerBalance(bool aStylize)
 {
     if (!globalGame.isGameOver)
@@ -62,7 +40,6 @@ void BroadcastPlayerBalance(bool aStylize)
         std::cout << "You currently have $" << globalPlayer.myMoney << std::endl;
     }
 }
-
 
 // Resets all stats after the player has lost the entire game.
 void ResetGame()
@@ -89,21 +66,6 @@ void ResetGame()
     globalGame.isShowingInstructions = true;
 }
 
-void BroadcastDiceResult(bool aShowSum = false)
-{
-    WriteLine("--------------- RESULT ---------------");
-    
-    std::cout << "DIE 1 - " << globalDice.die1 << std::endl;
-    std::cout << "DIE 2 - " << globalDice.die2 << std::endl;
-
-    if (aShowSum)
-    {
-        std::cout << "SUM - " << globalDice.diceSum << std::endl;
-    }
-
-    DrawBreakerLine();
-}
-
 void AddBalance(int aAmount, int& aMinigame)
 {
     aAmount = Min(aAmount, 0);
@@ -117,13 +79,6 @@ void RemoveBalance(int aAmount, int& aMinigame)
     globalPlayer.myMoney -= aAmount;
     globalPlayer.myMoney = Min(globalPlayer.myMoney, 0);
     aMinigame += aAmount;
-
-    if (globalPlayer.myMoney == 0)
-    {
-        Pause();
-        Exit();
-        GameOver();
-    }
 }
 
 void GameOver()
@@ -215,29 +170,11 @@ bool AskPlayerAgain(bool aIsInGame)
     if (isYes)
     {
         ClearConsole();
-        Pick(globalPlayer.pickedMinigame, true);
+        Pick(globalPlayer.pickedMinigame, true, globalPlayer);
     }
 
     globalGame.isShowingInstructions = false;
     return true;
-}
-
-int GetBetAmount()
-{
-    WriteLine("How much are you betting?");
-
-    int result = 0;
-    std::cin >> result;
-
-    while (std::cin.fail())
-    {
-        ClearInput();
-        std::cin >> result;
-    }
-
-    ClearInput();
-    result = Clamp(result, 1, globalPlayer.myMoney);
-    return result;
 }
 
 void About()
@@ -284,83 +221,6 @@ void CashOut()
     EnterMainMenu();
 }
 
-void Pick(int aChoice, bool aIsInGame)
-{
-    if (aIsInGame)
-    {
-        globalPlayer.pickedMinigame = aChoice;
-
-        switch (aChoice)
-        {
-        case 1:
-            SwitchTo(EOptions::GuessTheDiceSum);
-            break;
-        case 2:
-            SwitchTo(EOptions::OddOrEven);
-            break;
-        case 3:
-            SwitchTo(EOptions::YesOrNo);
-            break;
-        case 4:
-            SwitchTo(EOptions::CashOut);
-            break;
-        case 5:
-            ChangeState(EStates::MainMenu);
-            break;
-        }
-        return;
-    }
-
-    switch (aChoice)
-    {
-    case 1:
-        ChangeState(EStates::Game);
-        break;
-    case 2:
-        SwitchTo(EOptions::About);
-        break;
-    case 3:
-        SwitchTo(EOptions::Stats);
-        break;
-    case 4:
-        SwitchTo(EOptions::Quit);
-        break;
-    }
-}
-
-void DrawTitle(const char aTitleText[])
-{
-    DrawMenuLine();
-    WriteLine(aTitleText);
-    DrawMenuLine();
-}
-
-// This is the best I could do given the constraints in the tools section.
-void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions, const char aExtraOptions[])
-{
-    DrawTitle(aTitleText);
-    WriteLine(aOptions);
-    if (std::strlen(aExtraOptions) > 0)
-    {
-        DrawBreakerLine(false);
-        WriteLine(aExtraOptions);
-    }
-    
-    DrawMenuLine();
-
-    std::cin >> input;
-    while (std::cin.fail())
-    {
-        ClearInput();
-        std::cin >> input;
-    }
-
-    input = Clamp(input, 1, aNumOptions);
-
-    ClearInput();
-    ClearConsole();
-}
-
 void EnterGamePicker()
 {
     int input;
@@ -368,14 +228,14 @@ void EnterGamePicker()
              5, "\n4. Cash Out\n5. Back To Menu");
     DrawBreakerLine();
     
-    Pick(input, true);
+    Pick(input, true, globalPlayer);
 }
 
 void EnterMainMenu()
 {
     int input;
     DrawMenu(input, "THE ULTIMATE CASINO", "1. Play Game\n2. About\n3. Stats\n4. Quit");
-    Pick(input, false);
+    Pick(input, false, globalPlayer);
 }
 
 void SwitchTo(EOptions aOption)
@@ -402,19 +262,6 @@ void SwitchTo(EOptions aOption)
         break;
     case EOptions::Quit:
         Exit();
-        break;
-    }
-}
-
-void ChangeState(EStates aTargetState)
-{
-    switch (aTargetState)
-    {
-    case EStates::MainMenu:
-        EnterMainMenu();
-        break;
-    case EStates::Game:
-        EnterGamePicker();
         break;
     }
 }

@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="Kasino.cpp" />
     <ClCompile Include="Minigames.cpp" />
+    <ClCompile Include="StateController.cpp" />
     <ClCompile Include="Stats.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
@@ -164,6 +165,7 @@
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Kasino.h" />
     <ClInclude Include="Minigames.h" />
+    <ClInclude Include="StateController.h" />
     <ClInclude Include="Stats.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>

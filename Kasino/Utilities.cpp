@@ -3,6 +3,9 @@
 #include <random>
 #include "Utilities.h"
 
+#include "Kasino.h"
+#include "Stats.h"
+
 constexpr int globalLowerCaseOffset = 32;
 
 // Initialize random number generator
@@ -13,6 +16,56 @@ int GetRandomNumber(int aMin, int aMax)
 {
     std::uniform_int_distribution<int> generator(aMin, aMax);
     return generator(distributor);
+}
+
+void DrawTitle(const char aTitleText[])
+{
+    DrawMenuLine();
+    WriteLine(aTitleText);
+    DrawMenuLine();
+}
+
+int GetBetAmount(Player& aPlayer)
+{
+    WriteLine("How much are you betting?");
+
+    int result = 0;
+    std::cin >> result;
+
+    while (std::cin.fail())
+    {
+        ClearInput();
+        std::cin >> result;
+    }
+
+    ClearInput();
+    result = Clamp(result, 1, aPlayer.myMoney);
+    return result;
+}
+
+void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions, const char aExtraOptions[])
+{
+    DrawTitle(aTitleText);
+    WriteLine(aOptions);
+    if (std::strlen(aExtraOptions) > 0)
+    {
+        DrawBreakerLine(false);
+        WriteLine(aExtraOptions);
+    }
+    
+    DrawMenuLine();
+
+    std::cin >> input;
+    while (std::cin.fail())
+    {
+        ClearInput();
+        std::cin >> input;
+    }
+
+    input = Clamp(input, 1, aNumOptions);
+
+    ClearInput();
+    ClearConsole();
 }
 
 int RollDie()
@@ -112,4 +165,49 @@ void WriteLine(const char aTextToType[], bool aNewLine)
 {
     std::cout << aTextToType;
     if (aNewLine) std::cout << '\n';
+}
+
+void BroadcastDiceResult(Dice& aDice, bool aShowSum)
+{
+    WriteLine("--------------- RESULT ---------------");
+    
+    std::cout << "DIE 1 - " << aDice.die1 << std::endl;
+    std::cout << "DIE 2 - " << aDice.die2 << std::endl;
+
+    if (aShowSum)
+    {
+        std::cout << "SUM - " << aDice.diceSum << std::endl;
+    }
+
+    DrawBreakerLine();
+}
+
+void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, int aWinAmount, int aLoseAmount, int& aMinigame)
+{
+    Pause();
+
+    DrawBreakerLine();
+    if (aIsWinner)
+    {
+        std::cout << "You won $" << aWinAmount << "!" << std::endl;
+        AddBalance(aWinAmount, aMinigame);
+    }
+    else
+    {
+        WriteLine("You didn't win anything this time.");
+        RemoveBalance(aLoseAmount, aMinigame);
+        
+        if (aPlayer.myMoney == 0)
+        {
+            Pause();
+            Exit();
+            GameOver();
+        }
+    }
+
+    AddPlayedGame(aStats, aIsWinner);
+    BroadcastPlayerBalance(true);
+    
+    Pause();
+    AskPlayerAgain(true);
 }
