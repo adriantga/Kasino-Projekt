@@ -3,11 +3,11 @@
 struct Player
 {
     int myMoney = 0;
-    
+
     bool hasPlayedYesOrNo = false;
     bool hasPlayedDiceSum = false;
     bool hasPlayedOddOrEven = false;
-    
+
     bool cantPlayDiceSum = false;
     bool cantPlayOddEven = false;
     bool cantPlayYesNo = false;
@@ -20,12 +20,13 @@ struct PlayerStats
     const int matchesDisplayed = 6;
     const int winIndex = 0;
     const int lossIndex = 1;
-    
+
     int wins = 0;
     int losses = 0;
     int matchesPlayed = 0;
-    
-    char matches[5] = { '-', '-', '-', '-', '-' };
+
+    char matches[5] = {'-', '-', '-', '-', '-'};
+    const char matchResults[2] = {'W', 'L'};
 
     int diceSumWinAmount = 0;
     int oddEvenWinAmount = 0;
@@ -35,12 +36,12 @@ struct PlayerStats
     int oddEvenLossAmount = 0;
     int yesNoLossAmount = 0;
 };
-    
+
 struct Dice
 {
     const int diceSumMin = 2;
     const int diceSumMax = 12;
-    
+
     int die1 = 0;
     int die2 = 0;
     int diceSum = 0;
@@ -49,7 +50,7 @@ struct Dice
 struct Rewards
 {
     const int yesNoBaseReward = 25;
-    
+
     const int guessTheSumRewardMultiplier = 2;
     const int oddOrEvenRewardMultiplier = 2;
     int yesNoRewardMultiplier = 1;
@@ -71,13 +72,11 @@ struct Game
     const int diceSumImpressWinAmt = 500;
     const int oddEvenImpressWinAmt = 500;
     const int yesNoImpressWinAmt = 500;
-    
+
     const int startingBalance = 250;
-    
-    const char matchResults[2] = { 'W', 'L' };
-    
+
     bool isGameOver = false;
     bool isQuitting = false;
-    
+
     bool isShowingInstructions = true;
 };

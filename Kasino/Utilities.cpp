@@ -5,10 +5,12 @@
 
 const int globalLowerCaseOffset = 32;
 
+// Initialize random number generator
+std::random_device rnd;
+std::mt19937 distributor(rnd());
+
 int GetRandomNumber(int aMin, int aMax)
 {
-    std::random_device rnd;
-    std::mt19937 distributor(rnd());
     std::uniform_int_distribution<int> generator(aMin, aMax);
     return generator(distributor);
 }

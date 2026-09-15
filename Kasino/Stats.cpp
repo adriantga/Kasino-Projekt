@@ -7,7 +7,7 @@
 void AddPlayedGame(PlayerStats& aStats, bool aIsWinner)
 {
     aStats.matchesPlayed++;
-	
+
     // This is a bit of a hack. It shifts the array to the right, and adds the new result to the front.
     // Certainly not the best way to do this but it is readable.
     int historySize = sizeof(aStats.matches) / sizeof(aStats.matches[0]);
