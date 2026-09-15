@@ -109,9 +109,6 @@ void GameOver()
     Pause();
     WriteLine("==========================================================================================");
     WriteLine("GAME OVER. You have been kicked out of the casino.\n");
-
-    Pause();
-    ClearConsole();
 }
 
 void Exit()
@@ -246,7 +243,7 @@ void EnterGamePicker()
 void EnterMainMenu()
 {
     int input;
-    DrawMenu(input, "THE ULTIMATE CASINO", "1. Play Game\n2. About\n3. Stats\n4. Quit");
+    DrawMenu(input, "THE ULTIMATE CASINO", "1. Play Game\n2. About\n3. Stats\n4. Quit", 4);
     Pick(input, false, globalPlayer);
 }
 

@@ -201,7 +201,6 @@ void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, in
         if (aPlayer.myMoney == 0)
         {
             Pause();
-            Exit();
             GameOver();
         }
     }

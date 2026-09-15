@@ -2,12 +2,15 @@
 #include "Kasino.h"
 #include "StateController.h"
 
+#include "Utilities.h"
+
 /*
  * This is technically not a state machine. Instead, it is a state controller.
  * It is more limited version than a state machine. 
 */
 void Pick(int aChoice, bool aIsInGame, Player& aPlayer)
 {
+    ClearConsole();
     if (aIsInGame)
     {
         aPlayer.pickedMinigame = aChoice;
