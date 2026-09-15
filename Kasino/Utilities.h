@@ -15,4 +15,6 @@ bool HasSubceded(int aCurrent, int aTarget);
 bool HasExceeded(int aCurrent, int aTarget);
 bool IsEven(int aValue);
 int GetRoll();
-void DrawBreakerLine();
+void DrawMenuLine();
+void DrawBreakerLine(bool aNewLine = true);
+void WriteLine(const char aTextToType[], bool aNewLine = true);

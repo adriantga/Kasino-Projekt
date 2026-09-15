@@ -300,19 +300,19 @@ void Pick(int aChoice, bool aIsInGame)
         switch (aChoice)
         {
         case 1:
-            GuessTheDiceSum::PlayGame(globalDice, globalGame, globalPlayer, globalPlayerStats, globalRewards);
+            SwitchTo(EOptions::GuessTheDiceSum);
             break;
         case 2:
-            OddOrEven::PlayGame(globalDice, globalGame, globalPlayer, globalPlayerStats, globalRewards);
+            SwitchTo(EOptions::OddOrEven);
             break;
         case 3:
-            YesOrNo::PlayGame(globalGame, globalPlayer, globalPlayerStats, globalRewards);
+            SwitchTo(EOptions::YesOrNo);
             break;
         case 4:
-            CashOut();
+            SwitchTo(EOptions::CashOut);
             break;
         case 5:
-            EnterMainMenu();
+            ChangeState(EStates::MainMenu);
             break;
         }
         return;
@@ -321,30 +321,18 @@ void Pick(int aChoice, bool aIsInGame)
     switch (aChoice)
     {
     case 1:
-        EnterGamePicker();
+        ChangeState(EStates::Game);
         break;
     case 2:
-        ShowStats(globalPlayerStats);
+        SwitchTo(EOptions::About);
         break;
     case 3:
-        About();
+        SwitchTo(EOptions::Stats);
         break;
     case 4:
-        Exit();
+        SwitchTo(EOptions::Quit);
         break;
     }
-
-    globalPlayer.pickedMinigame = aChoice;
-}
-
-void DrawBreakerLine()
-{
-    std::cout << "--------------------------------------" << std::endl;
-}
-
-void DrawMenuLine()
-{
-    std::cout << "===========================================================" << std::endl;
 }
 
 void DrawTitle(const char aTitleText[])
@@ -355,11 +343,16 @@ void DrawTitle(const char aTitleText[])
 }
 
 // This is the best I could do given the constraints in the tools section.
-void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions = 4)
+void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions = 4, const char aExtraOptions[] = "")
 {
     DrawTitle(aTitleText);
-
     std::cout << aOptions << std::endl;
+    if (std::strlen(aExtraOptions) > 0)
+    {
+        DrawBreakerLine(false);
+        std::cout << aExtraOptions << std::endl;
+    }
+    
     DrawMenuLine();
 
     std::cin >> input;
@@ -379,16 +372,59 @@ void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aN
 void EnterGamePicker()
 {
     int input;
-    DrawMenu(input, "GAME PICKER", "1. Guess The Dice Sum\n2. Odd or Even\n3. Yes or No\n4. Cash Out\n5. Back To Menu",
-             5);
+    DrawMenu(input, "GAME PICKER", "1. Guess The Dice Sum\n2. Odd or Even\n3. Yes or No",
+             5, "\n4. Cash Out\n5. Back To Menu");
+    DrawBreakerLine();
+    
     Pick(input, true);
 }
 
 void EnterMainMenu()
 {
     int input;
-    DrawMenu(input, "THE ULTIMATE CASINO", "1. Play Game\n2. Stats\n3. About\n4. Quit");
+    DrawMenu(input, "THE ULTIMATE CASINO", "1. Play Game\n2. About\n3. Stats\n4. Quit");
     Pick(input, false);
+}
+
+void SwitchTo(EOptions aOption)
+{
+    switch (aOption)
+    {
+    case EOptions::GuessTheDiceSum:
+        GuessTheDiceSum::PlayGame(globalDice, globalGame, globalPlayer, globalPlayerStats, globalRewards);
+        break;
+    case EOptions::OddOrEven:
+        OddOrEven::PlayGame(globalDice, globalGame, globalPlayer, globalPlayerStats, globalRewards);
+        break;
+    case EOptions::YesOrNo:
+        YesOrNo::PlayGame(globalGame, globalPlayer, globalPlayerStats, globalRewards);
+        break;
+    case EOptions::CashOut:
+        CashOut();
+        break;
+    case EOptions::Stats:
+        ShowStats(globalPlayerStats);
+        break;
+    case EOptions::About:
+        About();
+        break;
+    case EOptions::Quit:
+        Exit();
+        break;
+    }
+}
+
+void ChangeState(EStates aTargetState)
+{
+    switch (aTargetState)
+    {
+    case EStates::MainMenu:
+        EnterMainMenu();
+        break;
+    case EStates::Game:
+        EnterGamePicker();
+        break;
+    }
 }
 
 int main()
@@ -397,7 +433,7 @@ int main()
     ResetBalance();
     if (!globalGame.isQuitting)
     {
-        EnterMainMenu();
+        ChangeState(EStates::MainMenu);
     }
 
     return 0;

@@ -20,6 +20,16 @@ int RollDie()
     return GetRandomNumber(1, 6);
 }
 
+void DrawBreakerLine(bool aNewLine)
+{
+    WriteLine("--------------------------------------", aNewLine);
+}
+
+void DrawMenuLine()
+{
+    WriteLine("===========================================================");
+}
+
 void RollDice(Dice& aDice)
 {
     aDice.die1 = RollDie();
@@ -96,4 +106,10 @@ void ClearConsole()
 void Pause()
 {
     system("pause");
+}
+
+void WriteLine(const char aTextToType[], bool aNewLine)
+{
+    std::cout << aTextToType;
+    if (aNewLine) std::cout << '\n';
 }

@@ -80,3 +80,20 @@ struct Game
 
     bool isShowingInstructions = true;
 };
+
+enum class EOptions
+{
+    GuessTheDiceSum,
+    OddOrEven,
+    YesOrNo,
+    CashOut,
+    Stats,
+    About,
+    Quit
+};
+
+enum class EStates
+{
+    MainMenu,
+    Game
+};

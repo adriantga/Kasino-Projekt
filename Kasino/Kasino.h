@@ -14,3 +14,5 @@ void RefuseGame(bool& aCantPlay);
 void TauntOrImpress(int aWinAmount, int aLossAmount, int aImpressWinAmt, int aTauntLossAmt);
 void BroadcastDiceResult(bool aShowSum);
 void BroadcastWinOrLoss(bool aIsWinner, int aWinAmount, int aLoseAmount, int& aMinigame);
+void SwitchTo(EOptions aOption);
+void ChangeState(EStates aTargetState);
