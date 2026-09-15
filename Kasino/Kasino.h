@@ -1,7 +1,6 @@
 ﻿void EnterGamePicker();
 void DrawMenuLine();
 void ResetBalance();
-void ResetStats();
 void Exit();
 void BroadcastPlayerBalance(bool aStylize);
 void AddBalance(int aAmount, int& aMinigame);
@@ -11,7 +10,6 @@ void Pick(int aChoice, bool isInGame);
 int GetBetAmount();
 void GameOver();
 bool AskPlayerAgain(bool aIsInGame);
-void ShowStats();
 void RefuseGame(bool& aCantPlay);
 void TauntOrImpress(int aWinAmount, int aLossAmount, int aImpressWinAmt, int aTauntLossAmt);
 void BroadcastDiceResult(bool aShowSum);

@@ -157,12 +157,14 @@
   <ItemGroup>
     <ClCompile Include="Kasino.cpp" />
     <ClCompile Include="Minigames.cpp" />
+    <ClCompile Include="Stats.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Kasino.h" />
     <ClInclude Include="Minigames.h" />
+    <ClInclude Include="Stats.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

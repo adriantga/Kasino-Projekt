@@ -4,6 +4,7 @@
 #include "Utilities.h"
 #include "Kasino.h"
 #include "Minigames.h"
+#include "Stats.h"
 
 Player globalPlayer;
 PlayerStats globalPlayerStats;
@@ -21,39 +22,9 @@ void RefuseGame(bool& aCantPlay)
 	EnterGamePicker();
 }
 
-void SetResult(int aMatchIndex, bool aIsWin)
-{
-	if (aIsWin)
-	{
-		globalPlayerStats.wins++;
-	}
-	else
-	{
-		globalPlayerStats.losses++;
-	}
-
-	int resultIndex = aIsWin ? globalPlayerStats.winIndex : globalPlayerStats.lossIndex;
-	globalPlayerStats.matches[aMatchIndex] = globalGame.matchResults[resultIndex];
-}
-
 void ResetBalance()
 {
 	globalPlayer.myMoney = globalGame.startingBalance;
-}
-
-void AddPlayedGame(bool aIsWinner)
-{
-	globalPlayerStats.matchesPlayed++;
-	
-	// This is a bit of a hack. It shifts the array to the right, and adds the new result to the front.
-	// Certainly not the best way to do this but it is readable.
-	int historySize = sizeof(globalPlayerStats.matches) / sizeof(globalPlayerStats.matches[0]);
-	for (int i = historySize - 1; i > 0; i--)
-	{
-		globalPlayerStats.matches[i] = globalPlayerStats.matches[i - 1];
-	}
-
-	SetResult(0, aIsWinner);
 }
 
 void BroadcastWinOrLoss(bool aIsWinner, int aWinAmount, int aLoseAmount, int& aMinigame)
@@ -72,7 +43,7 @@ void BroadcastWinOrLoss(bool aIsWinner, int aWinAmount, int aLoseAmount, int& aM
 		RemoveBalance(aLoseAmount, aMinigame);
 	}
 
-	AddPlayedGame(aIsWinner);
+	AddPlayedGame(globalPlayerStats, aIsWinner);
 	BroadcastPlayerBalance(true);
 }
 
@@ -89,13 +60,7 @@ void BroadcastPlayerBalance(bool stylize)
 	}
 }
 
-void ResetStats()
-{
-	for (char& match : globalPlayerStats.matches)
-	{
-		match = '-';
-	}
-}
+
 
 // Resets all stats after the player has lost the entire game.
 void ResetGame()
@@ -117,7 +82,7 @@ void ResetGame()
 	globalPlayerStats.yesNoLossAmount = 0;
 
 	ResetBalance();
-	ResetStats();
+	ResetStats(globalPlayerStats);
 
 	globalGame.isShowingInstructions = true;
 }
@@ -294,49 +259,6 @@ void About()
 
 }
 
-void ShowStats()
-{
-	ClearConsole();
-
-	int resultCount = 0;
-
-	std::cout << "================== PLAYER STATS ==================" << std::endl;
-	std::cout << "Matches Played: " << globalPlayerStats.matchesPlayed << std::endl;
-	std::cout << "Wins: " << globalPlayerStats.wins << std::endl;
-	std::cout << "Losses: " << globalPlayerStats.losses << std::endl;
-	std::cout << "=================== GAME STATS ===================" << std::endl;
-	std::cout << "Guess The Dice Sum Profit: " << globalPlayerStats.diceSumWinAmount << std::endl;
-	std::cout << "Guess The Dice Sum Loss: " << globalPlayerStats.diceSumLossAmount << std::endl;
-	DrawBreakerLine();
-	std::cout << "Odd Or Even Profit: " << globalPlayerStats.oddEvenWinAmount << std::endl;
-	std::cout << "Odd Or Even Loss: " << globalPlayerStats.oddEvenLossAmount << std::endl;
-	DrawBreakerLine();
-	std::cout << "Yes Or No Profit: " << globalPlayerStats.yesNoWinAmount << std::endl;
-	std::cout << "Yes Or No Loss: " << globalPlayerStats.yesNoLossAmount << std::endl;
-	std::cout << "================== MATCH HISTORY ==================" << std::endl;
-
-	for (char match : globalPlayerStats.matches)
-	{
-		if (IsCharacter(match, '-'))
-		{
-			resultCount++;
-		}
-
-		std::cout << match << std::endl;
-	}
-
-	if (resultCount == (sizeof(globalPlayerStats.matches) / sizeof(globalPlayerStats.matches[0])))
-	{
-		std::cout << "(No matches have been played!)" << std::endl;
-	}
-
-	std::cout << "===================================================" << std::endl;
-
-	Pause();
-	ClearConsole();
-	EnterMainMenu();
-}
-
 void CashOut()
 {
 	if (!globalPlayer.cantPlayDiceSum || !globalPlayer.cantPlayOddEven || !globalPlayer.cantPlayYesNo)
@@ -396,7 +318,7 @@ void Pick(int aChoice, bool aIsInGame)
 		EnterGamePicker();
 		break;
 	case 2:
-		ShowStats();
+		ShowStats(globalPlayerStats);
 		break;
 	case 3:
 		About();
@@ -464,7 +386,7 @@ void EnterMainMenu()
 
 int main()
 {
-	ResetStats();
+	ResetStats(globalPlayerStats);
 	ResetBalance();
 	if (!globalGame.isQuitting)
 	{
