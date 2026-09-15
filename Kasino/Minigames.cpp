@@ -79,7 +79,7 @@ namespace OddOrEven
 
         std::cout << "What are you guessing? Even or odd?\n1. Even\n2. Odd" << std::endl;
 
-        int picked;
+        int picked; // This will be replaced by 'char' in "Uppgift 3"
         std::cin >> picked;
 
         while (std::cin.fail())
@@ -235,5 +235,111 @@ namespace YesOrNo
 
         BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
                            isWinner ? aPlayerStats.yesNoWinAmount : aPlayerStats.yesNoLossAmount);
+    }
+}
+
+namespace HigherOrLower
+{
+    void PlayGame(Game& aGame, Player& aPlayer, PlayerStats& aPlayerStats, Rewards& aRewards)
+    {
+        if (HasExceeded(aPlayerStats.higherLowerWinAmount, aGame.higherLowerWinLimit))
+        {
+            RefuseGame(aPlayer.cantPlayHigherLower);
+            return;
+        }
+        
+        int bet = GetBetAmount(aPlayer);
+        
+        int pickedNumber = GetRoll();
+        int nextPickedNumber = GetRoll();
+        
+        while (pickedNumber == nextPickedNumber)
+        {
+            pickedNumber = GetRoll();
+        }
+        
+        TauntOrImpress(aPlayerStats.yesNoWinAmount, aPlayerStats.yesNoLossAmount, aGame.yesNoImpressWinAmt,
+                       aGame.yesNoTauntLossAmt);
+        if (aGame.isShowingInstructions && !aPlayer.hasPlayedYesOrNo)
+        {
+            WriteLine("The goal is simple: Guess whether or not the number visible on the screen is lower than the next one");
+            WriteLine("Guess correctly and you'll get rewarded. However, a wrong guess will cost you everything!");
+            WriteLine("(By quitting, you indirectly forfeit any possible winnings, thus the round becoming a loss)");
+        }
+        
+        std::cout << "Do you think " << pickedNumber << " is higher or lower than the next number?" << '\n';
+        
+        bool isHigher = pickedNumber > nextPickedNumber;
+        
+        char higher = 'H';
+        char lower = 'L';
+        
+        char playerGuess;
+        std::cin >> playerGuess;
+        
+        bool playerPickedHigher = IsCharacter(playerGuess, higher);
+        bool playerPickedLower = IsCharacter(playerGuess, lower);
+        
+        // Reward caches if the game master isn't scared.
+        int cachedReward = 0;
+        int winAmount = 0;
+        
+        bool isPlayerQuitting = IsCharacter(playerGuess, 'Q');
+        
+        while (!isPlayerQuitting)
+        {
+            while (std::cin.fail())
+            {
+                ClearInput();
+                std::cin >> playerGuess;
+            }
+            
+            if (playerPickedHigher || playerPickedLower)
+            {
+                if (playerPickedHigher && isHigher || playerPickedLower && !isHigher)
+                {
+                    // It's flipped hehe
+                    std::cout << "That's correct! " << pickedNumber << " is " << (isHigher ? "higher" : "lower") << " than " << nextPickedNumber << "!" << "\n";
+                    cachedReward += aRewards.higherLowerBaseReward;
+                    
+                    int temp = nextPickedNumber;
+                    pickedNumber = temp;
+                    nextPickedNumber = GetRoll();
+        
+                    while (pickedNumber == nextPickedNumber)
+                    {
+                        pickedNumber = GetRoll();
+                    }
+            
+                    isHigher = pickedNumber > nextPickedNumber;
+                    
+                    std::cout << "Do you think " << pickedNumber << " is higher or lower than the next number?" << '\n';
+                }
+                else
+                {
+                    std::cout << "The number after " << pickedNumber << " was " << nextPickedNumber << "!\n";
+                    WriteLine("Better luck next time!");
+                    cachedReward = 0;
+                    break;
+                }
+            }
+            
+            std::cin >> playerGuess;
+            playerPickedHigher = IsCharacter(playerGuess, higher);
+            playerPickedLower = IsCharacter(playerGuess, lower);
+            isPlayerQuitting = IsCharacter(playerGuess, 'Q');
+            
+        }
+        
+        
+        if (cachedReward > 0)
+        {
+            winAmount = bet + (cachedReward * aRewards.higherLowerRewardMultiplier);
+        }
+
+        bool isWinner = winAmount > 0 && isPlayerQuitting;
+
+        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
+                           isWinner ? aPlayerStats.higherLowerWinAmount : aPlayerStats.higherLowerLossAmount);
     }
 }

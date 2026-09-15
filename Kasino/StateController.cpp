@@ -27,9 +27,12 @@ void Pick(int aChoice, bool aIsInGame, Player& aPlayer)
             SwitchTo(EOptions::YesOrNo);
             break;
         case 4:
-            SwitchTo(EOptions::CashOut);
+            SwitchTo(EOptions::HigherOrLower);
             break;
         case 5:
+            SwitchTo(EOptions::CashOut);
+            break;
+        case 6:
             ChangeState(EStates::MainMenu);
             break;
         }

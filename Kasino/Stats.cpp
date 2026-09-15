@@ -61,6 +61,9 @@ void ShowStats(PlayerStats& aStats)
     DrawBreakerLine();
     std::cout << "Yes Or No Profit: " << aStats.yesNoWinAmount << std::endl;
     std::cout << "Yes Or No Loss: " << aStats.yesNoLossAmount << std::endl;
+    DrawBreakerLine();
+    std::cout << "Higher Or Lower Profit: " << aStats.higherLowerWinAmount << std::endl;
+    std::cout << "Higher Or Lower Loss: " << aStats.higherLowerLossAmount << std::endl;
     std::cout << "================== MATCH HISTORY ==================" << std::endl;
 
     for (char match : aStats.matches)
