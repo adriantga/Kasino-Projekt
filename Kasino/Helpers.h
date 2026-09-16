@@ -75,6 +75,8 @@ struct Rewards
     
     const int rouletteRewardMultiplier = 3;
     
+    const int rouletteZeroMultiplier = 36;
+    
     // This will dynamically change
     int yesNoRewardMultiplier = 1;
 };
@@ -91,6 +93,12 @@ struct Game
     const int ROULETTE_RED_BLACK = 2;
     const int ROULETTE_ODD_EVEN = 3;
     const int ROULETTE_COLUMN_ROW = 4;
+    
+    const int ROULETTE_ROW_MIN = 1;
+    const int ROULETTE_ROW_MAX = 3;
+    
+    const int ROULETTE_COLUMN_MIN = 0;
+    const int ROULETTE_COLUMN_MAX = 12;
     
     // The amount of money in total you have to win for the casino to kick you out.
     const int diceSumWinLimit = 2500;

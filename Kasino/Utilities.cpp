@@ -92,7 +92,7 @@ void RollDice(Dice& aDice)
 
 bool IsCharacter(char aInput, char aValue)
 {
-    return aInput == aValue || ToLower(aValue);
+    return aInput == aValue || aInput == ToLower(aValue);
 }
 
 int GetRoll()
