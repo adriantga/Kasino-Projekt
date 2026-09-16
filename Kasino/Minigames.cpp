@@ -364,7 +364,6 @@ namespace Roulette
         
         int bet = GetBetAmount(aPlayer);
         
-        
         TauntOrImpress(aPlayerStats.rouletteWinAmount, aPlayerStats.rouletteLossAmount, aGame.rouletteImpressWinAmt,
                        aGame.rouletteTauntLossAmt);
         if (ShouldShowInstructions(aGame, aPlayer.hasPlayedRoulette))
@@ -377,50 +376,11 @@ namespace Roulette
         aPlayer.hasPlayedRoulette = true;
         WriteLine("What's your pick ('r', 'g', or 'b')?");
         
-        char red = 'R';
-        char green = 'G';
-        char black = 'B';
-
-        int correctColorIndex = GetRandomNumber(0, 2);
-        char correctColor = aGame.validRoulettePicks[correctColorIndex];
-        
-        char picked;
-        std::cin >> picked;
-        
-        bool playerPickedRed = IsCharacter(picked, red);
-        bool playerPickedBlack = IsCharacter(picked, black);
-        bool playerPickedGreen = IsCharacter(picked, green);
-        
-        int winAmount = bet * aRewards.rouletteRewardMultiplier;
-        
-        while (!playerPickedRed && !playerPickedBlack && !playerPickedGreen)
-        {
-            while (std::cin.fail())
-            {
-                ClearInput();
-                std::cin >> picked;
-            }
-            
-            std::cin >> picked;
-            playerPickedRed = IsCharacter(picked, red);
-            playerPickedBlack = IsCharacter(picked, black);
-            playerPickedGreen = IsCharacter(picked, green);
-        }
-        
-        bool isWinner = IsCharacter(picked, correctColor);
-        
-        if (!isWinner)
-        {
-            std::cout << "You picked " << picked << " but the correct color was " << correctColor << "!\n";
-            WriteLine("Better luck next time!");
-        }
-        else
-        {
-            std::cout << "The correct color was " << correctColor << " and you picked " << picked << "!\n";
-            WriteLine("Congratulations on your victory!");
-        }
-        
-        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
-                           isWinner ? aPlayerStats.higherLowerWinAmount : aPlayerStats.higherLowerLossAmount);
+        // Betting Types:
+        // Straight
+        // Red/Black
+        // Odd/Even
+        // Column Bet
+        std::cout << bet << '\n';
     }
 }
