@@ -33,7 +33,7 @@ void RefuseGame(bool& aCantPlay)
     WriteLine("You start to wonder why. You eventually land on the question 'Maybe I've won too much?'.");
     Pause();
     ClearConsole();
-    EnterGamePicker();
+    ChangeState(EStates::Game);
 }
 
 void ResetBalance()
@@ -152,7 +152,7 @@ bool AskPlayerAgain(bool aIsInGame)
     {
         globalGame.isGameOver = false;
         ResetGame();
-        EnterMainMenu();
+        ChangeState(EStates::MainMenu);
         return false;
     }
 
@@ -174,7 +174,7 @@ bool AskPlayerAgain(bool aIsInGame)
             {
                 ClearInput();
                 ClearConsole();
-                EnterGamePicker();
+                ChangeState(EStates::Game);
             }
             break;
         }
@@ -208,7 +208,7 @@ void About()
 
     Pause();
     ClearConsole();
-    EnterMainMenu();
+    ChangeState(EStates::MainMenu);
 }
 
 void CashOut()
@@ -220,7 +220,7 @@ void CashOut()
         WriteLine("(Get kicked out from every game to cash out!)");
         Pause();
         ClearConsole();
-        EnterGamePicker();
+        ChangeState(EStates::Game);
         return;
     }
 
@@ -234,7 +234,7 @@ void CashOut()
     Pause();
     ClearConsole();
     ResetGame();
-    EnterMainMenu();
+    ChangeState(EStates::MainMenu);
 }
 
 void EnterGamePicker()
