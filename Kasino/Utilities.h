@@ -25,3 +25,4 @@ int GetBetAmount(Player& aPlayer);
 void BroadcastDiceResult(Dice& aDice, bool aShowSum = false);
 void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, int aWinAmount, int aLoseAmount,
                         int& aMinigame);
+bool ShouldShowInstructions(Game& aGame, bool hasPlayed);

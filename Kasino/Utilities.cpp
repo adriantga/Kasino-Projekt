@@ -182,6 +182,11 @@ void BroadcastDiceResult(Dice& aDice, bool aShowSum)
     DrawBreakerLine();
 }
 
+bool ShouldShowInstructions(Game& aGame, bool hasPlayed)
+{
+    return aGame.isShowingInstructions && !hasPlayed;
+}
+
 void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, int aWinAmount, int aLoseAmount,
                         int& aMinigame)
 {

@@ -59,6 +59,8 @@ void ResetGame()
     globalPlayer.hasPlayedDiceSum = false;
     globalPlayer.hasPlayedOddOrEven = false;
     globalPlayer.hasPlayedYesOrNo = false;
+    globalPlayer.hasPlayedHigherOrLower = false;
+    globalPlayer.hasPlayedRoulette = false;
 
     globalPlayerStats.matchesPlayed = 0;
     globalPlayerStats.wins = 0;
@@ -67,11 +69,15 @@ void ResetGame()
     globalPlayerStats.diceSumWinAmount = 0;
     globalPlayerStats.oddEvenWinAmount = 0;
     globalPlayerStats.yesNoWinAmount = 0;
+    globalPlayerStats.higherLowerWinAmount = 0;
+    globalPlayerStats.rouletteWinAmount = 0;
 
     globalPlayerStats.diceSumLossAmount = 0;
     globalPlayerStats.oddEvenLossAmount = 0;
     globalPlayerStats.yesNoLossAmount = 0;
-
+    globalPlayerStats.higherLowerLossAmount = 0;
+    globalPlayerStats.rouletteWinAmount = 0;
+    
     ResetBalance();
     ResetStats(globalPlayerStats);
 
@@ -206,7 +212,7 @@ void About()
 
 void CashOut()
 {
-    if (!globalPlayer.cantPlayDiceSum || !globalPlayer.cantPlayOddEven || !globalPlayer.cantPlayYesNo || !globalPlayer.cantPlayHigherLower)
+    if (!globalPlayer.cantPlayDiceSum || !globalPlayer.cantPlayOddEven || !globalPlayer.cantPlayYesNo || !globalPlayer.cantPlayHigherLower || !globalPlayer.cantPlayRoulette)
     {
         WriteLine("'It's too early to cash out' is what your inner voice is telling you.");
         WriteLine("Maybe your inside voice is right...");
@@ -233,8 +239,8 @@ void CashOut()
 void EnterGamePicker()
 {
     int input;
-    DrawMenu(input, "GAME PICKER", "1. Guess The Dice Sum\n2. Odd or Even\n3. Yes or No\n4. Higher or Lower",
-             6, "\n5. Cash Out\n6. Back To Menu");
+    DrawMenu(input, "GAME PICKER", "1. Guess The Dice Sum\n2. Odd or Even\n3. Yes or No\n4. Higher or Lower\n5. Roulette",
+             7, "\n6. Cash Out\n7. Back To Menu");
     DrawBreakerLine();
 
     Pick(input, true, globalPlayer);
@@ -262,6 +268,9 @@ void SwitchTo(EOptions aOption)
         break;
     case EOptions::HigherOrLower:
         HigherOrLower::PlayGame(globalGame, globalPlayer, globalPlayerStats, globalRewards);
+        break;
+    case EOptions::Roulette:
+        Roulette::PlayGame(globalGame, globalPlayer, globalPlayerStats, globalRewards);
         break;
     case EOptions::CashOut:
         CashOut();

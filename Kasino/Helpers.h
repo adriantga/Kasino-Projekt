@@ -8,11 +8,13 @@ struct Player
     bool hasPlayedDiceSum = false;
     bool hasPlayedOddOrEven = false;
     bool hasPlayedHigherOrLower = false;
+    bool hasPlayedRoulette = false;
 
     bool cantPlayDiceSum = false;
     bool cantPlayOddEven = false;
     bool cantPlayYesNo = false;
     bool cantPlayHigherLower = false;
+    bool cantPlayRoulette = false;
 
     int pickedMinigame = -1;
 };
@@ -34,11 +36,13 @@ struct PlayerStats
     int oddEvenWinAmount = 0;
     int yesNoWinAmount = 0;
     int higherLowerWinAmount = 0;
+    int rouletteWinAmount = 0;
 
     int diceSumLossAmount = 0;
     int oddEvenLossAmount = 0;
     int yesNoLossAmount = 0;
     int higherLowerLossAmount = 0;
+    int rouletteLossAmount = 0;
 };
 
 struct Dice
@@ -69,6 +73,8 @@ struct Rewards
     // one-round thing(similar to guess the dice sum and even or odd)
     const int higherLowerRewardMultiplier = 2;
     
+    const int rouletteRewardMultiplier = 3;
+    
     // This will dynamically change
     int yesNoRewardMultiplier = 1;
 };
@@ -80,22 +86,25 @@ struct Game
     const int oddEvenWinLimit = 1500;
     const int yesNoWinLimit = 4000;
     const int higherLowerWinLimit = 3000;
+    const int rouletteWinLimit = 5000;
 
     // The money difference between losses and wins for the casino to taunt you.
     const int diceSumTauntLossAmt = 500;
     const int oddEvenTauntLossAmt = 500;
     const int yesNoTauntLossAmt = 500;
     const int higherLowerTauntLossAmt = 500;
+    const int rouletteTauntLossAmt = 500;
 
     // The money difference between wins and losses for the casino to impress you.
     const int diceSumImpressWinAmt = 500;
     const int oddEvenImpressWinAmt = 500;
     const int yesNoImpressWinAmt = 500;
     const int higherLowerImpressWinAmt = 500;
+    const int rouletteImpressWinAmt = 500;
     
-    const int higherLowerGameMasterFrightenedAmt = 500;
-
     const int startingBalance = 250;
+    
+    const char validRoulettePicks[3] = { 'r', 'g', 'b' };
 
     bool isGameOver = false;
     bool isQuitting = false;
@@ -109,6 +118,7 @@ enum class EOptions
     OddOrEven,
     YesOrNo,
     HigherOrLower,
+    Roulette,
     CashOut,
     Stats,
     About,
