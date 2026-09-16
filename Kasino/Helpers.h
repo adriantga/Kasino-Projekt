@@ -130,3 +130,12 @@ enum class EStates
     MainMenu,
     Game
 };
+
+// For later use-case
+enum class ERouletteBetTypes
+{
+    Straight,
+    RedBlack,
+    OddEven,
+    ColumnBet
+};

@@ -182,7 +182,7 @@ void BroadcastDiceResult(Dice& aDice, bool aShowSum)
     DrawBreakerLine();
 }
 
-bool ShouldShowInstructions(Game& aGame, bool hasPlayed)
+bool ShouldShowInstructions(const Game aGame, const bool hasPlayed)
 {
     return aGame.isShowingInstructions && !hasPlayed;
 }

@@ -7,6 +7,7 @@
 #include "StateController.h"
 #include "Stats.h"
 
+// Needs to be done by 2026/09/18 (09:00)
 Player globalPlayer;
 PlayerStats globalPlayerStats;
 Dice globalDice;

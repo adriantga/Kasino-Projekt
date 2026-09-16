@@ -422,6 +422,5 @@ namespace Roulette
         
         BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
                            isWinner ? aPlayerStats.higherLowerWinAmount : aPlayerStats.higherLowerLossAmount);
-        
     }
 }
