@@ -7,6 +7,13 @@
 #include "StateController.h"
 #include "Stats.h"
 
+/*
+ * Things left:
+ * - Adding extensive instructions to the Minigame 'Roulette'
+ * - Slightly modify the 'BuildRow' method to support 0 (right now 0 is its own lane which doesn't make sense)
+ * - Enjoying life
+ */
+
 // Needs to be done by 2026/09/18 (09:00)
 Player globalPlayer;
 PlayerStats globalPlayerStats;
