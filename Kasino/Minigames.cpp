@@ -513,12 +513,12 @@ namespace Roulette
         }
         else
         {
-            int correctRowIndex = GetRandomNumber(1, 3);
+            int correctRowIndex = GetRandomNumber(0, 3);
             correctRowArray = BuildRow(correctRowIndex);
             correctRow = correctRowIndex;
             landedCol = GetRandomNumber(aGame.ROULETTE_ROW_MIN, aGame.ROULETTE_ROW_MAX);
 
-            WriteLine("Which row are you picking? (1-3)");
+            WriteLine("Which row are you picking? (0-3)");
             
             int playerGuess;
             std::cin >> playerGuess;
@@ -530,8 +530,9 @@ namespace Roulette
                 std::cin >> playerGuess;
             }
             
-            playerGuess = Clamp(playerGuess, aGame.ROULETTE_ROW_MIN, aGame.ROULETTE_ROW_MAX);
+            playerGuess = Clamp(playerGuess, 0, aGame.ROULETTE_ROW_MAX);
             
+            winAmount = correctRow == 0 ? bet * aRewards.rouletteZeroMultiplier : bet * aRewards.rouletteRewardMultiplier;
             isWinner = playerGuess == correctRowIndex;
         }
         
@@ -540,7 +541,11 @@ namespace Roulette
       
         if (hasRow)
         {
-            std::cout << (isWinner ? "Congratulations! It landed on": "Nice try! It landed on") << " " << correctRow << "(" << correctRowArray[landedCol] << ")" << '\n';
+            bool isAboveZero = correctRow > 0;
+            
+            std::cout << (isWinner ? "Congratulations! It landed on": "Nice try! It landed on") << " " << correctRow;
+            if (isAboveZero) std::cout << "(" << (isAboveZero ? correctRowArray[landedCol] : 0) << ")" << '\n';
+            else std::cout << '\n';
         }
         else if (hasNumbers)
         {
