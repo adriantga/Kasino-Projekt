@@ -381,6 +381,6 @@ namespace Roulette
         // Red/Black
         // Odd/Even
         // Column Bet
-        std::cout << bet << '\n';
+        std::cout << bet << ": " << aRewards.rouletteRewardMultiplier << '\n';
     }
 }
