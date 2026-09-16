@@ -81,6 +81,17 @@ struct Rewards
 
 struct Game
 {
+    const int ROULETTE_BETTING_TYPE_MIN = 1;
+    const int ROULETTE_BETTING_TYPE_MAX = 4;
+    
+    const int ROULETTE_STRAIGHT_MIN = 0;
+    const int ROULETTE_STRAIGHT_MAX = 36;
+    
+    const int ROULETTE_STRAIGHT = 1;
+    const int ROULETTE_RED_BLACK = 2;
+    const int ROULETTE_ODD_EVEN = 3;
+    const int ROULETTE_COLUMN_ROW = 4;
+    
     // The amount of money in total you have to win for the casino to kick you out.
     const int diceSumWinLimit = 2500;
     const int oddEvenWinLimit = 1500;

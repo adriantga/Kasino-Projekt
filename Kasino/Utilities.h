@@ -29,3 +29,5 @@ void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, in
                         int& aMinigame);
 bool ShouldShowInstructions(const Game aGame, const bool hasPlayed);
 std::array<int, 12> BuildRow(int aRowStart);
+bool IsMatching(int current[], int target[]);
+char ToLower(char aCharacter);

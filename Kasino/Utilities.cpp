@@ -92,7 +92,7 @@ void RollDice(Dice& aDice)
 
 bool IsCharacter(char aInput, char aValue)
 {
-    return aInput == aValue || aInput == aValue + globalLowerCaseOffset;
+    return aInput == aValue || ToLower(aValue);
 }
 
 int GetRoll()
@@ -230,4 +230,14 @@ void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, in
 
     Pause();
     AskPlayerAgain(true);
+}
+
+bool IsMatching(int current[], int target[])
+{
+    return current == target;
+}
+
+char ToLower(char aCharacter)
+{
+    return aCharacter + globalLowerCaseOffset;
 }
