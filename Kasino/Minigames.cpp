@@ -352,6 +352,22 @@ namespace HigherOrLower
     }
 }
 
+/*
+* Bets:
+* 0-36
+* 
+* Red/Black:
+* Red - Bets on red
+* Black - Bets on black
+* Odd/Even - Bets on even/odd (how do I even begin to implement this?)
+* 
+* Column/Bet:
+* 
+* Row 1[1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
+* Row 2[2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35]
+* Row 3[3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36]
+ */
+
 namespace Roulette
 {
     void PlayGame(Game& aGame, Player& aPlayer, PlayerStats& aPlayerStats, Rewards& aRewards)
