@@ -187,6 +187,21 @@ bool ShouldShowInstructions(const Game aGame, const bool hasPlayed)
     return aGame.isShowingInstructions && !hasPlayed;
 }
 
+std::array<int, 12> BuildRow(int aRowStart)
+{
+    std::array<int, 12> result; 
+    
+    int num = aRowStart;
+    
+    for (int i = 0; i < result.size(); i++)
+    {
+        result[i] = num;
+        num += 3;
+    }
+    
+    return result;
+}
+
 void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, int aWinAmount, int aLoseAmount,
                         int& aMinigame)
 {

@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <array>
+
 bool IsCharacter(char aInput, char aValue);
 int GetRandomNumber(int aMin, int aMax);
 void ClearConsole();
@@ -26,3 +28,4 @@ void BroadcastDiceResult(Dice& aDice, bool aShowSum = false);
 void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, int aWinAmount, int aLoseAmount,
                         int& aMinigame);
 bool ShouldShowInstructions(const Game aGame, const bool hasPlayed);
+std::array<int, 12> BuildRow(int aRowStart);
