@@ -9,108 +9,115 @@
 
 /*
  * Things left:
- * - Adding extensive instructions to the Minigame 'Roulette'
  * - Enjoying life
  */
 
-// Needs to be done by 2026/09/18 (09:00)
-Player globalPlayer;
-PlayerStats globalPlayerStats;
-Dice globalDice;
-Rewards globalRewards;
-Game globalGame;
 
 int main()
 {
-    ResetStats(globalPlayerStats);
-    ResetBalance();
-    if (!globalGame.isQuitting)
+    Dice dice;
+    Player player;
+    PlayerStats playerStats;
+    Game game;
+    Rewards rewards;
+
+    Casino aCasino = Casino{dice, player, playerStats, game, rewards};
+    
+    ResetStats(aCasino);
+    ResetBalance(aCasino);
+    if (!aCasino.game.isQuitting)
     {
-        ChangeState(EStates::MainMenu);
+        ChangeState(EStates::MainMenu, aCasino);
     }
 
     return 0;
 }
 
-void RefuseGame(bool& aCantPlay)
+void RefuseGame(bool& aCantPlay, Casino& casino)
 {
     aCantPlay = true;
     WriteLine("As you walk over to the table, the guards immediately escort you away.");
     WriteLine("You start to wonder why. You eventually land on the question 'Maybe I've won too much?'.");
     Pause();
     ClearConsole();
-    ChangeState(EStates::Game);
+    ChangeState(EStates::Game, casino);
 }
 
-void ResetBalance()
+void ResetBalance(Casino& aCasino)
 {
-    globalPlayer.myMoney = globalGame.startingBalance;
+    aCasino.player.myMoney = aCasino.game.startingBalance;
 }
 
-void BroadcastPlayerBalance(bool aStylize)
+void BroadcastPlayerBalance(bool aStylize, Casino& aCasino)
 {
-    if (!globalGame.isGameOver)
+    if (!aCasino.game.isGameOver)
     {
         if (aStylize)
         {
             DrawBreakerLine();
         }
 
-        std::cout << "You currently have $" << globalPlayer.myMoney << std::endl;
+        std::cout << "You currently have $" << aCasino.player.myMoney << std::endl;
     }
 }
 
 // Resets all stats after the player has lost the entire game.
-void ResetGame()
+void ResetGame(Casino aCasino)
 {
-    globalPlayer.hasPlayedDiceSum = false;
-    globalPlayer.hasPlayedOddOrEven = false;
-    globalPlayer.hasPlayedYesOrNo = false;
-    globalPlayer.hasPlayedHigherOrLower = false;
-    globalPlayer.hasPlayedRoulette = false;
+    aCasino.player.hasPlayedDiceSum = false;
+    aCasino.player.hasPlayedOddOrEven = false;
+    aCasino.player.hasPlayedYesOrNo = false;
+    aCasino.player.hasPlayedHigherOrLower = false;
+    aCasino.player.hasPlayedRoulette = false;
 
-    globalPlayerStats.matchesPlayed = 0;
-    globalPlayerStats.wins = 0;
-    globalPlayerStats.losses = 0;
-
-    globalPlayerStats.diceSumWinAmount = 0;
-    globalPlayerStats.oddEvenWinAmount = 0;
-    globalPlayerStats.yesNoWinAmount = 0;
-    globalPlayerStats.higherLowerWinAmount = 0;
-    globalPlayerStats.rouletteWinAmount = 0;
-
-    globalPlayerStats.diceSumLossAmount = 0;
-    globalPlayerStats.oddEvenLossAmount = 0;
-    globalPlayerStats.yesNoLossAmount = 0;
-    globalPlayerStats.higherLowerLossAmount = 0;
-    globalPlayerStats.rouletteWinAmount = 0;
+    aCasino.player.cantPlayDiceSum = false;
+    aCasino.player.cantPlayOddEven = false;
+    aCasino.player.cantPlayYesNo = false;
+    aCasino.player.cantPlayHigherLower = false;
+    aCasino.player.cantPlayRoulette = false;
     
-    ResetBalance();
-    ResetStats(globalPlayerStats);
+    aCasino.playerStats.wins = 0;
+    aCasino.playerStats.losses = 0;
+    aCasino.playerStats.matchesPlayed = 0;
 
-    globalGame.isShowingInstructions = true;
+    aCasino.playerStats.diceSumWinAmount = 0;
+    aCasino.playerStats.oddEvenWinAmount = 0;
+    aCasino.playerStats.yesNoWinAmount = 0;
+    aCasino.playerStats.higherLowerWinAmount = 0;
+    aCasino.playerStats.rouletteWinAmount = 0;
+    
+    aCasino.playerStats.diceSumLossAmount = 0;
+    aCasino.playerStats.oddEvenLossAmount = 0;
+    aCasino.playerStats.yesNoLossAmount = 0;
+    aCasino.playerStats.higherLowerLossAmount = 0;
+    aCasino.playerStats.rouletteLossAmount = 0;
+    
+    ResetBalance(aCasino);
+    ResetStats(aCasino);
+
+    aCasino.game.isShowingInstructions = true;
 }
 
-void AddBalance(int aAmount, int& aMinigame)
+void AddBalance(int aAmount, int& aMinigame, Casino& aCasino)
 {
     aAmount = Min(aAmount, 0);
-    globalPlayer.myMoney += aAmount;
+    aCasino.player.myMoney += aAmount;
     aMinigame += aAmount;
 }
 
-void RemoveBalance(int aAmount, int& aMinigame)
+void RemoveBalance(int aAmount, int& aMinigame, Casino& aCasino)
 {
     aAmount = Min(aAmount, 1);
-    globalPlayer.myMoney -= aAmount;
-    globalPlayer.myMoney = Min(globalPlayer.myMoney, 0);
+    aCasino.player.myMoney -= aAmount;
+    aCasino.player.myMoney = Min(aCasino.player.myMoney, 0);
     aMinigame += aAmount;
 }
 
-void GameOver()
+void GameOver(Casino& aCasino)
 {
     ClearConsole();
-    globalGame.isGameOver = true;
-    Exit();
+    aCasino.game.isGameOver = true;
+    Exit(aCasino);
 
     WriteLine("SECURITY GUARD: 'Hey! You're completely out of cash!'");
     Pause();
@@ -124,9 +131,9 @@ void GameOver()
     WriteLine("GAME OVER. You have been kicked out of the casino.\n");
 }
 
-void Exit()
+void Exit(Casino& aCasino)
 {
-    globalGame.isQuitting = true;
+    aCasino.game.isQuitting = true;
 }
 
 void TauntOrImpress(int aWinAmount, int aLossAmount, int aImpressWinAmt, int aTauntLossAmt)
@@ -150,15 +157,15 @@ void TauntOrImpress(int aWinAmount, int aLossAmount, int aImpressWinAmt, int aTa
     }
 }
 
-bool AskPlayerAgain(bool aIsInGame)
+bool AskPlayerAgain(bool aIsInGame, Casino& aCasino)
 {
     ClearConsole();
 
-    if (globalGame.isGameOver)
+    if (aCasino.game.isGameOver)
     {
-        globalGame.isGameOver = false;
-        ResetGame();
-        ChangeState(EStates::MainMenu);
+        aCasino.game.isGameOver = false;
+        ResetGame(aCasino);
+        ChangeState(EStates::MainMenu, aCasino);
         return false;
     }
 
@@ -174,13 +181,13 @@ bool AskPlayerAgain(bool aIsInGame)
         {
             if (!aIsInGame)
             {
-                globalGame.isQuitting = true;
+                aCasino.game.isQuitting = true;
             }
             else
             {
                 ClearInput();
                 ClearConsole();
-                ChangeState(EStates::Game);
+                ChangeState(EStates::Game, aCasino);
             }
             break;
         }
@@ -192,14 +199,14 @@ bool AskPlayerAgain(bool aIsInGame)
     if (isYes)
     {
         ClearConsole();
-        Pick(globalPlayer.pickedMinigame, true, globalPlayer);
+        Pick(aCasino.player.pickedMinigame, true, aCasino);
     }
 
-    globalGame.isShowingInstructions = false;
+    aCasino.game.isShowingInstructions = false;
     return true;
 }
 
-void About()
+void About(Casino& aCasino)
 {
     WriteLine("STORY");
     DrawMenuLine();
@@ -214,23 +221,23 @@ void About()
 
     Pause();
     ClearConsole();
-    ChangeState(EStates::MainMenu);
+    ChangeState(EStates::MainMenu, aCasino);
 }
 
-void CashOut()
+void CashOut(Casino aCasino)
 {
-    if (!globalPlayer.cantPlayDiceSum || !globalPlayer.cantPlayOddEven || !globalPlayer.cantPlayYesNo || !globalPlayer.cantPlayHigherLower || !globalPlayer.cantPlayRoulette)
+    if (!aCasino.player.cantPlayDiceSum || !aCasino.player.cantPlayOddEven || !aCasino.player.cantPlayYesNo || !aCasino.player.cantPlayHigherLower)
     {
         WriteLine("'It's too early to cash out' is what your inner voice is telling you.");
         WriteLine("Maybe your inside voice is right...");
         WriteLine("(Get kicked out from every game to cash out!)");
         Pause();
         ClearConsole();
-        ChangeState(EStates::Game);
+        ChangeState(EStates::Game, aCasino);
         return;
     }
 
-    std::cout << "You decided to cash out $" << globalPlayer.myMoney << '\n';
+    std::cout << "You decided to cash out $" << aCasino.player.myMoney << '\n';
     Pause();
     WriteLine("Before you walk out the door, you turn around and the game master dead in the eye.");
     Pause();
@@ -239,57 +246,57 @@ void CashOut()
     WriteLine("You still didn't change your ways after coming home. You decided to go to a different casino.");
     Pause();
     ClearConsole();
-    ResetGame();
-    ChangeState(EStates::MainMenu);
+    ResetGame(aCasino);
+    ChangeState(EStates::MainMenu, aCasino);
 }
 
-void EnterGamePicker()
+void EnterGamePicker(Casino& aCasino)
 {
     int input;
     DrawMenu(input, "GAME PICKER", "1. Guess The Dice Sum\n2. Odd or Even\n3. Yes or No\n4. Higher or Lower\n5. Roulette",
              7, "\n6. Cash Out\n7. Back To Menu");
     DrawBreakerLine();
 
-    Pick(input, true, globalPlayer);
+    Pick(input, true, aCasino);
 }
 
-void EnterMainMenu()
+void EnterMainMenu(Casino& aCasino)
 {
     int input;
     DrawMenu(input, "THE ULTIMATE CASINO", "1. Play Game\n2. About\n3. Stats\n4. Quit", 4);
-    Pick(input, false, globalPlayer);
+    Pick(input, false, aCasino);
 }
 
-void SwitchTo(EOptions aOption)
+void SwitchTo(EOptions aOption, Casino& aCasino)
 {
     switch (aOption)
     {
     case EOptions::GuessTheDiceSum:
-        GuessTheDiceSum::PlayGame(globalDice, globalGame, globalPlayer, globalPlayerStats, globalRewards);
+        GuessTheDiceSum::PlayGame(aCasino);
         break;
     case EOptions::OddOrEven:
-        OddOrEven::PlayGame(globalDice, globalGame, globalPlayer, globalPlayerStats, globalRewards);
+        OddOrEven::PlayGame(aCasino);
         break;
     case EOptions::YesOrNo:
-        YesOrNo::PlayGame(globalGame, globalPlayer, globalPlayerStats, globalRewards);
+        YesOrNo::PlayGame(aCasino);
         break;
     case EOptions::HigherOrLower:
-        HigherOrLower::PlayGame(globalGame, globalPlayer, globalPlayerStats, globalRewards);
+        HigherOrLower::PlayGame(aCasino);
         break;
     case EOptions::Roulette:
-        Roulette::PlayGame(globalGame, globalPlayer, globalPlayerStats, globalRewards);
+        Roulette::PlayGame(aCasino);
         break;
     case EOptions::CashOut:
-        CashOut();
+        CashOut(aCasino);
         break;
     case EOptions::Stats:
-        ShowStats(globalPlayerStats);
+        ShowStats(aCasino);
         break;
     case EOptions::About:
-        About();
+        About(aCasino);
         break;
     case EOptions::Quit:
-        Exit();
+        Exit(aCasino);
         break;
     }
 }

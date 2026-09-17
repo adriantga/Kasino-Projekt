@@ -4,72 +4,72 @@
 #include "Helpers.h"
 #include <iostream>
 
-void AddPlayedGame(PlayerStats& aStats, bool aIsWinner)
+void AddPlayedGame(Casino& aCasino, bool aIsWinner)
 {
-    aStats.matchesPlayed++;
+    aCasino.playerStats.matchesPlayed++;
 
     // This is a bit of a hack. It shifts the array to the right, and adds the new result to the front.
     // Certainly not the best way to do this but it is readable.
-    int historySize = sizeof(aStats.matches) / sizeof(aStats.matches[0]);
+    int historySize = sizeof(aCasino.playerStats.matches) / sizeof(aCasino.playerStats.matches[0]);
     for (int i = historySize - 1; i > 0; i--)
     {
-        aStats.matches[i] = aStats.matches[i - 1];
+        aCasino.playerStats.matches[i] = aCasino.playerStats.matches[i - 1];
     }
 
-    SetResult(aStats, 0, aIsWinner);
+    SetResult(aCasino, 0, aIsWinner);
 }
 
-void SetResult(PlayerStats& aStats, int aMatchIndex, bool aIsWin)
+void SetResult(Casino& aCasino, int aMatchIndex, bool aIsWin)
 {
     if (aIsWin)
     {
-        aStats.wins++;
+        aCasino.playerStats.wins++;
     }
     else
     {
-        aStats.losses++;
+        aCasino.playerStats.losses++;
     }
 
-    int resultIndex = aIsWin ? aStats.winIndex : aStats.lossIndex;
-    aStats.matches[aMatchIndex] = aStats.matchResults[resultIndex];
+    int resultIndex = aIsWin ? aCasino.playerStats.winIndex : aCasino.playerStats.lossIndex;
+    aCasino.playerStats.matches[aMatchIndex] = aCasino.playerStats.matchResults[resultIndex];
 }
 
-void ResetStats(PlayerStats& aStats)
+void ResetStats(Casino& aCasino)
 {
-    for (char& match : aStats.matches)
+    for (char& match : aCasino.playerStats.matches)
     {
         match = '-';
     }
 }
 
-void ShowStats(PlayerStats& aStats)
+void ShowStats(Casino& aCasino)
 {
     ClearConsole();
 
     int resultCount = 0;
 
     std::cout << "================== PLAYER STATS ==================" << std::endl;
-    std::cout << "Matches Played: " << aStats.matchesPlayed << std::endl;
-    std::cout << "Wins: " << aStats.wins << std::endl;
-    std::cout << "Losses: " << aStats.losses << std::endl;
+    std::cout << "Matches Played: " << aCasino.playerStats.matchesPlayed << std::endl;
+    std::cout << "Wins: " << aCasino.playerStats.wins << std::endl;
+    std::cout << "Losses: " << aCasino.playerStats.losses << std::endl;
     std::cout << "=================== GAME STATS ===================" << std::endl;
-    std::cout << "Guess The Dice Sum Profit: " << aStats.diceSumWinAmount << std::endl;
-    std::cout << "Guess The Dice Sum Loss: " << aStats.diceSumLossAmount << std::endl;
+    std::cout << "Guess The Dice Sum Profit: " << aCasino.playerStats.diceSumWinAmount << std::endl;
+    std::cout << "Guess The Dice Sum Loss: " << aCasino.playerStats.diceSumLossAmount << std::endl;
     DrawBreakerLine();
-    std::cout << "Odd Or Even Profit: " << aStats.oddEvenWinAmount << std::endl;
-    std::cout << "Odd Or Even Loss: " << aStats.oddEvenLossAmount << std::endl;
+    std::cout << "Odd Or Even Profit: " << aCasino.playerStats.oddEvenWinAmount << std::endl;
+    std::cout << "Odd Or Even Loss: " << aCasino.playerStats.oddEvenLossAmount << std::endl;
     DrawBreakerLine();
-    std::cout << "Yes Or No Profit: " << aStats.yesNoWinAmount << std::endl;
-    std::cout << "Yes Or No Loss: " << aStats.yesNoLossAmount << std::endl;
+    std::cout << "Yes Or No Profit: " << aCasino.playerStats.yesNoWinAmount << std::endl;
+    std::cout << "Yes Or No Loss: " << aCasino.playerStats.yesNoLossAmount << std::endl;
     DrawBreakerLine();
-    std::cout << "Higher Or Lower Profit: " << aStats.higherLowerWinAmount << std::endl;
-    std::cout << "Higher Or Lower Loss: " << aStats.higherLowerLossAmount << std::endl;
+    std::cout << "Higher Or Lower Profit: " << aCasino.playerStats.higherLowerWinAmount << std::endl;
+    std::cout << "Higher Or Lower Loss: " << aCasino.playerStats.higherLowerLossAmount << std::endl;
     DrawBreakerLine();
-    std::cout << "Roulette Profit: " << aStats.rouletteWinAmount << std::endl;
-    std::cout << "Roulette Loss: " << aStats.rouletteLossAmount << std::endl;
+    std::cout << "Roulette Profit: " << aCasino.playerStats.rouletteWinAmount << std::endl;
+    std::cout << "Roulette Loss: " << aCasino.playerStats.rouletteLossAmount << std::endl;
     std::cout << "================== MATCH HISTORY ==================" << std::endl;
 
-    for (char match : aStats.matches)
+    for (char match : aCasino.playerStats.matches)
     {
         if (IsCharacter(match, '-'))
         {
@@ -79,7 +79,7 @@ void ShowStats(PlayerStats& aStats)
         std::cout << match << std::endl;
     }
 
-    if (resultCount == (sizeof(aStats.matches) / sizeof(aStats.matches[0])))
+    if (resultCount == (sizeof(aCasino.playerStats.matches) / sizeof(aCasino.playerStats.matches[0])))
     {
         std::cout << "(No matches have been played!)" << std::endl;
     }
@@ -88,5 +88,5 @@ void ShowStats(PlayerStats& aStats)
 
     Pause();
     ClearConsole();
-    EnterMainMenu();
+    EnterMainMenu(aCasino);
 }

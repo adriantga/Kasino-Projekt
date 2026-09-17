@@ -25,7 +25,7 @@ void DrawTitle(const char aTitleText[])
     DrawMenuLine();
 }
 
-int GetBetAmount(Player& aPlayer)
+int GetBetAmount(Casino& aCasino)
 {
     WriteLine("How much are you betting?");
 
@@ -39,7 +39,7 @@ int GetBetAmount(Player& aPlayer)
     }
 
     ClearInput();
-    result = Clamp(result, 1, aPlayer.myMoney);
+    result = Clamp(result, 1, aCasino.player.myMoney);
     return result;
 }
 
@@ -83,11 +83,11 @@ void DrawMenuLine()
     WriteLine("===========================================================");
 }
 
-void RollDice(Dice& aDice)
+void RollDice(Casino& aCasino)
 {
-    aDice.die1 = RollDie();
-    aDice.die2 = RollDie();
-    aDice.diceSum = aDice.die1 + aDice.die2;
+    aCasino.dice.die1 = RollDie();
+    aCasino.dice.die2 = RollDie();
+    aCasino.dice.diceSum = aCasino.dice.die1 + aCasino.dice.die2;
 }
 
 bool IsCharacter(char aInput, char aValue)
@@ -167,24 +167,54 @@ void WriteLine(const char aTextToType[], bool aNewLine)
     if (aNewLine) std::cout << '\n';
 }
 
-void BroadcastDiceResult(Dice& aDice, bool aShowSum)
+void BroadcastDiceResult(Casino& aCasino, bool aShowSum)
 {
     WriteLine("--------------- RESULT ---------------");
 
-    std::cout << "DIE 1 - " << aDice.die1 << std::endl;
-    std::cout << "DIE 2 - " << aDice.die2 << std::endl;
+    std::cout << "DIE 1 - " << aCasino.dice.die1 << std::endl;
+    std::cout << "DIE 2 - " << aCasino.dice.die2 << std::endl;
 
     if (aShowSum)
     {
-        std::cout << "SUM - " << aDice.diceSum << std::endl;
+        std::cout << "SUM - " << aCasino.dice.diceSum << std::endl;
     }
 
     DrawBreakerLine();
 }
 
-bool ShouldShowInstructions(const Game aGame, const bool hasPlayed)
+bool ShouldShowInstructions(Casino& aCasino, const bool hasPlayed)
 {
-    return aGame.isShowingInstructions && !hasPlayed;
+    return aCasino.game.isShowingInstructions && !hasPlayed;
+}
+
+void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLoseAmount,
+                        int& aMinigame)
+{
+    Pause();
+
+    DrawBreakerLine();
+    if (aIsWinner)
+    {
+        std::cout << "You won $" << aWinAmount << "!" << std::endl;
+        AddBalance(aWinAmount, aMinigame, aCasino);
+    }
+    else
+    {
+        WriteLine("You didn't win anything this time.");
+        RemoveBalance(aLoseAmount, aMinigame, aCasino);
+
+        if (aCasino.player.myMoney == 0)
+        {
+            Pause();
+            GameOver(aCasino);
+        }
+    }
+
+    AddPlayedGame(aCasino, aIsWinner);
+    BroadcastPlayerBalance(true, aCasino);
+
+    Pause();
+    AskPlayerAgain(true, aCasino);
 }
 
 std::array<int, 12> BuildRow(int aRowStart)
@@ -200,36 +230,6 @@ std::array<int, 12> BuildRow(int aRowStart)
     }
     
     return result;
-}
-
-void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, int aWinAmount, int aLoseAmount,
-                        int& aMinigame)
-{
-    Pause();
-
-    DrawBreakerLine();
-    if (aIsWinner)
-    {
-        std::cout << "You won $" << aWinAmount << "!" << std::endl;
-        AddBalance(aWinAmount, aMinigame);
-    }
-    else
-    {
-        WriteLine("You didn't win anything this time.");
-        RemoveBalance(aLoseAmount, aMinigame);
-
-        if (aPlayer.myMoney == 0)
-        {
-            Pause();
-            GameOver();
-        }
-    }
-
-    AddPlayedGame(aStats, aIsWinner);
-    BroadcastPlayerBalance(true);
-
-    Pause();
-    AskPlayerAgain(true);
 }
 
 bool IsMatching(int current[], int target[])

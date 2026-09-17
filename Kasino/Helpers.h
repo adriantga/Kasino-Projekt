@@ -131,6 +131,15 @@ struct Game
     bool isShowingInstructions = true;
 };
 
+struct Casino
+{
+    Dice& dice;
+    Player& player;
+    PlayerStats& playerStats;
+    Game& game;
+    Rewards& rewards;
+};
+
 enum class EOptions
 {
     GuessTheDiceSum,
@@ -148,13 +157,4 @@ enum class EStates
 {
     MainMenu,
     Game
-};
-
-// For later use-case
-enum class ERouletteBetTypes
-{
-    Straight,
-    RedBlack,
-    OddEven,
-    ColumnBet
 };

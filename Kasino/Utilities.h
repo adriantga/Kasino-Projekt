@@ -2,13 +2,15 @@
 
 #include <array>
 
+#include "Kasino.h"
+
 bool IsCharacter(char aInput, char aValue);
 int GetRandomNumber(int aMin, int aMax);
 void ClearConsole();
 void ClearInput();
 void Pause();
 int RollDie();
-void RollDice(Dice& aDice);
+void RollDice(Casino& aCasino);
 int Min(int aValue, int aMin);
 int Max(int aValue, int aMax);
 int Clamp(int aValue, int aMin, int aMax);
@@ -23,11 +25,11 @@ void WriteLine(const char aTextToType[], bool aNewLine = true);
 void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions = 3,
               const char aExtraOptions[] = "");
 void DrawTitle(const char aTitleText[]);
-int GetBetAmount(Player& aPlayer);
-void BroadcastDiceResult(Dice& aDice, bool aShowSum = false);
-void BroadcastWinOrLoss(Player& aPlayer, PlayerStats& aStats, bool aIsWinner, int aWinAmount, int aLoseAmount,
+int GetBetAmount(Casino& aCasino);
+void BroadcastDiceResult(Casino& aCasino, bool aShowSum = false);
+void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLoseAmount,
                         int& aMinigame);
-bool ShouldShowInstructions(const Game aGame, const bool hasPlayed);
-std::array<int, 12> BuildRow(int aRowStart);
+bool ShouldShowInstructions(Casino& aCasino, const bool hasPlayed);
 bool IsMatching(int current[], int target[]);
 char ToLower(char aCharacter);
+std::array<int, 12> BuildRow(int aRowStart);

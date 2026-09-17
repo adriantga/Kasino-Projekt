@@ -1,14 +1,21 @@
 ﻿#pragma once
+#include "Helpers.h"
 
-void EnterGamePicker();
-void ResetBalance();
-void Exit();
-void BroadcastPlayerBalance(bool aStylize);
-void AddBalance(int aAmount, int& aMinigame);
-void RemoveBalance(int aAmount, int& aMinigame);
-void EnterMainMenu();
-void GameOver();
-bool AskPlayerAgain(bool aIsInGame);
-void RefuseGame(bool& aCantPlay);
+struct Dice;
+struct Player;
+struct PlayerStats;
+struct Game;
+struct Rewards;
+
+void EnterGamePicker(Casino& aCasino);
+void ResetBalance(Casino& aCasino);
+void Exit(Casino& aCasino);
+void BroadcastPlayerBalance(bool aStylize, Casino& aCasino);
+void AddBalance(int aAmount, int& aMinigame, Casino& aCasino);
+void RemoveBalance(int aAmount, int& aMinigame, Casino& aCasino);
+void EnterMainMenu(Casino& aCasino);
+void GameOver(Casino& aCasino);
+bool AskPlayerAgain(bool aIsInGame, Casino& aCasino);
+void RefuseGame(bool& aCantPlay, Casino& aCasino);
 void TauntOrImpress(int aWinAmount, int aLossAmount, int aImpressWinAmt, int aTauntLossAmt);
-void SwitchTo(EOptions aOption);
+void SwitchTo(EOptions aOption, Casino& casino);

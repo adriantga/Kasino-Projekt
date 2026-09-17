@@ -7,27 +7,27 @@
 // My code is highkey terrible ;-;
 namespace GuessTheDiceSum
 {
-    void PlayGame(Dice& aDice, Game& aGame, Player& aPlayer, PlayerStats& aPlayerStats, Rewards& aRewards)
+    void PlayGame(Casino& aCasino)
     {
-        if (HasExceeded(aPlayerStats.diceSumWinAmount, aGame.diceSumWinLimit))
+        if (HasExceeded(aCasino.playerStats.diceSumWinAmount, aCasino.game.diceSumWinLimit))
         {
-            RefuseGame(aPlayer.cantPlayDiceSum);
+            RefuseGame(aCasino.player.cantPlayDiceSum, aCasino);
             return;
         }
 
-        int bet = GetBetAmount(aPlayer);
+        int bet = GetBetAmount(aCasino);
 
-        RollDice(aDice);
+        RollDice(aCasino);
 
-        TauntOrImpress(aPlayerStats.diceSumWinAmount, aPlayerStats.diceSumLossAmount, aGame.diceSumImpressWinAmt,
-                       aGame.diceSumTauntLossAmt);
-        if (ShouldShowInstructions(aGame, aPlayer.hasPlayedDiceSum))
+        TauntOrImpress(aCasino.playerStats.diceSumWinAmount, aCasino.playerStats.diceSumLossAmount, aCasino.game.diceSumImpressWinAmt,
+                       aCasino.game.diceSumTauntLossAmt);
+        if (ShouldShowInstructions(aCasino, aCasino.player.hasPlayedDiceSum))
         {
             WriteLine(
                 "Your only goal is to guess the sum of the dice. Your guess should not exceed 12 or fall behind 2!\nIf you do end exceeding or falling behind the boundary, we'll assume you mean 2 or 12.");
         }
 
-        aPlayer.hasPlayedDiceSum = true;
+        aCasino.player.hasPlayedDiceSum = true;
         WriteLine("Guess a number between 2-12:");
         int playerGuess;
         std::cin >> playerGuess;
@@ -38,47 +38,47 @@ namespace GuessTheDiceSum
             std::cin >> playerGuess;
         }
 
-        playerGuess = Clamp(playerGuess, aDice.diceSumMin, aDice.diceSumMax);
+        playerGuess = Clamp(playerGuess, aCasino.dice.diceSumMin, aCasino.dice.diceSumMax);
 
-        BroadcastDiceResult(aDice, true);
+        BroadcastDiceResult(aCasino, true);
 
-        bool isWinner = playerGuess == aDice.diceSum;
+        bool isWinner = playerGuess == aCasino.dice.diceSum;
 
-        int winAmount = bet * aRewards.guessTheSumRewardMultiplier;
+        int winAmount = bet * aCasino.rewards.guessTheSumRewardMultiplier;
 
-        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
-                           isWinner ? aPlayerStats.diceSumWinAmount : aPlayerStats.diceSumLossAmount);
+        BroadcastWinOrLoss(aCasino, isWinner, winAmount, bet,
+                           isWinner ? aCasino.playerStats.diceSumWinAmount : aCasino.playerStats.diceSumLossAmount);
     }
 }
 
 namespace OddOrEven
 {
-    void PlayGame(Dice& aDice, Game& aGame, Player& aPlayer, PlayerStats& aPlayerStats, Rewards& aRewards)
+    void PlayGame(Casino& aCasino)
     {
-        if (HasExceeded(aPlayerStats.oddEvenWinAmount, aGame.oddEvenWinLimit))
+        if (HasExceeded(aCasino.playerStats.oddEvenWinAmount, aCasino.game.oddEvenWinLimit))
         {
-            RefuseGame(aPlayer.cantPlayOddEven);
+            RefuseGame(aCasino.player.cantPlayOddEven, aCasino);
             return;
         }
 
 
-        int bet = GetBetAmount(aPlayer);
+        int bet = GetBetAmount(aCasino);
 
         char even = 'E';
         char odd = 'O';
 
-        RollDice(aDice);
+        RollDice(aCasino);
 
-        TauntOrImpress(aPlayerStats.oddEvenWinAmount, aPlayerStats.oddEvenLossAmount, aGame.oddEvenImpressWinAmt,
-                       aGame.oddEvenTauntLossAmt);
+        TauntOrImpress(aCasino.playerStats.oddEvenWinAmount, aCasino.playerStats.oddEvenLossAmount, aCasino.game.oddEvenImpressWinAmt,
+                       aCasino.game.oddEvenTauntLossAmt);
 
-        if (ShouldShowInstructions(aGame, aPlayer.hasPlayedOddOrEven))
+        if (ShouldShowInstructions(aCasino, aCasino.player.hasPlayedOddOrEven))
         {
             WriteLine(
                 "Here you must guess if the dice are even or odd. If both dice aren't even or odd, the house wins.");
         }
 
-        aPlayer.hasPlayedOddOrEven = true;
+        aCasino.player.hasPlayedOddOrEven = true;
 
         WriteLine("What are you guessing? Even or odd? Type 'e' for even or 'o' for odd!");
 
@@ -88,8 +88,8 @@ namespace OddOrEven
         bool playerPickedEven = IsCharacter(picked, even);
         bool playerPickedOdd = IsCharacter(picked, odd);
 
-        bool isEven = IsEven(aDice.die1) && IsEven(aDice.die2);
-        bool isOdd = !IsEven(aDice.die1) && !IsEven(aDice.die2);
+        bool isEven = IsEven(aCasino.dice.die1) && IsEven(aCasino.dice.die2);
+        bool isOdd = !IsEven(aCasino.dice.die1) && !IsEven(aCasino.dice.die2);
 
         while (!playerPickedEven && !playerPickedOdd)
         {
@@ -106,32 +106,32 @@ namespace OddOrEven
 
         bool isWinner = (playerPickedEven && isEven) || (playerPickedOdd && isOdd);
 
-        BroadcastDiceResult(aDice, false);
+        BroadcastDiceResult(aCasino, false);
 
-        int winAmount = bet * aRewards.oddOrEvenRewardMultiplier;
+        int winAmount = bet * aCasino.rewards.oddOrEvenRewardMultiplier;
 
-        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
-                           isWinner ? aPlayerStats.oddEvenWinAmount : aPlayerStats.oddEvenLossAmount);
+        BroadcastWinOrLoss(aCasino, isWinner, winAmount, bet,
+                           isWinner ? aCasino.playerStats.oddEvenWinAmount : aCasino.playerStats.oddEvenLossAmount);
     }
 }
 
 namespace YesOrNo
 {
-    void PlayGame(Game& aGame, Player& aPlayer, PlayerStats& aPlayerStats, Rewards& aRewards)
+    void PlayGame(Casino& aCasino)
     {
-        if (HasExceeded(aPlayerStats.yesNoWinAmount, aGame.yesNoWinLimit))
+        if (HasExceeded(aCasino.playerStats.yesNoWinAmount, aCasino.game.yesNoWinLimit))
         {
-            RefuseGame(aPlayer.cantPlayYesNo);
+            RefuseGame(aCasino.player.cantPlayYesNo, aCasino);
             return;
         }
 
-        aRewards.yesNoRewardMultiplier = 1;
+        aCasino.rewards.yesNoRewardMultiplier = 1;
 
         // Store 'Y' and 'N' to prevent the code from being too repetitive
         char yes = 'Y';
         char no = 'N';
 
-        int bet = GetBetAmount(aPlayer);
+        int bet = GetBetAmount(aCasino);
 
         int rewardMultiplierIncreaseThreshold = 3;
         int numConsecutiveCorrectGuesses = 0;
@@ -152,9 +152,9 @@ namespace YesOrNo
             rangeEnd++;
         }
 
-        TauntOrImpress(aPlayerStats.yesNoWinAmount, aPlayerStats.yesNoLossAmount, aGame.yesNoImpressWinAmt,
-                       aGame.yesNoTauntLossAmt);
-        if (ShouldShowInstructions(aGame, aPlayer.hasPlayedYesOrNo))
+        TauntOrImpress(aCasino.playerStats.yesNoWinAmount, aCasino.playerStats.yesNoLossAmount, aCasino.game.yesNoImpressWinAmt,
+                       aCasino.game.yesNoTauntLossAmt);
+        if (ShouldShowInstructions(aCasino, aCasino.player.hasPlayedYesOrNo))
         {
             WriteLine("Your sole objective is to guess whether the number picked is within the given range");
             WriteLine("Use 'y' if you think the number is in range and 'n' to guess if it is not.");
@@ -163,7 +163,7 @@ namespace YesOrNo
             WriteLine("** NOTE ** If you quit before guessing, you'll automatically lose.");
         }
 
-        aPlayer.hasPlayedYesOrNo = true;
+        aCasino.player.hasPlayedYesOrNo = true;
 
 
         std::cout << "Is the number between " << rangeStart << " and " << rangeEnd << "?" << std::endl;
@@ -194,8 +194,8 @@ namespace YesOrNo
                     if (numConsecutiveCorrectGuesses >= rewardMultiplierIncreaseThreshold)
                     {
                         numConsecutiveCorrectGuesses = 0;
-                        aRewards.yesNoRewardMultiplier++;
-                        std::cout << "Your reward multiplier has increased! It is now " << aRewards.
+                        aCasino.rewards.yesNoRewardMultiplier++;
+                        std::cout << "Your reward multiplier has increased! It is now " << aCasino.rewards.
                             yesNoRewardMultiplier << "!" << std::endl;
                     }
 
@@ -217,7 +217,7 @@ namespace YesOrNo
 
                     std::cout << "Is the number between " << rangeStart << " and " << rangeEnd << "?" << std::endl;
 
-                    cachedReward += aRewards.yesNoBaseReward;
+                    cachedReward += aCasino.rewards.yesNoBaseReward;
                 }
                 else
                 {
@@ -237,27 +237,27 @@ namespace YesOrNo
 
         if (cachedReward > 0)
         {
-            winAmount = bet + (cachedReward * aRewards.yesNoRewardMultiplier);
+            winAmount = bet + (cachedReward * aCasino.rewards.yesNoRewardMultiplier);
         }
 
         bool isWinner = winAmount > 0 && isPlayerQuitting;
 
-        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
-                           isWinner ? aPlayerStats.yesNoWinAmount : aPlayerStats.yesNoLossAmount);
+        BroadcastWinOrLoss(aCasino, isWinner, winAmount, bet,
+                           isWinner ? aCasino.playerStats.yesNoWinAmount : aCasino.playerStats.yesNoLossAmount);
     }
 }
 
 namespace HigherOrLower
 {
-    void PlayGame(Game& aGame, Player& aPlayer, PlayerStats& aPlayerStats, Rewards& aRewards)
+    void PlayGame(Casino& aCasino)
     {
-        if (HasExceeded(aPlayerStats.higherLowerWinAmount, aGame.higherLowerWinLimit))
+        if (HasExceeded(aCasino.playerStats.higherLowerWinAmount, aCasino.game.higherLowerWinLimit))
         {
-            RefuseGame(aPlayer.cantPlayHigherLower);
+            RefuseGame(aCasino.player.cantPlayHigherLower, aCasino);
             return;
         }
 
-        int bet = GetBetAmount(aPlayer);
+        int bet = GetBetAmount(aCasino);
 
         int pickedNumber = GetRoll();
         int nextPickedNumber = GetRoll();
@@ -267,10 +267,10 @@ namespace HigherOrLower
             pickedNumber = GetRoll();
         }
 
-        TauntOrImpress(aPlayerStats.higherLowerWinAmount, aPlayerStats.higherLowerLossAmount,
-                       aGame.higherLowerImpressWinAmt,
-                       aGame.higherLowerTauntLossAmt);
-        if (ShouldShowInstructions(aGame, aPlayer.hasPlayedHigherOrLower))
+        TauntOrImpress(aCasino.playerStats.higherLowerWinAmount, aCasino.playerStats.higherLowerLossAmount,
+                       aCasino.game.higherLowerImpressWinAmt,
+                       aCasino.game.higherLowerTauntLossAmt);
+        if (ShouldShowInstructions(aCasino, aCasino.player.hasPlayedHigherOrLower))
         {
             WriteLine(
                 "The goal is simple: Guess whether or not the number visible on the screen is lower than the next one");
@@ -278,7 +278,7 @@ namespace HigherOrLower
             WriteLine("(By quitting, you indirectly forfeit any possible winnings, thus the round becoming a loss)");
         }
 
-        aPlayer.hasPlayedHigherOrLower = true;
+        aCasino.player.hasPlayedHigherOrLower = true;
 
         std::cout << "Do you think " << pickedNumber << " is higher or lower than the next number?" << '\n';
 
@@ -314,7 +314,7 @@ namespace HigherOrLower
                     // It's flipped hehe
                     std::cout << "That's correct! " << pickedNumber << " is " << (isHigher ? "higher" : "lower") <<
                         " than " << nextPickedNumber << "!" << "\n";
-                    cachedReward += aRewards.higherLowerBaseReward;
+                    cachedReward += aCasino.rewards.higherLowerBaseReward;
 
                     int temp = nextPickedNumber;
                     pickedNumber = temp;
@@ -347,13 +347,13 @@ namespace HigherOrLower
 
         if (cachedReward > 0)
         {
-            winAmount = bet + (cachedReward * aRewards.higherLowerRewardMultiplier);
+            winAmount = bet + (cachedReward * aCasino.rewards.higherLowerRewardMultiplier);
         }
 
         bool isWinner = winAmount > 0 && isPlayerQuitting;
 
-        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
-                           isWinner ? aPlayerStats.higherLowerWinAmount : aPlayerStats.higherLowerLossAmount);
+        BroadcastWinOrLoss(aCasino, isWinner, winAmount, bet,
+                           isWinner ? aCasino.playerStats.higherLowerWinAmount : aCasino.playerStats.higherLowerLossAmount);
     }
 }
 
@@ -385,19 +385,19 @@ namespace Roulette
      * - Cleaner code!
      * - Splitting every one of these into separate classes.
      */
-    void PlayGame(Game& aGame, Player& aPlayer, PlayerStats& aPlayerStats, Rewards& aRewards)
+    void PlayGame(Casino& aCasino)
     {
-        if (HasExceeded(aPlayerStats.rouletteWinAmount, aGame.rouletteWinLimit))
+        if (HasExceeded(aCasino.playerStats.rouletteWinAmount, aCasino.game.rouletteWinLimit))
         {
-            RefuseGame(aPlayer.cantPlayRoulette);
+            RefuseGame(aCasino.player.cantPlayRoulette, aCasino);
             return;
         }
 
-        int bet = GetBetAmount(aPlayer);
+        int bet = GetBetAmount(aCasino);
 
-        TauntOrImpress(aPlayerStats.rouletteWinAmount, aPlayerStats.rouletteLossAmount, aGame.rouletteImpressWinAmt,
-                       aGame.rouletteTauntLossAmt);
-        if (ShouldShowInstructions(aGame, aPlayer.hasPlayedRoulette))
+        TauntOrImpress(aCasino.playerStats.rouletteWinAmount, aCasino.playerStats.rouletteLossAmount, aCasino.game.rouletteImpressWinAmt,
+                       aCasino.game.rouletteTauntLossAmt);
+        if (ShouldShowInstructions(aCasino, aCasino.player.hasPlayedRoulette))
         {
             WriteLine(
                 "Your main objective is to guess what color the ball will land on.");
@@ -414,15 +414,15 @@ namespace Roulette
 
         WriteLine("Your options are:\n1. Straight\n2. Red/Black\n3. Odd/Even\n4. Column Bet");
 
-        aPlayer.hasPlayedRoulette = true;
+        aCasino.player.hasPlayedRoulette = true;
 
         char correctPick = ' ';
         int correctRow = 0;
         int landedCol = -1;
 
         bool isWinner;
-        int landing = GetRandomNumber(aGame.ROULETTE_STRAIGHT_MIN, aGame.ROULETTE_STRAIGHT_MAX);
-        int winAmount = landing == 0 ? bet * aRewards.rouletteZeroMultiplier : bet * aRewards.rouletteRewardMultiplier;;
+        int landing = GetRandomNumber(aCasino.game.ROULETTE_STRAIGHT_MIN, aCasino.game.ROULETTE_STRAIGHT_MAX);
+        int winAmount = landing == 0 ? bet * aCasino.rewards.rouletteZeroMultiplier : bet * aCasino.rewards.rouletteRewardMultiplier;;
         std::array<int, 12> correctRowArray;
 
         int playerDecision;
@@ -434,9 +434,9 @@ namespace Roulette
             std::cin >> playerDecision;
         }
 
-        playerDecision = Clamp(playerDecision, aGame.ROULETTE_BETTING_TYPE_MIN, aGame.ROULETTE_BETTING_TYPE_MAX);
+        playerDecision = Clamp(playerDecision, aCasino.game.ROULETTE_BETTING_TYPE_MIN, aCasino.game.ROULETTE_BETTING_TYPE_MAX);
 
-        if (playerDecision == aGame.ROULETTE_STRAIGHT)
+        if (playerDecision == aCasino.game.ROULETTE_STRAIGHT)
         {
             WriteLine("What's your guess? (0-36)");
 
@@ -451,11 +451,11 @@ namespace Roulette
                 std::cin >> playerGuess;
             }
 
-            playerGuess = Clamp(playerGuess, aGame.ROULETTE_STRAIGHT_MIN, aGame.ROULETTE_STRAIGHT_MAX);
+            playerGuess = Clamp(playerGuess, aCasino.game.ROULETTE_STRAIGHT_MIN, aCasino.game.ROULETTE_STRAIGHT_MAX);
 
             isWinner = playerGuess == landing;
         }
-        else if (playerDecision == aGame.ROULETTE_RED_BLACK)
+        else if (playerDecision == aCasino.game.ROULETTE_RED_BLACK)
         {
             WriteLine("What's your guess? ('r' for red, 'b' for black)");
 
@@ -493,7 +493,7 @@ namespace Roulette
 
             isWinner = isCorrectPick;
         }
-        else if (playerDecision == aGame.ROULETTE_ODD_EVEN)
+        else if (playerDecision == aCasino.game.ROULETTE_ODD_EVEN)
         {
             char odd = 'O';
             char even = 'E';
@@ -531,7 +531,7 @@ namespace Roulette
             int correctRowIndex = GetRandomNumber(0, 3);
             correctRowArray = BuildRow(correctRowIndex);
             correctRow = correctRowIndex;
-            landedCol = GetRandomNumber(aGame.ROULETTE_ROW_MIN, aGame.ROULETTE_ROW_MAX);
+            landedCol = GetRandomNumber(aCasino.game.ROULETTE_ROW_MIN, aCasino.game.ROULETTE_ROW_MAX);
 
             WriteLine("Which row are you picking? (0-3)");
 
@@ -545,16 +545,16 @@ namespace Roulette
                 std::cin >> playerGuess;
             }
 
-            playerGuess = Clamp(playerGuess, 0, aGame.ROULETTE_ROW_MAX);
+            playerGuess = Clamp(playerGuess, 0, aCasino.game.ROULETTE_ROW_MAX);
 
             winAmount = correctRow == 0
-                            ? bet * aRewards.rouletteZeroMultiplier
-                            : bet * aRewards.rouletteRewardMultiplier;
+                            ? bet * aCasino.rewards.rouletteZeroMultiplier
+                            : bet * aCasino.rewards.rouletteRewardMultiplier;
             isWinner = playerGuess == correctRowIndex;
         }
 
-        bool hasNumbers = playerDecision == aGame.ROULETTE_STRAIGHT || playerDecision == aGame.ROULETTE_ODD_EVEN;
-        bool hasRow = playerDecision == aGame.ROULETTE_COLUMN_ROW;
+        bool hasNumbers = playerDecision == aCasino.game.ROULETTE_STRAIGHT || playerDecision == aCasino.game.ROULETTE_ODD_EVEN;
+        bool hasRow = playerDecision == aCasino.game.ROULETTE_COLUMN_ROW;
 
         if (hasRow)
         {
@@ -566,7 +566,7 @@ namespace Roulette
         }
         else if (hasNumbers)
         {
-            std::cout << (isWinner ? "Well done! The ball landed on" : "Nice try! The ball landed on") << landing <<
+            std::cout << (isWinner ? "Well done! The ball landed on" : "Nice try! The ball landed on") << " " << landing <<
                 '\n';
         }
         else
@@ -576,7 +576,7 @@ namespace Roulette
                 : " nice try! Better luck next time") << '\n';
         }
 
-        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
-                           isWinner ? aPlayerStats.rouletteWinAmount : aPlayerStats.rouletteLossAmount);
+        BroadcastWinOrLoss(aCasino, isWinner, winAmount, bet,
+                           isWinner ? aCasino.playerStats.rouletteWinAmount : aCasino.playerStats.rouletteLossAmount);
     }
 }

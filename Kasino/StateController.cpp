@@ -8,35 +8,35 @@
  * This is technically not a state machine. Instead, it is a state controller.
  * It is more limited version than a state machine. 
 */
-void Pick(int aChoice, bool aIsInGame, Player& aPlayer)
+void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
 {
     ClearConsole();
     if (aIsInGame)
     {
-        aPlayer.pickedMinigame = aChoice;
+        aCasino.player.pickedMinigame = aChoice;
 
         switch (aChoice)
         {
         case 1:
-            SwitchTo(EOptions::GuessTheDiceSum);
+            SwitchTo(EOptions::GuessTheDiceSum, aCasino);
             break;
         case 2:
-            SwitchTo(EOptions::OddOrEven);
+            SwitchTo(EOptions::OddOrEven, aCasino);
             break;
         case 3:
-            SwitchTo(EOptions::YesOrNo);
+            SwitchTo(EOptions::YesOrNo, aCasino);
             break;
         case 4:
-            SwitchTo(EOptions::HigherOrLower);
+            SwitchTo(EOptions::HigherOrLower, aCasino);
             break;
         case 5:
-            SwitchTo(EOptions::Roulette);
+            SwitchTo(EOptions::Roulette, aCasino);
             break;
         case 6:
-            SwitchTo(EOptions::CashOut);
+            SwitchTo(EOptions::CashOut, aCasino);
             break;
         case 7:
-            ChangeState(EStates::MainMenu);
+            ChangeState(EStates::MainMenu, aCasino);
             break;
         }
         return;
@@ -45,29 +45,29 @@ void Pick(int aChoice, bool aIsInGame, Player& aPlayer)
     switch (aChoice)
     {
     case 1:
-        ChangeState(EStates::Game);
+        ChangeState(EStates::Game, aCasino);
         break;
     case 2:
-        SwitchTo(EOptions::About);
+        SwitchTo(EOptions::About, aCasino);
         break;
     case 3:
-        SwitchTo(EOptions::Stats);
+        SwitchTo(EOptions::Stats, aCasino);
         break;
     case 4:
-        SwitchTo(EOptions::Quit);
+        SwitchTo(EOptions::Quit, aCasino);
         break;
     }
 }
 
-void ChangeState(EStates aTargetState)
+void ChangeState(EStates aTargetState, Casino& aCasino)
 {
     switch (aTargetState)
     {
     case EStates::MainMenu:
-        EnterMainMenu();
+        EnterMainMenu(aCasino);
         break;
     case EStates::Game:
-        EnterGamePicker();
+        EnterGamePicker(aCasino);
         break;
     }
 }
