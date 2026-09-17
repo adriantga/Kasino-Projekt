@@ -4,7 +4,7 @@
 #include "Utilities.h"
 #include <array>
 
-// My code is highkey ass
+// My code is highkey terrible ;-;
 namespace GuessTheDiceSum
 {
     void PlayGame(Dice& aDice, Game& aGame, Player& aPlayer, PlayerStats& aPlayerStats, Rewards& aRewards)
@@ -23,7 +23,8 @@ namespace GuessTheDiceSum
                        aGame.diceSumTauntLossAmt);
         if (ShouldShowInstructions(aGame, aPlayer.hasPlayedDiceSum))
         {
-            WriteLine("Your only goal is to guess the sum of the dice. Your guess should not exceed 12 or fall behind 2!\nIf you do end exceeding or falling behind the boundary, we'll assume you mean 2 or 12.");
+            WriteLine(
+                "Your only goal is to guess the sum of the dice. Your guess should not exceed 12 or fall behind 2!\nIf you do end exceeding or falling behind the boundary, we'll assume you mean 2 or 12.");
         }
 
         aPlayer.hasPlayedDiceSum = true;
@@ -62,7 +63,7 @@ namespace OddOrEven
 
 
         int bet = GetBetAmount(aPlayer);
-        
+
         char even = 'E';
         char odd = 'O';
 
@@ -73,7 +74,8 @@ namespace OddOrEven
 
         if (ShouldShowInstructions(aGame, aPlayer.hasPlayedOddOrEven))
         {
-            WriteLine("Here you must guess if the dice are even or odd. If both dice aren't even or odd, the house wins.");
+            WriteLine(
+                "Here you must guess if the dice are even or odd. If both dice aren't even or odd, the house wins.");
         }
 
         aPlayer.hasPlayedOddOrEven = true;
@@ -85,10 +87,10 @@ namespace OddOrEven
 
         bool playerPickedEven = IsCharacter(picked, even);
         bool playerPickedOdd = IsCharacter(picked, odd);
-        
+
         bool isEven = IsEven(aDice.die1) && IsEven(aDice.die2);
         bool isOdd = !IsEven(aDice.die1) && !IsEven(aDice.die2);
-        
+
         while (!playerPickedEven && !playerPickedOdd)
         {
             while (std::cin.fail())
@@ -96,14 +98,14 @@ namespace OddOrEven
                 ClearInput();
                 std::cin >> picked;
             }
-            
+
             std::cin >> picked;
             playerPickedEven = IsCharacter(picked, even);
             playerPickedOdd = IsCharacter(picked, odd);
         }
-        
+
         bool isWinner = (playerPickedEven && isEven) || (playerPickedOdd && isOdd);
-        
+
         BroadcastDiceResult(aDice, false);
 
         int winAmount = bet * aRewards.oddOrEvenRewardMultiplier;
@@ -265,7 +267,8 @@ namespace HigherOrLower
             pickedNumber = GetRoll();
         }
 
-        TauntOrImpress(aPlayerStats.higherLowerWinAmount, aPlayerStats.higherLowerLossAmount, aGame.higherLowerImpressWinAmt,
+        TauntOrImpress(aPlayerStats.higherLowerWinAmount, aPlayerStats.higherLowerLossAmount,
+                       aGame.higherLowerImpressWinAmt,
                        aGame.higherLowerTauntLossAmt);
         if (ShouldShowInstructions(aGame, aPlayer.hasPlayedHigherOrLower))
         {
@@ -274,7 +277,7 @@ namespace HigherOrLower
             WriteLine("Guess correctly and you'll get rewarded. However, a wrong guess will cost you everything!");
             WriteLine("(By quitting, you indirectly forfeit any possible winnings, thus the round becoming a loss)");
         }
-        
+
         aPlayer.hasPlayedHigherOrLower = true;
 
         std::cout << "Do you think " << pickedNumber << " is higher or lower than the next number?" << '\n';
@@ -377,6 +380,11 @@ namespace HigherOrLower
 // Column Bet
 namespace Roulette
 {
+    /*
+     * Goals for the next hand-in:
+     * - Cleaner code!
+     * - Splitting every one of these into separate classes.
+     */
     void PlayGame(Game& aGame, Player& aPlayer, PlayerStats& aPlayerStats, Rewards& aRewards)
     {
         if (HasExceeded(aPlayerStats.rouletteWinAmount, aGame.rouletteWinLimit))
@@ -384,32 +392,39 @@ namespace Roulette
             RefuseGame(aPlayer.cantPlayRoulette);
             return;
         }
-        
+
         int bet = GetBetAmount(aPlayer);
-        
+
         TauntOrImpress(aPlayerStats.rouletteWinAmount, aPlayerStats.rouletteLossAmount, aGame.rouletteImpressWinAmt,
                        aGame.rouletteTauntLossAmt);
         if (ShouldShowInstructions(aGame, aPlayer.hasPlayedRoulette))
         {
             WriteLine(
                 "Your main objective is to guess what color the ball will land on.");
-            WriteLine("First, you'll have to pick what type of bet you want to make.");
-            
+            WriteLine("First, you'll have to pick what type of bet you want to make.\n");
+
+            WriteLine("** STRAIGHT **: Requires you to bet on a rouge. You're only able to guess 0-36");
+            WriteLine("** RED/BLACK **: Picking this will require you to pick either red or black");
+            WriteLine("** ODD/EVEN **: You'll need to guess either odd or even.");
+            WriteLine("** COLUMN BET **: Allows you to bet from 0-3. In this case, zero is standalone.\n");
+
+            WriteLine(
+                "If you guess correctly, your pay out stays the same. However, betting on 0 will give you 36x the outcome!");
         }
-        
+
         WriteLine("Your options are:\n1. Straight\n2. Red/Black\n3. Odd/Even\n4. Column Bet");
-        
+
         aPlayer.hasPlayedRoulette = true;
-        
+
         char correctPick = ' ';
         int correctRow = 0;
         int landedCol = -1;
-        
+
         bool isWinner;
         int landing = GetRandomNumber(aGame.ROULETTE_STRAIGHT_MIN, aGame.ROULETTE_STRAIGHT_MAX);
         int winAmount = landing == 0 ? bet * aRewards.rouletteZeroMultiplier : bet * aRewards.rouletteRewardMultiplier;;
         std::array<int, 12> correctRowArray;
-        
+
         int playerDecision;
         std::cin >> playerDecision;
 
@@ -418,97 +433,97 @@ namespace Roulette
             ClearInput();
             std::cin >> playerDecision;
         }
-        
+
         playerDecision = Clamp(playerDecision, aGame.ROULETTE_BETTING_TYPE_MIN, aGame.ROULETTE_BETTING_TYPE_MAX);
-        
+
         if (playerDecision == aGame.ROULETTE_STRAIGHT)
         {
             WriteLine("What's your guess? (0-36)");
-            
+
             int playerGuess;
             std::cin >> playerGuess;
 
             while (std::cin.fail())
             {
                 WriteLine("Please make a valid pick!");
-                
+
                 ClearInput();
                 std::cin >> playerGuess;
             }
-            
+
             playerGuess = Clamp(playerGuess, aGame.ROULETTE_STRAIGHT_MIN, aGame.ROULETTE_STRAIGHT_MAX);
-            
+
             isWinner = playerGuess == landing;
         }
         else if (playerDecision == aGame.ROULETTE_RED_BLACK)
         {
             WriteLine("What's your guess? ('r' for red, 'b' for black)");
-            
+
             char red = 'R';
             char black = 'B';
-            
+
             bool isRedPicked = HasSubceded(GetRoll(), 50);
-            
+
             correctPick = isRedPicked ? red : black;
-            
+
             char playerGuess;
             std::cin >> playerGuess;
-            
+
             // These two are in place to prevent the player from writing nonsense, ultimately preventing players from losing because of it (although I found it very funny)
             bool playerPickedRed = IsCharacter(playerGuess, red);
             bool playerPickedBlack = IsCharacter(playerGuess, black);
-            
+
             bool isCorrectPick = IsCharacter(playerGuess, correctPick);
 
             while (!playerPickedRed && !playerPickedBlack)
             {
                 WriteLine("Please make a valid pick!");
-                
+
                 while (std::cin.fail())
                 {
                     ClearInput();
                     std::cin >> playerGuess;
                 }
-                
+
                 std::cin >> playerGuess;
-                
+
                 playerPickedRed = IsCharacter(playerGuess, red);
                 playerPickedBlack = IsCharacter(playerGuess, black);
             }
-            
+
             isWinner = isCorrectPick;
         }
         else if (playerDecision == aGame.ROULETTE_ODD_EVEN)
         {
             char odd = 'O';
             char even = 'E';
-            
+
             bool isLandingEven = IsEven(landing);
-            
+
             WriteLine("What's your guess? ('e' for even, 'o' for odd)");
-            
+
             char playerGuess;
             std::cin >> playerGuess;
-            
+
             bool playerPickedEven = IsCharacter(playerGuess, even);
             bool playerPickedOdd = IsCharacter(playerGuess, odd);
-            
+
             while (!playerPickedEven && !playerPickedOdd)
             {
                 WriteLine("Please make a valid pick!");
-                
+
                 while (std::cin.fail())
                 {
                     ClearInput();
                     std::cin >> playerGuess;
                 }
-                
+
                 std::cin >> playerGuess;
-                
+
                 playerPickedEven = IsCharacter(playerGuess, even);
                 playerPickedOdd = IsCharacter(playerGuess, odd);
             }
-            
+
             isWinner = playerPickedEven && isLandingEven || playerPickedOdd && !isLandingEven;
         }
         else
@@ -519,43 +534,49 @@ namespace Roulette
             landedCol = GetRandomNumber(aGame.ROULETTE_ROW_MIN, aGame.ROULETTE_ROW_MAX);
 
             WriteLine("Which row are you picking? (0-3)");
-            
+
             int playerGuess;
             std::cin >> playerGuess;
-            
+
             while (std::cin.fail())
             {
                 WriteLine("Please make a valid pick!");
                 ClearInput();
                 std::cin >> playerGuess;
             }
-            
+
             playerGuess = Clamp(playerGuess, 0, aGame.ROULETTE_ROW_MAX);
-            
-            winAmount = correctRow == 0 ? bet * aRewards.rouletteZeroMultiplier : bet * aRewards.rouletteRewardMultiplier;
+
+            winAmount = correctRow == 0
+                            ? bet * aRewards.rouletteZeroMultiplier
+                            : bet * aRewards.rouletteRewardMultiplier;
             isWinner = playerGuess == correctRowIndex;
         }
-        
+
         bool hasNumbers = playerDecision == aGame.ROULETTE_STRAIGHT || playerDecision == aGame.ROULETTE_ODD_EVEN;
         bool hasRow = playerDecision == aGame.ROULETTE_COLUMN_ROW;
-      
+
         if (hasRow)
         {
             bool isAboveZero = correctRow > 0;
-            
-            std::cout << (isWinner ? "Congratulations! It landed on": "Nice try! It landed on") << " " << correctRow;
+
+            std::cout << (isWinner ? "Congratulations! It landed on" : "Nice try! It landed on") << " " << correctRow;
             if (isAboveZero) std::cout << "(" << (isAboveZero ? correctRowArray[landedCol] : 0) << ")" << '\n';
             else std::cout << '\n';
         }
         else if (hasNumbers)
         {
-            std::cout << (isWinner ? "Well done! The ball landed on" : "Nice try! The ball landed on") << landing << '\n';
+            std::cout << (isWinner ? "Well done! The ball landed on" : "Nice try! The ball landed on") << landing <<
+                '\n';
         }
         else
         {
-            std::cout << "It landed on a " << correctPick << " rouge... so" << (isWinner ? " congratulations!" : " nice try! Better luck next time") << '\n';   
+            std::cout << "It landed on a " << correctPick << " rouge... so" << (isWinner
+                ? " congratulations!"
+                : " nice try! Better luck next time") << '\n';
         }
-        
-        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet, isWinner ? aPlayerStats.rouletteWinAmount : aPlayerStats.rouletteLossAmount);
+
+        BroadcastWinOrLoss(aPlayer, aPlayerStats, isWinner, winAmount, bet,
+                           isWinner ? aPlayerStats.rouletteWinAmount : aPlayerStats.rouletteLossAmount);
     }
 }
