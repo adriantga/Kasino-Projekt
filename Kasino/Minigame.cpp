@@ -395,7 +395,8 @@ void Minigame::OnPlay(Casino& aCasino)
                 myFirstChoice = 'R';
                 mySecondChoice = 'B';
 
-                bool isRedPicked = HasSubceded(GetRoll(), 50);
+                int cachedRoll = GetRoll();
+                bool isRedPicked = HasSubceded(cachedRoll, 50) && cachedRoll > 0;
 
                 correctPick = isRedPicked ? myFirstChoice : mySecondChoice;
 
