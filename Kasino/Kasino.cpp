@@ -5,7 +5,6 @@
 #include "Kasino.h"
 
 #include "Minigame.h"
-#include "Minigames.h"
 #include "StateController.h"
 #include "Stats.h"
 
