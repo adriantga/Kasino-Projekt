@@ -2,8 +2,6 @@
 #include "Kasino.h"
 #include "StateController.h"
 
-#include <iostream>
-
 #include "Minigame.h"
 #include "Utilities.h"
 

@@ -8,14 +8,14 @@ enum class EMinigame;
 
 class Minigame
 {
-    static const int MINIGAME_GUESS_THE_DICE_SUM = 0;
-    static const int MINIGAME_ODD_OR_EVEN = 1;
-    static const int MINIGAME_YES_OR_NO = 2;
-    static const int MINIGAME_HIGHER_OR_LOWER = 3;
-    static const int MINIGAME_ROULETTE = 4;
+    static const int MINIGAME_GUESS_THE_DICE_SUM { 0 };
+    static const int MINIGAME_ODD_OR_EVEN = { 1 };
+    static const int MINIGAME_YES_OR_NO = { 2 };
+    static const int MINIGAME_HIGHER_OR_LOWER = { 3 };
+    static const int MINIGAME_ROULETTE = { 4 };
     
     int myBet = 0;
-        
+    
     int myRewardMultiplier = 1;
     int myWinImpressAmount = 500;
     int myLossTauntAmount = 500;
@@ -62,4 +62,6 @@ public:
     
     void Initialize(EMinigame& aMinigame);
     void PlayGame(Casino &aCasino);
+    
+    void Reset();
 };

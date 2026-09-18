@@ -126,6 +126,13 @@ void Minigame::PlayGame(Casino& aCasino)
     OnPlay(aCasino);
 }
 
+void Minigame::Reset()
+{
+    myWinAmount = 0;
+    myLossAmount = 0;
+    myCantPlay = false;
+}
+
 void Minigame::ShowInstructions()
 {
     switch (myGameIndex)
@@ -223,6 +230,8 @@ void Minigame::OnPlay(Casino& aCasino)
         break;
     case MINIGAME_YES_OR_NO:
         {
+            myRewardMultiplier = 1;
+            
             myFirstChoice = 'Y';
             mySecondChoice = 'N';
         
@@ -264,6 +273,18 @@ void Minigame::OnPlay(Casino& aCasino)
                         actualRoll = GetRoll();
                         myRangeStart = GetRoll();
                         myRangeEnd = GetRoll();
+                        
+                        if (myRangeStart > myRangeEnd)
+                        {
+                            int temp = myRangeEnd;
+                            myRangeStart = myRangeEnd;
+                            myRangeEnd = temp;
+                        }
+
+                        if (myRangeStart == myRangeEnd)
+                        {
+                            myRangeEnd++;
+                        }
 
                         std::cout << "Is the number between " << myRangeStart << " and " << myRangeEnd << "?" << std::endl;
 
@@ -355,7 +376,7 @@ void Minigame::OnPlay(Casino& aCasino)
             int landedCol = -1;
 
             int landing = GetRandomNumber(aCasino.game.ROULETTE_STRAIGHT_MIN, aCasino.game.ROULETTE_STRAIGHT_MAX);
-            winAmount = landing == 0 ? myBet * aCasino.rewards.rouletteZeroMultiplier : myBet * aCasino.rewards.rouletteRewardMultiplier;;
+            winAmount = landing == 0 ? myBet * myAlternativeRewardMultiplier : myBet * myRewardMultiplier;
             std::array<int, 12> correctRowArray;
 
             int playerDecision;

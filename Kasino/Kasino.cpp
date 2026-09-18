@@ -19,7 +19,6 @@ int main()
     Player player;
     PlayerStats playerStats;
     Game game;
-    Rewards rewards;
     
     std::array<bool, Constants::minigameAmount> shouldShowInstructions = { true, true, true, true, true };
     
@@ -30,7 +29,7 @@ int main()
         minigames[i].Initialize(minigameTypes[i]);
     }
 
-    Casino aCasino = Casino{dice, player, playerStats, game, rewards, shouldShowInstructions, minigameTypes, minigames};
+    Casino aCasino = Casino{dice, player, playerStats, game, shouldShowInstructions, minigameTypes, minigames};
     
     ResetStats(aCasino);
     ResetBalance(aCasino);
@@ -73,33 +72,14 @@ void BroadcastPlayerBalance(bool aStylize, Casino& aCasino)
 // Resets all stats after the player has lost the entire game.
 void ResetGame(Casino aCasino)
 {
-    aCasino.player.hasPlayedDiceSum = false;
-    aCasino.player.hasPlayedOddOrEven = false;
-    aCasino.player.hasPlayedYesOrNo = false;
-    aCasino.player.hasPlayedHigherOrLower = false;
-    aCasino.player.hasPlayedRoulette = false;
-
-    aCasino.player.cantPlayDiceSum = false;
-    aCasino.player.cantPlayOddEven = false;
-    aCasino.player.cantPlayYesNo = false;
-    aCasino.player.cantPlayHigherLower = false;
-    aCasino.player.cantPlayRoulette = false;
+    for (Minigame& minigame : aCasino.minigames)
+    {
+        minigame.Reset();
+    }
     
     aCasino.playerStats.wins = 0;
     aCasino.playerStats.losses = 0;
     aCasino.playerStats.matchesPlayed = 0;
-
-    aCasino.playerStats.diceSumWinAmount = 0;
-    aCasino.playerStats.oddEvenWinAmount = 0;
-    aCasino.playerStats.yesNoWinAmount = 0;
-    aCasino.playerStats.higherLowerWinAmount = 0;
-    aCasino.playerStats.rouletteWinAmount = 0;
-    
-    aCasino.playerStats.diceSumLossAmount = 0;
-    aCasino.playerStats.oddEvenLossAmount = 0;
-    aCasino.playerStats.yesNoLossAmount = 0;
-    aCasino.playerStats.higherLowerLossAmount = 0;
-    aCasino.playerStats.rouletteLossAmount = 0;
     
     ResetBalance(aCasino);
     ResetStats(aCasino);
@@ -270,9 +250,9 @@ void CashOut(Casino& aCasino)
 void EnterGamePicker(Casino& aCasino)
 {
     int input;
-    DrawMenu(input, "GAME PICKER", "1. Guess The Dice Sum\n2. Odd or Even\n3. Yes or No\n4. Higher or Lower\n5. Roulette",
-             7, "\n6. Cash Out\n7. Back To Menu");
-    DrawBreakerLine();
+    DrawMenu(aCasino, input, "GAME PICKER", "1. Guess The Dice Sum\n2. Odd or Even\n3. Yes or No\n4. Higher or Lower\n5. Roulette",
+             7, "\n6. Cash Out\n7. Back To Menu", true);
+    
 
     Pick(input, true, aCasino);
 }
@@ -280,7 +260,7 @@ void EnterGamePicker(Casino& aCasino)
 void EnterMainMenu(Casino& aCasino)
 {
     int input;
-    DrawMenu(input, "THE ULTIMATE CASINO", "1. Play Game\n2. About\n3. Stats\n4. Quit", 4);
+    DrawMenu(aCasino, input, "THE ULTIMATE CASINO", "1. Play Game\n2. About\n3. Stats\n4. Quit", 4);
     Pick(input, false, aCasino);
 }
 

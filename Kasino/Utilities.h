@@ -22,8 +22,8 @@ int GetRoll();
 void DrawMenuLine();
 void DrawBreakerLine(bool aNewLine = true);
 void WriteLine(const char aTextToType[], bool aNewLine = true);
-void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions = 3,
-              const char aExtraOptions[] = "");
+void DrawMenu(Casino& aCasino, int& input, const char aTitleText[], const char aOptions[], int aNumOptions = 3,
+              const char aExtraOptions[] = "", bool aShowBalance = false);
 void DrawTitle(const char aTitleText[]);
 int GetBetAmount(Casino& aCasino);
 void BroadcastDiceResult(Casino& aCasino, bool aShowSum = false);

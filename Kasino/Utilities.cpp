@@ -43,7 +43,7 @@ int GetBetAmount(Casino& aCasino)
     return result;
 }
 
-void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aNumOptions, const char aExtraOptions[])
+void DrawMenu(Casino& aCasino, int& input, const char aTitleText[], const char aOptions[], int aNumOptions, const char aExtraOptions[], bool aShowBalance)
 {
     DrawTitle(aTitleText);
     WriteLine(aOptions);
@@ -54,6 +54,7 @@ void DrawMenu(int& input, const char aTitleText[], const char aOptions[], int aN
     }
 
     DrawMenuLine();
+    if (aShowBalance) BroadcastPlayerBalance(false, aCasino);
 
     std::cin >> input;
     while (std::cin.fail())
