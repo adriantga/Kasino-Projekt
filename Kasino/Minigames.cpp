@@ -1,4 +1,4 @@
-﻿#include <iostream>
+﻿/*#include <iostream>
 #include "Minigames.h"
 #include "Kasino.h"
 #include "Utilities.h"
@@ -7,7 +7,7 @@
 // My code is highkey terrible ;-;
 namespace GuessTheDiceSum
 {
-    void PlayGame(Casino& aCasino)
+    void PlayGame(Casino& aCasino, EMinigame aMinigame)
     {
         if (HasExceeded(aCasino.playerStats.diceSumWinAmount, aCasino.game.diceSumWinLimit))
         {
@@ -53,7 +53,7 @@ namespace GuessTheDiceSum
 
 namespace OddOrEven
 {
-    void PlayGame(Casino& aCasino)
+    void PlayGame(Casino& aCasino, EMinigame& aMinigame)
     {
         if (HasExceeded(aCasino.playerStats.oddEvenWinAmount, aCasino.game.oddEvenWinLimit))
         {
@@ -117,7 +117,7 @@ namespace OddOrEven
 
 namespace YesOrNo
 {
-    void PlayGame(Casino& aCasino)
+    void PlayGame(Casino& aCasino, EMinigame& aMinigame)
     {
         if (HasExceeded(aCasino.playerStats.yesNoWinAmount, aCasino.game.yesNoWinLimit))
         {
@@ -249,7 +249,7 @@ namespace YesOrNo
 
 namespace HigherOrLower
 {
-    void PlayGame(Casino& aCasino)
+    void PlayGame(Casino& aCasino, EMinigame aMinigame)
     {
         if (HasExceeded(aCasino.playerStats.higherLowerWinAmount, aCasino.game.higherLowerWinLimit))
         {
@@ -371,7 +371,7 @@ namespace HigherOrLower
 * Row 1[1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
 * Row 2[2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35]
 * Row 3[3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36]
- */
+ #1#
 
 // Betting Types:
 // Straight
@@ -384,8 +384,8 @@ namespace Roulette
      * Goals for the next hand-in:
      * - Cleaner code!
      * - Splitting every one of these into separate classes.
-     */
-    void PlayGame(Casino& aCasino)
+     #1#
+    void PlayGame(Casino& aCasino, EMinigame& aMinigame)
     {
         if (HasExceeded(aCasino.playerStats.rouletteWinAmount, aCasino.game.rouletteWinLimit))
         {
@@ -579,4 +579,4 @@ namespace Roulette
         BroadcastWinOrLoss(aCasino, isWinner, winAmount, bet,
                            isWinner ? aCasino.playerStats.rouletteWinAmount : aCasino.playerStats.rouletteLossAmount);
     }
-}
+}*/

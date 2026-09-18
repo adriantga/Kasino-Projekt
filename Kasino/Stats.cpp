@@ -4,6 +4,8 @@
 #include "Helpers.h"
 #include <iostream>
 
+#include "Minigame.h"
+
 void AddPlayedGame(Casino& aCasino, bool aIsWinner)
 {
     aCasino.playerStats.matchesPlayed++;
@@ -53,20 +55,15 @@ void ShowStats(Casino& aCasino)
     std::cout << "Wins: " << aCasino.playerStats.wins << std::endl;
     std::cout << "Losses: " << aCasino.playerStats.losses << std::endl;
     std::cout << "=================== GAME STATS ===================" << std::endl;
-    std::cout << "Guess The Dice Sum Profit: " << aCasino.playerStats.diceSumWinAmount << std::endl;
-    std::cout << "Guess The Dice Sum Loss: " << aCasino.playerStats.diceSumLossAmount << std::endl;
-    DrawBreakerLine();
-    std::cout << "Odd Or Even Profit: " << aCasino.playerStats.oddEvenWinAmount << std::endl;
-    std::cout << "Odd Or Even Loss: " << aCasino.playerStats.oddEvenLossAmount << std::endl;
-    DrawBreakerLine();
-    std::cout << "Yes Or No Profit: " << aCasino.playerStats.yesNoWinAmount << std::endl;
-    std::cout << "Yes Or No Loss: " << aCasino.playerStats.yesNoLossAmount << std::endl;
-    DrawBreakerLine();
-    std::cout << "Higher Or Lower Profit: " << aCasino.playerStats.higherLowerWinAmount << std::endl;
-    std::cout << "Higher Or Lower Loss: " << aCasino.playerStats.higherLowerLossAmount << std::endl;
-    DrawBreakerLine();
-    std::cout << "Roulette Profit: " << aCasino.playerStats.rouletteWinAmount << std::endl;
-    std::cout << "Roulette Loss: " << aCasino.playerStats.rouletteLossAmount << std::endl;
+    
+    for (int i = 0; i < Constants::minigameAmount; i++)
+    {
+        // I need to retrieve the EMinigame as a string
+        std::cout << aCasino.minigames[i].FromMinigameToChar(aCasino.minigameTypes[i]) << " Profit: " << aCasino.minigames[i].myWinAmount << std::endl;
+        std::cout << aCasino.minigames[i].FromMinigameToChar(aCasino.minigameTypes[i]) << " Loss: " << aCasino.minigames[i].myLossAmount << std::endl;
+        DrawBreakerLine();
+    }
+    
     std::cout << "================== MATCH HISTORY ==================" << std::endl;
 
     for (char match : aCasino.playerStats.matches)

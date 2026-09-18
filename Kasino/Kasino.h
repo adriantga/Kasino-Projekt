@@ -6,10 +6,12 @@ struct Player;
 struct PlayerStats;
 struct Game;
 struct Rewards;
+struct Constants;
 
 void EnterGamePicker(Casino& aCasino);
 void ResetBalance(Casino& aCasino);
 void Exit(Casino& aCasino);
+void CashOut(Casino& aCasino);
 void BroadcastPlayerBalance(bool aStylize, Casino& aCasino);
 void AddBalance(int aAmount, int& aMinigame, Casino& aCasino);
 void RemoveBalance(int aAmount, int& aMinigame, Casino& aCasino);

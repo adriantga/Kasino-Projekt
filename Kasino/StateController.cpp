@@ -2,6 +2,9 @@
 #include "Kasino.h"
 #include "StateController.h"
 
+#include <iostream>
+
+#include "Minigame.h"
 #include "Utilities.h"
 
 /*
@@ -14,31 +17,27 @@ void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
     if (aIsInGame)
     {
         aCasino.player.pickedMinigame = aChoice;
-
-        switch (aChoice)
+        
+        if (aChoice > aCasino.minigames.size())
         {
-        case 1:
-            SwitchTo(EOptions::GuessTheDiceSum, aCasino);
-            break;
-        case 2:
-            SwitchTo(EOptions::OddOrEven, aCasino);
-            break;
-        case 3:
-            SwitchTo(EOptions::YesOrNo, aCasino);
-            break;
-        case 4:
-            SwitchTo(EOptions::HigherOrLower, aCasino);
-            break;
-        case 5:
-            SwitchTo(EOptions::Roulette, aCasino);
-            break;
-        case 6:
-            SwitchTo(EOptions::CashOut, aCasino);
-            break;
-        case 7:
-            ChangeState(EStates::MainMenu, aCasino);
-            break;
+            if (aChoice == aCasino.minigames.size() + 1)
+            {
+                SwitchTo(EOptions::CashOut, aCasino);
+            }
+            else
+            {
+                ChangeState(EStates::MainMenu, aCasino);
+            }
         }
+        else
+        {
+            aCasino.minigames[aChoice - 1].PlayGame(aCasino);
+        }
+        
+        // A sin has been committed.
+        aChoice = Clamp(aChoice, 1, int(aCasino.minigames.size() + 2));
+        
+        
         return;
     }
 

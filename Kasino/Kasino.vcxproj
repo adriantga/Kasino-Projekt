@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Kasino.cpp" />
+    <ClCompile Include="Minigame.cpp" />
     <ClCompile Include="Minigames.cpp" />
     <ClCompile Include="StateController.cpp" />
     <ClCompile Include="Stats.cpp" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="Kasino.h" />
+    <ClInclude Include="Minigame.h" />
     <ClInclude Include="Minigames.h" />
     <ClInclude Include="StateController.h" />
     <ClInclude Include="Stats.h" />

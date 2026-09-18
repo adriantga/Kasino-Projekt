@@ -182,11 +182,6 @@ void BroadcastDiceResult(Casino& aCasino, bool aShowSum)
     DrawBreakerLine();
 }
 
-bool ShouldShowInstructions(Casino& aCasino, const bool hasPlayed)
-{
-    return aCasino.game.isShowingInstructions && !hasPlayed;
-}
-
 void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLoseAmount,
                         int& aMinigame)
 {

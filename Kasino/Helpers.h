@@ -1,4 +1,16 @@
 ﻿#pragma once
+#include <array>
+
+#include "Minigame.h"
+
+enum class EMinigame;
+class Minigame;
+struct Constants;
+
+struct Constants
+{
+    static const int minigameAmount = 5;
+};
 
 struct Player
 {
@@ -138,19 +150,27 @@ struct Casino
     PlayerStats& playerStats;
     Game& game;
     Rewards& rewards;
+    
+    std::array<bool, Constants::minigameAmount>& shouldShowInstructions;
+    std::array<EMinigame, Constants::minigameAmount>& minigameTypes;
+    std::array<Minigame, Constants::minigameAmount>& minigames;
 };
 
 enum class EOptions
 {
-    GuessTheDiceSum,
-    OddOrEven,
-    YesOrNo,
-    HigherOrLower,
-    Roulette,
     CashOut,
     Stats,
     About,
     Quit
+};
+
+enum class EMinigame
+{
+    GuessTheDiceSum = 1,
+    OddOrEven = 2,
+    YesOrNo = 3,
+    HigherOrLower = 4,
+    Roulette = 5
 };
 
 enum class EStates

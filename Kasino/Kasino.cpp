@@ -3,6 +3,8 @@
 #include "Helpers.h"
 #include "Utilities.h"
 #include "Kasino.h"
+
+#include "Minigame.h"
 #include "Minigames.h"
 #include "StateController.h"
 #include "Stats.h"
@@ -12,7 +14,6 @@
  * - Enjoying life
  */
 
-
 int main()
 {
     Dice dice;
@@ -20,8 +21,17 @@ int main()
     PlayerStats playerStats;
     Game game;
     Rewards rewards;
+    
+    std::array<bool, Constants::minigameAmount> shouldShowInstructions = { true, true, true, true, true };
+    
+    std::array<EMinigame, shouldShowInstructions.size()> minigameTypes = { EMinigame::GuessTheDiceSum, EMinigame::OddOrEven, EMinigame::YesOrNo, EMinigame::HigherOrLower, EMinigame::Roulette };
+    std::array<Minigame, minigameTypes.size()> minigames = { Minigame{}, Minigame{}, Minigame{}, Minigame{}, Minigame{} }; 
+    for (int i = 0; i < minigames.size(); i++)
+    {
+        minigames[i].Initialize(minigameTypes[i]);
+    }
 
-    Casino aCasino = Casino{dice, player, playerStats, game, rewards};
+    Casino aCasino = Casino{dice, player, playerStats, game, rewards, shouldShowInstructions, minigameTypes, minigames};
     
     ResetStats(aCasino);
     ResetBalance(aCasino);
@@ -224,9 +234,16 @@ void About(Casino& aCasino)
     ChangeState(EStates::MainMenu, aCasino);
 }
 
-void CashOut(Casino aCasino)
+void CashOut(Casino& aCasino)
 {
-    if (!aCasino.player.cantPlayDiceSum || !aCasino.player.cantPlayOddEven || !aCasino.player.cantPlayYesNo || !aCasino.player.cantPlayHigherLower)
+    int cantPlayAmount = 0;
+    for (Minigame minigame : aCasino.minigames)
+    {
+        if (minigame.myCantPlay) cantPlayAmount++;
+    }
+    
+    // Um... alright.
+    if (cantPlayAmount != aCasino.minigames.size())
     {
         WriteLine("'It's too early to cash out' is what your inner voice is telling you.");
         WriteLine("Maybe your inside voice is right...");
@@ -250,6 +267,7 @@ void CashOut(Casino aCasino)
     ChangeState(EStates::MainMenu, aCasino);
 }
 
+// For now this can stay hard-coded!
 void EnterGamePicker(Casino& aCasino)
 {
     int input;
@@ -271,25 +289,11 @@ void SwitchTo(EOptions aOption, Casino& aCasino)
 {
     switch (aOption)
     {
-    case EOptions::GuessTheDiceSum:
-        GuessTheDiceSum::PlayGame(aCasino);
-        break;
-    case EOptions::OddOrEven:
-        OddOrEven::PlayGame(aCasino);
-        break;
-    case EOptions::YesOrNo:
-        YesOrNo::PlayGame(aCasino);
-        break;
-    case EOptions::HigherOrLower:
-        HigherOrLower::PlayGame(aCasino);
-        break;
-    case EOptions::Roulette:
-        Roulette::PlayGame(aCasino);
-        break;
     case EOptions::CashOut:
         CashOut(aCasino);
         break;
     case EOptions::Stats:
+        WriteLine("Under construction...");
         ShowStats(aCasino);
         break;
     case EOptions::About:

@@ -29,7 +29,6 @@ int GetBetAmount(Casino& aCasino);
 void BroadcastDiceResult(Casino& aCasino, bool aShowSum = false);
 void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLoseAmount,
                         int& aMinigame);
-bool ShouldShowInstructions(Casino& aCasino, const bool hasPlayed);
 bool IsMatching(int current[], int target[]);
 char ToLower(char aCharacter);
 std::array<int, 12> BuildRow(int aRowStart);
