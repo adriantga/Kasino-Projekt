@@ -2,22 +2,22 @@
 #include "Utilities.h"
 #include <iostream>
 
-void Minigame::Initialize(EMinigame& aMinigame)
+void Minigame::Initialize(EMinigameType& aMinigame)
 {
     // The win limit index will be gone once subclasses are involved!
     switch (aMinigame)
     {
-    case EMinigame::GuessTheDiceSum:
+    case EMinigameType::GuessTheDiceSum:
         myRewardMultiplier = 5;
         myWinLimit = 2500;
         myGameIndex = MINIGAME_GUESS_THE_DICE_SUM;
         break;
-    case EMinigame::OddOrEven:
+    case EMinigameType::OddOrEven:
         myRewardMultiplier = 4;
         myWinLimit = 1500;
         myGameIndex = MINIGAME_ODD_OR_EVEN;
         break;
-    case EMinigame::YesOrNo:
+    case EMinigameType::YesOrNo:
         myBaseReward = 25;
         myUseCachedReward = true;
         myRewardIncreaseThreshold = 3;
@@ -26,7 +26,7 @@ void Minigame::Initialize(EMinigame& aMinigame)
         myPlayerCanQuit = true;
         myIsForcedVictory = true;
         break;
-    case EMinigame::HigherOrLower:
+    case EMinigameType::HigherOrLower:
         myRewardMultiplier = 2;
         myBaseReward = 50;
         myUseCachedReward = true;
@@ -35,7 +35,7 @@ void Minigame::Initialize(EMinigame& aMinigame)
         myPlayerCanQuit = true;
         myIsForcedVictory = true;
         break;
-    case EMinigame::Roulette:
+    case EMinigameType::Roulette:
         myRewardMultiplier = 3;
         myAlternativeRewardMultiplier = 36;
         myWinLimit = 3000;
@@ -44,21 +44,23 @@ void Minigame::Initialize(EMinigame& aMinigame)
         myAlternativeRewardMultiplier = 36;
         break;
     }
+    
+    myMinigameType = aMinigame;
 }
 
-const char *Minigame::FromMinigameToChar(EMinigame& aMinigame)
+const char *Minigame::FromMinigameToChar(EMinigameType& aMinigame)
 {
     switch (aMinigame)
     {
-    case EMinigame::GuessTheDiceSum:
+    case EMinigameType::GuessTheDiceSum:
         return "Guess The Dice Sum";
-    case EMinigame::OddOrEven:
+    case EMinigameType::OddOrEven:
         return "Odd or Even";
-    case EMinigame::YesOrNo:
+    case EMinigameType::YesOrNo:
         return "Yes or No";
-    case EMinigame::HigherOrLower:
+    case EMinigameType::HigherOrLower:
         return "Higher or Lower";
-    case EMinigame::Roulette:
+    case EMinigameType::Roulette:
         return "Roulette";
     }
     
@@ -104,21 +106,21 @@ void Minigame::PlayGame(Casino& aCasino)
     
     RollDice(aCasino);
     
-    switch (myGameIndex)
+    switch (myMinigameType)
     {
-    case MINIGAME_GUESS_THE_DICE_SUM:
+    case EMinigameType::GuessTheDiceSum:
         WriteLine("Guess a number (1-12)");
         break;
-    case MINIGAME_ODD_OR_EVEN:
+    case EMinigameType::OddOrEven:
         WriteLine("What are you guessing? Even or odd? Type 'e' for even or 'o' for odd!");
         break;
-    case MINIGAME_YES_OR_NO:
+    case EMinigameType::YesOrNo:
         std::cout << "Is the number between " << myRangeStart << " and " << myRangeEnd << "?" << std::endl;
         break;
-    case MINIGAME_HIGHER_OR_LOWER:
+    case EMinigameType::HigherOrLower:
         std::cout << "Do you think " << myRangeStart << " is higher or lower than the next number?" << '\n';
         break;
-    case MINIGAME_ROULETTE:
+    case EMinigameType::Roulette:
         WriteLine("What do you feel like playing?\n1. Straight\n2. Red/Black\n3. Odd/even\n4. Column Bet");
         break;
     }
@@ -135,30 +137,30 @@ void Minigame::Reset()
 
 void Minigame::ShowInstructions()
 {
-    switch (myGameIndex)
+    switch (myMinigameType)
     {
-    case MINIGAME_GUESS_THE_DICE_SUM:
+    case EMinigameType::GuessTheDiceSum:
         WriteLine(
                 "Your only goal is to guess the sum of the dice. Your guess should not exceed 12 or fall behind 2!\nIf you do end exceeding or falling behind the boundary, we'll assume you mean 2 or 12.");
         break;
-    case MINIGAME_ODD_OR_EVEN:
+    case EMinigameType::OddOrEven:
         WriteLine(
                 "Here you must guess if the dice are even or odd. If both dice aren't even or odd, the house wins.");
         break;
-    case MINIGAME_YES_OR_NO:
+    case EMinigameType::YesOrNo:
         WriteLine("Your sole objective is to guess whether the number picked is within the given range");
         WriteLine("Use 'y' if you think the number is in range and 'n' to guess if it is not.");
         std::cout << "Every time you have " << myRewardIncreaseThreshold <<
             " correct guesses in a row, your reward might increase!" << std::endl;
         WriteLine("** NOTE ** If you quit before guessing, you'll automatically lose.");
         break;
-    case MINIGAME_HIGHER_OR_LOWER:
+    case EMinigameType::HigherOrLower:
         WriteLine(
                 "The goal is simple: Guess whether or not the number visible on the screen is lower than the next one");
         WriteLine("Guess correctly and you'll get rewarded. However, a wrong guess will cost you everything!");
         WriteLine("(By quitting, you indirectly forfeit any possible winnings, thus the round becoming a loss)");
         break;
-    case MINIGAME_ROULETTE:
+    case EMinigameType::Roulette:
         WriteLine(
                 "Your main objective is to guess what color the ball will land on.");
         WriteLine("First, you'll have to pick what type of bet you want to make.\n");
@@ -179,9 +181,9 @@ void Minigame::OnPlay(Casino& aCasino)
     bool isWinner = false;
     int winAmount = 0;
     
-    switch (myGameIndex)
+    switch (myMinigameType)
     {
-    case MINIGAME_GUESS_THE_DICE_SUM:
+    case EMinigameType::GuessTheDiceSum:
         int playerGuess;
         std::cin >> playerGuess;
 
@@ -196,7 +198,7 @@ void Minigame::OnPlay(Casino& aCasino)
         BroadcastDiceResult(aCasino, true);
         isWinner = playerGuess == aCasino.dice.diceSum;
         break;
-    case MINIGAME_ODD_OR_EVEN:
+    case EMinigameType::OddOrEven:
         {
             myFirstChoice = 'E';
             mySecondChoice = 'O';
@@ -228,7 +230,7 @@ void Minigame::OnPlay(Casino& aCasino)
             BroadcastDiceResult(aCasino, false);
         }
         break;
-    case MINIGAME_YES_OR_NO:
+    case EMinigameType::YesOrNo:
         {
             myRewardMultiplier = 1;
             
@@ -244,11 +246,8 @@ void Minigame::OnPlay(Casino& aCasino)
             myHasPlayerPickedFirst = IsCharacter(playerInput, myFirstChoice);
             myHasPlayerPickedSecond = IsCharacter(playerInput, mySecondChoice);
 
-            myIsPlayerQuitting = IsCharacter(playerInput, 'q');
+            myIsPlayerQuitting = IsCharacter(playerInput, 'Q');
             
-            // NEXT STEPS:
-            // 1. Actually create a shared function between this, higher or lower, and even or odd.
-            // 2. Not crash out
             while (!myIsPlayerQuitting)
             {
                 while (std::cin.fail())
@@ -308,7 +307,7 @@ void Minigame::OnPlay(Casino& aCasino)
         }
         
         break;
-    case MINIGAME_HIGHER_OR_LOWER:
+    case EMinigameType::HigherOrLower:
         {
             bool isHigher = myRangeStart > myRangeEnd;
                 
@@ -369,7 +368,7 @@ void Minigame::OnPlay(Casino& aCasino)
             }
         }
         break;
-    case MINIGAME_ROULETTE:
+    case EMinigameType::Roulette:
         {
             char correctPick = ' ';
             int correctRow = 0;

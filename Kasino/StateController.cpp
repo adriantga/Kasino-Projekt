@@ -5,10 +5,6 @@
 #include "Minigame.h"
 #include "Utilities.h"
 
-/*
- * This is technically not a state machine. Instead, it is a state controller.
- * It is more limited version than a state machine. 
-*/
 void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
 {
     ClearConsole();
@@ -34,8 +30,6 @@ void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
         
         // A sin has been committed.
         aChoice = Clamp(aChoice, 1, int(aCasino.minigames.size() + 2));
-        
-        
         return;
     }
 

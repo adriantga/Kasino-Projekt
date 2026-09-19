@@ -22,7 +22,7 @@ int main()
     
     std::array<bool, Constants::minigameAmount> shouldShowInstructions = { true, true, true, true, true };
     
-    std::array<EMinigame, shouldShowInstructions.size()> minigameTypes = { EMinigame::GuessTheDiceSum, EMinigame::OddOrEven, EMinigame::YesOrNo, EMinigame::HigherOrLower, EMinigame::Roulette };
+    std::array<EMinigameType, shouldShowInstructions.size()> minigameTypes = { EMinigameType::GuessTheDiceSum, EMinigameType::OddOrEven, EMinigameType::YesOrNo, EMinigameType::HigherOrLower, EMinigameType::Roulette };
     std::array<Minigame, minigameTypes.size()> minigames = { Minigame{}, Minigame{}, Minigame{}, Minigame{}, Minigame{} }; 
     for (int i = 0; i < minigames.size(); i++)
     {

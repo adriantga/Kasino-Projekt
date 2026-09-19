@@ -3,7 +3,7 @@
 
 #include "Minigame.h"
 
-enum class EMinigame;
+enum class EMinigameType;
 class Minigame;
 struct Constants;
 
@@ -79,7 +79,7 @@ struct Casino
     Game& game;
     
     std::array<bool, Constants::minigameAmount>& shouldShowInstructions;
-    std::array<EMinigame, Constants::minigameAmount>& minigameTypes;
+    std::array<EMinigameType, Constants::minigameAmount>& minigameTypes;
     std::array<Minigame, Constants::minigameAmount>& minigames;
 };
 
@@ -91,7 +91,7 @@ enum class EOptions
     Quit
 };
 
-enum class EMinigame
+enum class EMinigameType
 {
     GuessTheDiceSum = 1,
     OddOrEven = 2,

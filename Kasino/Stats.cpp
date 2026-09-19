@@ -58,10 +58,14 @@ void ShowStats(Casino& aCasino)
     
     for (int i = 0; i < Constants::minigameAmount; i++)
     {
-        // I need to retrieve the EMinigame as a string
-        std::cout << aCasino.minigames[i].FromMinigameToChar(aCasino.minigameTypes[i]) << " Profit: " << aCasino.minigames[i].myWinAmount << std::endl;
-        std::cout << aCasino.minigames[i].FromMinigameToChar(aCasino.minigameTypes[i]) << " Loss: " << aCasino.minigames[i].myLossAmount << std::endl;
-        DrawBreakerLine();
+        Minigame minigame = aCasino.minigames[i];
+        EMinigameType minigameType = aCasino.minigameTypes[i];
+        
+        std::cout << minigame.FromMinigameToChar(minigameType) << " Profit: " << minigame.myWinAmount << std::endl;
+        std::cout << minigame.FromMinigameToChar(minigameType) << " Loss: " << minigame.myLossAmount << std::endl;
+        
+        // The last line-breaker is unneccessary
+        if (i != Constants::minigameAmount - 1) DrawBreakerLine();
     }
     
     std::cout << "================== MATCH HISTORY ==================" << std::endl;
