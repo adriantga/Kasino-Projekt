@@ -115,7 +115,7 @@ void Minigame::PlayGame(Casino& aCasino)
         WriteLine("What are you guessing? Even or odd? Type 'e' for even or 'o' for odd!");
         break;
     case EMinigameType::YesOrNo:
-        std::cout << "Is the number between " << myRangeStart << " and " << myRangeEnd << "?" << std::endl;
+        std::cout << "Is the number between " << myRangeStart << " and " << myRangeEnd << "?" << '\n';
         break;
     case EMinigameType::HigherOrLower:
         std::cout << "Do you think " << myRangeStart << " is higher or lower than the next number?" << '\n';
@@ -151,7 +151,7 @@ void Minigame::ShowInstructions()
         WriteLine("Your sole objective is to guess whether the number picked is within the given range");
         WriteLine("Use 'y' if you think the number is in range and 'n' to guess if it is not.");
         std::cout << "Every time you have " << myRewardIncreaseThreshold <<
-            " correct guesses in a row, your reward might increase!" << std::endl;
+            " consecutive correct guesses in a row, your reward might increase!" << '\n';
         WriteLine("** NOTE ** If you quit before guessing, you'll automatically lose.");
         break;
     case EMinigameType::HigherOrLower:
@@ -266,7 +266,7 @@ void Minigame::OnPlay(Casino& aCasino)
                         {
                             numConsecutiveCorrectGuesses = 0;
                             myRewardMultiplier++;
-                            std::cout << "Your reward multiplier has increased! It is now " << myRewardMultiplier << "!" << std::endl;
+                            std::cout << "Your reward multiplier has increased! It is now " << myRewardMultiplier << "!" << '\n';
                         }
 
                         actualRoll = GetRoll();
@@ -285,7 +285,7 @@ void Minigame::OnPlay(Casino& aCasino)
                             myRangeEnd++;
                         }
 
-                        std::cout << "Is the number between " << myRangeStart << " and " << myRangeEnd << "?" << std::endl;
+                        std::cout << "Is the number between " << myRangeStart << " and " << myRangeEnd << "?" << '\n';
 
                         myCachedReward += myBaseReward;
                     }
@@ -293,7 +293,7 @@ void Minigame::OnPlay(Casino& aCasino)
                     {
                         myCachedReward = 0; // Reset the cached reward if the player guesses wrong
                         std::cout << "You guessed wrong! The number was " << actualRoll << " which means it was " << (
-                            IsInRange(actualRoll, myRangeStart, myRangeEnd) ? "in" : "not in") << " the range." << std::endl;
+                            IsInRange(actualRoll, myRangeStart, myRangeEnd) ? "in" : "not in") << " the range." << '\n';
                         break;
                     }
                 }

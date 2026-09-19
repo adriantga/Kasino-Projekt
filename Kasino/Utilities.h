@@ -4,6 +4,7 @@
 
 #include "Kasino.h"
 
+void ForceInput(int& aInput);
 bool IsCharacter(char aInput, char aValue);
 int GetRandomNumber(int aMin, int aMax);
 void ClearConsole();
@@ -22,7 +23,7 @@ int GetRoll();
 void DrawMenuLine();
 void DrawBreakerLine(bool aNewLine = true);
 void WriteLine(const char aTextToType[], bool aNewLine = true);
-void DrawMenu(Casino& aCasino, int& input, const char aTitleText[], const char aOptions[], int aNumOptions = 3,
+void DrawMenu(Casino& aCasino, int& aInput, const char aTitleText[], const char aOptions[], int aNumOptions = 3,
               const char aExtraOptions[] = "", bool aShowBalance = false);
 void DrawTitle(const char aTitleText[]);
 int GetBetAmount(Casino& aCasino);

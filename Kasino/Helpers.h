@@ -26,10 +26,10 @@ struct PlayerStats
 
     int wins = 0;
     int losses = 0;
-    int matchesPlayed = 0;
+    int gamesPlayed = 0;
 
-    char matches[5] = {'-', '-', '-', '-', '-'};
-    const char matchResults[2] = {'W', 'L'};
+    char games[5] = {'-', '-', '-', '-', '-'};
+    const char gameOutcomes[2] = {'W', 'L'};
 };
 
 struct Dice

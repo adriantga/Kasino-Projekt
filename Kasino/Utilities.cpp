@@ -43,10 +43,11 @@ int GetBetAmount(Casino& aCasino)
     return result;
 }
 
-void DrawMenu(Casino& aCasino, int& input, const char aTitleText[], const char aOptions[], int aNumOptions, const char aExtraOptions[], bool aShowBalance)
+void DrawMenu(Casino& aCasino, int& aInput, const char aTitleText[], const char aOptions[], int aNumOptions, const char aExtraOptions[], bool aShowBalance)
 {
     DrawTitle(aTitleText);
     WriteLine(aOptions);
+    
     if (std::strlen(aExtraOptions) > 0)
     {
         DrawBreakerLine(false);
@@ -56,14 +57,9 @@ void DrawMenu(Casino& aCasino, int& input, const char aTitleText[], const char a
     DrawMenuLine();
     if (aShowBalance) BroadcastPlayerBalance(false, aCasino);
 
-    std::cin >> input;
-    while (std::cin.fail())
-    {
-        ClearInput();
-        std::cin >> input;
-    }
+    ForceInput(aInput);
 
-    input = Clamp(input, 1, aNumOptions);
+    aInput = Clamp(aInput, 1, aNumOptions);
 
     ClearInput();
     ClearConsole();
@@ -172,12 +168,12 @@ void BroadcastDiceResult(Casino& aCasino, bool aShowSum)
 {
     WriteLine("--------------- RESULT ---------------");
 
-    std::cout << "DIE 1 - " << aCasino.dice.die1 << std::endl;
-    std::cout << "DIE 2 - " << aCasino.dice.die2 << std::endl;
+    std::cout << "DIE 1 - " << aCasino.dice.die1 << '\n';
+    std::cout << "DIE 2 - " << aCasino.dice.die2 << '\n';
 
     if (aShowSum)
     {
-        std::cout << "SUM - " << aCasino.dice.diceSum << std::endl;
+        std::cout << "SUM - " << aCasino.dice.diceSum << '\n';
     }
 
     DrawBreakerLine();
@@ -191,7 +187,7 @@ void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLo
     DrawBreakerLine();
     if (aIsWinner)
     {
-        std::cout << "You won $" << aWinAmount << "!" << std::endl;
+        std::cout << "You won $" << aWinAmount << "!" << '\n';
         AddBalance(aWinAmount, aMinigame, aCasino);
     }
     else
@@ -236,4 +232,14 @@ bool IsMatching(int current[], int target[])
 char ToLower(char aCharacter)
 {
     return aCharacter + globalLowerCaseOffset;
+}
+
+void ForceInput(int& aInput)
+{
+    std::cin >> aInput;
+    while (std::cin.fail())
+    {
+        ClearInput();
+        std::cin >> aInput;
+    }
 }

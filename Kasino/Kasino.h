@@ -10,6 +10,7 @@ struct Constants;
 
 void EnterGamePicker(Casino& aCasino);
 void ResetBalance(Casino& aCasino);
+void About(Casino& aCasino);
 void Exit(Casino& aCasino);
 void CashOut(Casino& aCasino);
 void BroadcastPlayerBalance(bool aStylize, Casino& aCasino);

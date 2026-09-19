@@ -8,11 +8,6 @@
 #include "StateController.h"
 #include "Stats.h"
 
-/*
- * Things left:
- * - Enjoying life
- */
-
 int main()
 {
     Dice dice;
@@ -23,12 +18,14 @@ int main()
     std::array<bool, Constants::minigameAmount> shouldShowInstructions = { true, true, true, true, true };
     
     std::array<EMinigameType, shouldShowInstructions.size()> minigameTypes = { EMinigameType::GuessTheDiceSum, EMinigameType::OddOrEven, EMinigameType::YesOrNo, EMinigameType::HigherOrLower, EMinigameType::Roulette };
+    
+    // Prepared for inheritance!
     std::array<Minigame, minigameTypes.size()> minigames = { Minigame{}, Minigame{}, Minigame{}, Minigame{}, Minigame{} }; 
     for (int i = 0; i < minigames.size(); i++)
     {
         minigames[i].Initialize(minigameTypes[i]);
     }
-
+    
     Casino aCasino = Casino{dice, player, playerStats, game, shouldShowInstructions, minigameTypes, minigames};
     
     ResetStats(aCasino);
@@ -65,7 +62,7 @@ void BroadcastPlayerBalance(bool aStylize, Casino& aCasino)
             DrawBreakerLine();
         }
 
-        std::cout << "You currently have $" << aCasino.player.myMoney << std::endl;
+        std::cout << "You currently have $" << aCasino.player.myMoney << '\n';
     }
 }
 
@@ -79,7 +76,7 @@ void ResetGame(Casino aCasino)
     
     aCasino.playerStats.wins = 0;
     aCasino.playerStats.losses = 0;
-    aCasino.playerStats.matchesPlayed = 0;
+    aCasino.playerStats.gamesPlayed = 0;
     
     ResetBalance(aCasino);
     ResetStats(aCasino);
@@ -246,14 +243,38 @@ void CashOut(Casino& aCasino)
     ChangeState(EStates::MainMenu, aCasino);
 }
 
-// For now this can stay hard-coded!
 void EnterGamePicker(Casino& aCasino)
 {
-    int input;
-    DrawMenu(aCasino, input, "GAME PICKER", "1. Guess The Dice Sum\n2. Odd or Even\n3. Yes or No\n4. Higher or Lower\n5. Roulette",
-             7, "\n6. Cash Out\n7. Back To Menu", true);
+    const int OPTIONS = int(aCasino.minigameTypes.size()) + 2;
     
-
+    int input;
+    
+    // Sooner or later I'll have to change this based on 
+    DrawTitle("GAME PICKER");
+    
+    int minigameCount = int(aCasino.minigameTypes.size());
+    
+    for (int i = 0; i < minigameCount; i++)
+    {
+        Minigame minigame = aCasino.minigames[i];
+        EMinigameType minigameType = aCasino.minigameTypes[i];
+        
+        std::cout << (i + 1) << ". " << minigame.FromMinigameToChar(minigameType) << '\n';
+    }
+    
+    DrawBreakerLine();
+    
+    std::cout << (minigameCount + 1) << ". " << "Cash Out" << '\n';
+    std::cout << (minigameCount + 2) << ". " << "Back To Menu" << '\n';
+    
+    DrawMenuLine();
+    
+    BroadcastPlayerBalance(false, aCasino);
+    
+    ForceInput(input);
+    
+    input = Clamp(input, 1, OPTIONS);
+    
     Pick(input, true, aCasino);
 }
 
@@ -272,7 +293,6 @@ void SwitchTo(EOptions aOption, Casino& aCasino)
         CashOut(aCasino);
         break;
     case EOptions::Stats:
-        WriteLine("Under construction...");
         ShowStats(aCasino);
         break;
     case EOptions::About:
