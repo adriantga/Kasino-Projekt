@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <array>
+#include <string>
 
 #include "Minigame.h"
 
@@ -10,12 +11,15 @@ struct Constants;
 struct Constants
 {
     static const int minigameAmount = 5;
+    static const int startingBalance = 250;
 };
 
 struct Player
 {
     int myMoney = 0;
     int pickedMinigame = -1;
+    std::string& playerName;
+    bool& hasEnteredName;
 };
 
 struct PlayerStats
@@ -61,8 +65,6 @@ struct Game
     const int ROULETTE_COLUMN_MIN = 0;
     const int ROULETTE_COLUMN_MAX = 12;
     
-    const int startingBalance = 250;
-    
     const char validRoulettePicks[3] = { 'r', 'g', 'b' };
 
     bool isGameOver = false;
@@ -104,4 +106,10 @@ enum class EStates
 {
     MainMenu,
     Game
+};
+
+enum class EStakeType
+{
+    High,
+    Low
 };

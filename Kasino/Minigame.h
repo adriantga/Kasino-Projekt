@@ -14,8 +14,6 @@ class Minigame
     const int MINIGAME_HIGHER_OR_LOWER = { 3 };
     const int MINIGAME_ROULETTE = { 4 };
     
-    int myBet = 0;
-    
     int myRewardMultiplier = 1;
     int myWinImpressAmount = 500;
     int myLossTauntAmount = 500;
@@ -41,8 +39,10 @@ class Minigame
     char mySecondChoice = ' ';
     char myQuitChoice = 'Q';
     
-    bool myHasPlayerPickedFirst;
-    bool myHasPlayerPickedSecond;
+    bool myHasPlayerPickedFirst = false;
+    bool myHasPlayerPickedSecond = false;
+    
+    bool myHasStakes = false;
     
     EMinigameType myMinigameType;
     
@@ -55,9 +55,12 @@ public:
     int myLossAmount = 0;
     int myWinLimit = 0;
     
-    const char *FromMinigameToChar(EMinigameType& aMinigame);
+    int myBet = 0;
+    int myMinAllowedBet = 0;
+    int myMaxAllowedBet = 0;
     
-    // Alright.
+    const char *FromMinigameToChar(EMinigameType& aMinigame);
+
     int myGameIndex = 0;
     
     bool myCantPlay = false;

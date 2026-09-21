@@ -11,6 +11,7 @@ void Minigame::Initialize(EMinigameType& aMinigame)
         myRewardMultiplier = 5;
         myWinLimit = 2500;
         myGameIndex = MINIGAME_GUESS_THE_DICE_SUM;
+        myHasStakes = true;
         break;
     case EMinigameType::OddOrEven:
         myRewardMultiplier = 4;
@@ -77,10 +78,56 @@ void Minigame::PlayGame(Casino& aCasino)
     
     myCachedReward = 0;
     
-    myBet = GetBetAmount(aCasino);
-    TauntOrImpress(myWinAmount, myLossAmount, myWinImpressAmount,
-                       myLossTauntAmount);
+    if (!myHasStakes)
+    {
+        myMinAllowedBet = 1;
+        myMaxAllowedBet = aCasino.player.myMoney;
+    }
+    else
+    {
+        WriteLine("Alright, buddy. Wanna play high stakes or low stakes?('h' for high stakes, 'l' for low stakes)");
+        
+        myFirstChoice = 'H';
+        mySecondChoice = 'L';
+        
+        char playerHighLowInput;
+        std::cin >> playerHighLowInput;
+        
+        myHasPlayerPickedFirst = IsCharacter(playerHighLowInput, myFirstChoice);
+        myHasPlayerPickedSecond = IsCharacter(playerHighLowInput, mySecondChoice);
 
+        while (!myHasPlayerPickedFirst && !myHasPlayerPickedSecond)
+        {
+            while (std::cin.fail())
+            {
+                ClearInput();
+                std::cin >> playerHighLowInput;
+                WriteLine("Please enter a valid character!");
+            }
+            
+            std::cin >> playerHighLowInput;
+            WriteLine("Please write 'h' for high stakes or 'l' for low stakes");
+            
+            myHasPlayerPickedFirst = IsCharacter(playerHighLowInput, myFirstChoice);
+            myHasPlayerPickedSecond = IsCharacter(playerHighLowInput, mySecondChoice);
+        }
+        
+        if (myHasPlayerPickedFirst)
+        {
+            myMinAllowedBet = 100;
+            myMaxAllowedBet = aCasino.player.myMoney;
+        }
+        else
+        {
+            myMinAllowedBet = 1;
+            myMaxAllowedBet = 25;
+        }
+    }
+    
+    myBet = GetBetAmount(aCasino, myGameIndex);
+    
+    TauntOrImpress(aCasino, myWinAmount, myLossAmount, myWinImpressAmount,
+                       myLossTauntAmount);
 
     if (aCasino.shouldShowInstructions[myGameIndex])
     {
@@ -109,7 +156,7 @@ void Minigame::PlayGame(Casino& aCasino)
     switch (myMinigameType)
     {
     case EMinigameType::GuessTheDiceSum:
-        WriteLine("Guess a number (1-12)");
+        WriteLine("Guess a number (2-12)");
         break;
     case EMinigameType::OddOrEven:
         WriteLine("What are you guessing? Even or odd? Type 'e' for even or 'o' for odd!");
@@ -185,16 +232,15 @@ void Minigame::OnPlay(Casino& aCasino)
     {
     case EMinigameType::GuessTheDiceSum:
         int playerGuess;
-        std::cin >> playerGuess;
+        
+        ForceInput(playerGuess);
 
-        while (std::cin.fail())
+        while (playerGuess < aCasino.dice.diceSumMin || playerGuess > aCasino.dice.diceSumMax)
         {
-            ClearInput();
+            std::cout << "Please enter a valid guess!" << '\n';
             std::cin >> playerGuess;
         }
-
-        playerGuess = Clamp(playerGuess, aCasino.dice.diceSumMin, aCasino.dice.diceSumMax);
-
+        
         BroadcastDiceResult(aCasino, true);
         isWinner = playerGuess == aCasino.dice.diceSum;
         break;

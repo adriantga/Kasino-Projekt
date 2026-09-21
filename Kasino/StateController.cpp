@@ -36,7 +36,14 @@ void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
     switch (aChoice)
     {
     case 1:
-        ChangeState(EStates::Game, aCasino);
+        if (aCasino.player.hasEnteredName)
+        {
+            ChangeState(EStates::Game, aCasino);
+        }
+        else
+        {
+            EnterNamePicker(aCasino);
+        }
         break;
     case 2:
         SwitchTo(EOptions::About, aCasino);
@@ -54,11 +61,11 @@ void ChangeState(EStates aTargetState, Casino& aCasino)
 {
     switch (aTargetState)
     {
-    case EStates::MainMenu:
-        EnterMainMenu(aCasino);
-        break;
     case EStates::Game:
         EnterGamePicker(aCasino);
+        break;
+    case EStates::MainMenu:
+        EnterMainMenu(aCasino);
         break;
     }
 }

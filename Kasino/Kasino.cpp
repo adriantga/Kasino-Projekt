@@ -11,7 +11,11 @@
 int main()
 {
     Dice dice;
-    Player player;
+    
+    bool playerHasEnteredName = false;
+    std::string playerName = "N/A";
+    Player player = {Constants::startingBalance, -1, playerName, playerHasEnteredName};
+    
     PlayerStats playerStats;
     Game game;
     
@@ -50,7 +54,7 @@ void RefuseGame(bool& aCantPlay, Casino& casino)
 
 void ResetBalance(Casino& aCasino)
 {
-    aCasino.player.myMoney = aCasino.game.startingBalance;
+    aCasino.player.myMoney = Constants::startingBalance;
 }
 
 void BroadcastPlayerBalance(bool aStylize, Casino& aCasino)
@@ -62,12 +66,12 @@ void BroadcastPlayerBalance(bool aStylize, Casino& aCasino)
             DrawBreakerLine();
         }
 
-        std::cout << "You currently have $" << aCasino.player.myMoney << '\n';
+        std::cout << aCasino.player.playerName << " : $" << aCasino.player.myMoney << '\n';
     }
 }
 
 // Resets all stats after the player has lost the entire game.
-void ResetGame(Casino aCasino)
+void ResetGame(Casino& aCasino)
 {
     for (Minigame& minigame : aCasino.minigames)
     {
@@ -80,6 +84,9 @@ void ResetGame(Casino aCasino)
     
     ResetBalance(aCasino);
     ResetStats(aCasino);
+    
+    // I originally inteded for player name to reset to give off the impression
+    // that they were kicked out. I can otherwise pass it off as a "nightmare"
 
     aCasino.game.isShowingInstructions = true;
 }
@@ -122,7 +129,7 @@ void Exit(Casino& aCasino)
     aCasino.game.isQuitting = true;
 }
 
-void TauntOrImpress(int aWinAmount, int aLossAmount, int aImpressWinAmt, int aTauntLossAmt)
+void TauntOrImpress(Casino& aCasino, int aWinAmount, int aLossAmount, int aImpressWinAmt, int aTauntLossAmt)
 {
     int winLossDifference = aWinAmount - aLossAmount;
 
@@ -139,7 +146,7 @@ void TauntOrImpress(int aWinAmount, int aLossAmount, int aImpressWinAmt, int aTa
     }
     else if (!shouldBeImpressed && !shouldTaunt)
     {
-        WriteLine("Welcome!");
+        std::cout << "Welcome " << aCasino.player.playerName << '\n';
     }
 }
 
@@ -241,6 +248,67 @@ void CashOut(Casino& aCasino)
     ClearConsole();
     ResetGame(aCasino);
     ChangeState(EStates::MainMenu, aCasino);
+}
+
+void EnterNamePicker(Casino& aCasino)
+{
+    if (aCasino.player.hasEnteredName)
+    {
+        EnterGamePicker(aCasino);
+        return;
+    }
+    
+    char confirmName = 'Y';
+    char denyName = 'N';
+    
+    WriteLine("What's your name?");
+
+    std::string myPlayerNameInput;
+    std::cin >> myPlayerNameInput;
+    
+    while (std::cin.fail())
+    {
+        ClearInput();
+        std::cin >> myPlayerNameInput;
+        WriteLine("Please enter letters only!");
+    }
+    
+    ClearInput();
+    std::cout << "Your name is: " << myPlayerNameInput  << ". Continue? (y to confirm, n to deny)" << '\n';
+    
+    char confirmInput;
+    std::cin >> confirmInput;
+    while (std::cin.fail())
+    {
+        ClearInput();
+        std::cin >> confirmInput;
+        WriteLine("Please confirm or deny!");
+    }
+    
+    bool hasConfirmedName = IsCharacter(confirmInput, confirmName);
+    bool hasDeniedName = IsCharacter(confirmInput, denyName);
+    
+    if (!hasConfirmedName && !hasDeniedName)
+    {
+        std::cin >> confirmInput;
+        
+        hasConfirmedName = IsCharacter(confirmInput, confirmName);
+        hasDeniedName = IsCharacter(confirmInput, denyName);
+    }
+    
+    if (hasConfirmedName)
+    {
+        aCasino.player.hasEnteredName = true;
+        aCasino.player.playerName = myPlayerNameInput;
+        
+        ClearConsole();
+        EnterGamePicker(aCasino);
+    }
+    else if (hasDeniedName)
+    {
+        ClearConsole();
+        EnterNamePicker(aCasino);
+    }
 }
 
 void EnterGamePicker(Casino& aCasino)

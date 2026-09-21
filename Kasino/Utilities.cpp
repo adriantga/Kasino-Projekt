@@ -25,21 +25,28 @@ void DrawTitle(const char aTitleText[])
     DrawMenuLine();
 }
 
-int GetBetAmount(Casino& aCasino)
+int GetBetAmount(Casino& aCasino, int gameIndex)
 {
     WriteLine("How much are you betting?");
+    Minigame selectedMinigame = aCasino.minigames[gameIndex];
 
     int result = 0;
     std::cin >> result;
-
+    
     while (std::cin.fail())
     {
+        std::cout << "Please pick a valid number!" << '\n';
         ClearInput();
         std::cin >> result;
     }
-
+    
+    while (result < selectedMinigame.myMinAllowedBet || result > selectedMinigame.myMaxAllowedBet)
+    {
+        std::cout << "Invalid bet($" << selectedMinigame.myMinAllowedBet << "-" << selectedMinigame.myMaxAllowedBet << ")\n";
+        std::cin >> result;
+    }
+    
     ClearInput();
-    result = Clamp(result, 1, aCasino.player.myMoney);
     return result;
 }
 
