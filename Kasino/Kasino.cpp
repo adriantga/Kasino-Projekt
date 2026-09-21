@@ -8,6 +8,13 @@
 #include "StateController.h"
 #include "Stats.h"
 
+/*
+ * GOALS:
+ * - Limit player names between 2-12 letters!
+ * - Create separate classes for each game mode/table (can't inherit which I don't agree with)
+ * - Optimize the game
+ */
+
 int main()
 {
     Dice dice;
@@ -138,11 +145,11 @@ void TauntOrImpress(Casino& aCasino, int aWinAmount, int aLossAmount, int aImpre
 
     if (shouldBeImpressed)
     {
-        WriteLine("You're on a winning streak! Keep it up!");
+        std::cout << "Well, " << aCasino.player.playerName << ". Seems like you're on a winning streak! Keep it up!\n";
     }
     else if (shouldTaunt)
     {
-        WriteLine("Not sure if you're naive or just plain unlucky!");
+        std::cout << "Sad to see you struggling, " << aCasino.player.playerName << ". Can't tell if you're naive or just plain unlucky!\n";
     }
     else if (!shouldBeImpressed && !shouldTaunt)
     {
