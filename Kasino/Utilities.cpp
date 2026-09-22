@@ -2,6 +2,7 @@
 #include "Helpers.h"
 #include <random>
 #include "Utilities.h"
+#include "Minigame.h"
 
 #include "Kasino.h"
 #include "Stats.h"

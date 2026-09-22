@@ -14,6 +14,11 @@ class Minigame
     const int MINIGAME_HIGHER_OR_LOWER = { 3 };
     const int MINIGAME_ROULETTE = { 4 };
     
+    const int LOW_NO_STAKES_MIN = { 0 };
+    const int LOW_NO_STAKES_MAX = { 1 };
+    const int HIGH_STAKES_MIN = { 2 };
+    const int HIGH_STAKES_MAX = { 3 };
+    
     int myRewardMultiplier = 1;
     int myWinImpressAmount = 500;
     int myLossTauntAmount = 500;
@@ -25,6 +30,9 @@ class Minigame
     // Used by 'Roulette' and 'Yes or No' but differently!
     int myRangeStart = 0;
     int myRangeEnd = 0;
+    
+    // Store 4 because 2 are for low-stakes and 2 are for high stakes.
+    std::array<int, 4> myAllowedBets;
 
     // Only used by 'Roulette'
     int myAlternativeRewardMultiplier = 1;
@@ -65,7 +73,10 @@ public:
     
     bool myCantPlay = false;
     
-    void Initialize(EMinigameType& aMinigame);
+    Minigame();
+    Minigame(std::array<int, 4>& aAllowedBets);
+    
+    void Initialize(EMinigameType& aMinigameType);
     void PlayGame(Casino &aCasino);
     
     void Reset();

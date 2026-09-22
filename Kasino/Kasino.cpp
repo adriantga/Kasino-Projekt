@@ -10,9 +10,8 @@
 
 /*
  * GOALS:
- * - Limit player names between 2-12 letters!
  * - Create separate classes for each game mode/table (can't inherit which I don't agree with)
- * - Optimize the game
+ * - Optimize the game (eventually)
  */
 
 int main()
@@ -29,16 +28,25 @@ int main()
     std::array<bool, Constants::minigameAmount> shouldShowInstructions = { true, true, true, true, true };
     
     std::array<EMinigameType, shouldShowInstructions.size()> minigameTypes = { EMinigameType::GuessTheDiceSum, EMinigameType::OddOrEven, EMinigameType::YesOrNo, EMinigameType::HigherOrLower, EMinigameType::Roulette };
+
+    // This is very stupid but it'll do for now. Will probably create a template the minigames will base themselves on
+    constexpr int LOW_STAKES_MIN_BET = 1;
+    constexpr int LOW_STAKES_MAX_BET = 30;
+    constexpr int HIGH_STAKES_MIN_BET = 50;
     
+    int highestBet = player.myMoney;
+    std::array<int, 4> standardBets = { LOW_STAKES_MIN_BET, highestBet };
+    std::array<int, 4> stakeBets = { LOW_STAKES_MIN_BET, LOW_STAKES_MAX_BET, HIGH_STAKES_MIN_BET, highestBet };
+
     // Prepared for inheritance!
-    std::array<Minigame, minigameTypes.size()> minigames = { Minigame{}, Minigame{}, Minigame{}, Minigame{}, Minigame{} }; 
+    std::array<Minigame, minigameTypes.size()> minigames = { Minigame{stakeBets}, Minigame{standardBets}, Minigame{standardBets}, Minigame{standardBets}, Minigame{standardBets} };
     for (int i = 0; i < minigames.size(); i++)
     {
         minigames[i].Initialize(minigameTypes[i]);
     }
-    
-    Casino aCasino = Casino{dice, player, playerStats, game, shouldShowInstructions, minigameTypes, minigames};
-    
+
+    Casino aCasino = {dice, player, playerStats, game, shouldShowInstructions, minigames, minigameTypes};
+
     ResetStats(aCasino);
     ResetBalance(aCasino);
     if (!aCasino.game.isQuitting)
@@ -77,6 +85,12 @@ void BroadcastPlayerBalance(bool aStylize, Casino& aCasino)
     }
 }
 
+// What a terrible way to do this LOL
+bool IsValidName(std::string& aS)
+{
+    return aS.size() >= Constants::PLAYER_NAME_MIN_SIZE && aS.size() <= Constants::PLAYER_NAME_MAX_SIZE && strspn(aS.c_str(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\x8F\x86\x84\x8E\x94\x99") == aS.length();
+}
+
 // Resets all stats after the player has lost the entire game.
 void ResetGame(Casino& aCasino)
 {
@@ -92,7 +106,7 @@ void ResetGame(Casino& aCasino)
     ResetBalance(aCasino);
     ResetStats(aCasino);
     
-    // I originally inteded for player name to reset to give off the impression
+    // I originally intended for player name to reset to give off the impression
     // that they were kicked out. I can otherwise pass it off as a "nightmare"
 
     aCasino.game.isShowingInstructions = true;
@@ -268,20 +282,22 @@ void EnterNamePicker(Casino& aCasino)
     char confirmName = 'Y';
     char denyName = 'N';
     
-    WriteLine("What's your name?");
+    WriteLine("What's your name? (Must be between 2-16 characters)");
 
     std::string myPlayerNameInput;
     std::cin >> myPlayerNameInput;
     
-    while (std::cin.fail())
+    while (std::cin.fail() || !IsValidName(myPlayerNameInput))
     {
+        WriteLine("Please enter letters only! / Ensure the name is between 2-16 characters.");
         ClearInput();
         std::cin >> myPlayerNameInput;
-        WriteLine("Please enter letters only!");
     }
     
     ClearInput();
-    std::cout << "Your name is: " << myPlayerNameInput  << ". Continue? (y to confirm, n to deny)" << '\n';
+    const char* playerName = myPlayerNameInput.c_str();
+    
+    std::cout << "Your name is: " << playerName  << ". Continue? (y to confirm, n to deny)" << '\n';
     
     char confirmInput;
     std::cin >> confirmInput;

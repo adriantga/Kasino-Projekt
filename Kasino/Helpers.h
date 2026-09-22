@@ -2,8 +2,6 @@
 #include <array>
 #include <string>
 
-#include "Minigame.h"
-
 enum class EMinigameType;
 class Minigame;
 struct Constants;
@@ -12,6 +10,8 @@ struct Constants
 {
     static const int minigameAmount = 5;
     static const int startingBalance = 250;
+    static const int PLAYER_NAME_MIN_SIZE = 2;
+    static const int PLAYER_NAME_MAX_SIZE = 16;
 };
 
 struct Player
@@ -79,10 +79,9 @@ struct Casino
     Player& player;
     PlayerStats& playerStats;
     Game& game;
-    
     std::array<bool, Constants::minigameAmount>& shouldShowInstructions;
-    std::array<EMinigameType, Constants::minigameAmount>& minigameTypes;
     std::array<Minigame, Constants::minigameAmount>& minigames;
+    std::array<EMinigameType, Constants::minigameAmount>& minigameTypes;
 };
 
 enum class EOptions

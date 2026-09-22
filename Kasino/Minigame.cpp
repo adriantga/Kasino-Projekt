@@ -2,10 +2,22 @@
 #include "Utilities.h"
 #include <iostream>
 
-void Minigame::Initialize(EMinigameType& aMinigame)
+Minigame::Minigame()
 {
+    // do nothing
+}
+
+Minigame::Minigame(std::array<int, 4>& aAllowedBets)
+{
+    myAllowedBets = aAllowedBets;
+}
+
+void Minigame::Initialize(EMinigameType& aMinigameType)
+{
+    myMinigameType = aMinigameType;
+    
     // The win limit index will be gone once subclasses are involved!
-    switch (aMinigame)
+    switch (aMinigameType)
     {
     case EMinigameType::GuessTheDiceSum:
         myRewardMultiplier = 5;
@@ -46,7 +58,8 @@ void Minigame::Initialize(EMinigameType& aMinigame)
         break;
     }
     
-    myMinigameType = aMinigame;
+    myMinAllowedBet = myAllowedBets[LOW_NO_STAKES_MIN];
+    myMaxAllowedBet = myAllowedBets[LOW_NO_STAKES_MAX];
 }
 
 const char *Minigame::FromMinigameToChar(EMinigameType& aMinigame)
@@ -78,12 +91,8 @@ void Minigame::PlayGame(Casino& aCasino)
     
     myCachedReward = 0;
     
-    if (!myHasStakes)
-    {
-        myMinAllowedBet = 1;
-        myMaxAllowedBet = aCasino.player.myMoney;
-    }
-    else
+    
+    if (myHasStakes)
     {
         WriteLine("Alright, buddy. Wanna play high stakes or low stakes?('h' for high stakes, 'l' for low stakes)");
         
@@ -112,15 +121,12 @@ void Minigame::PlayGame(Casino& aCasino)
             myHasPlayerPickedSecond = IsCharacter(playerHighLowInput, mySecondChoice);
         }
         
+        ClearInput();
+        
         if (myHasPlayerPickedFirst)
         {
-            myMinAllowedBet = 100;
-            myMaxAllowedBet = aCasino.player.myMoney;
-        }
-        else
-        {
-            myMinAllowedBet = 1;
-            myMaxAllowedBet = 25;
+            myMinAllowedBet = myAllowedBets[HIGH_STAKES_MIN];
+            myMaxAllowedBet = myAllowedBets[HIGH_STAKES_MAX];
         }
     }
     
