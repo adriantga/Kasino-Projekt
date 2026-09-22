@@ -6,45 +6,42 @@ enum class EMinigameType;
 class Minigame;
 struct Constants;
 
-// Unsure of what's considered a global variable in this case, so I'll assume
-// the source is this specific header.
-
 struct Constants
 {
-    static const int minigameAmount = 5;
-    static const int startingBalance = 250;
+    static const int MINIGAME_AMOUNT = 5;
+    static const int STARTING_BALANCE = 250;
     static const int PLAYER_NAME_MIN_SIZE = 2;
     static const int PLAYER_NAME_MAX_SIZE = 16;
 };
 
 struct Player
 {
-    int globalMoney = 0;
-    std::string& globalPlayerName;
-    bool& globalHasEnteredName;
+    int money = 0;
+    std::string& name;
+    bool& hasEnteredName;
 };
 
 struct PlayerStats
 {
-    const int winIndex = 0;
-    const int lossIndex = 1;
+    const int WIN_INDEX = 0;
+    const int LOSS_INDEX = 1;
 
-    int globalWins = 0;
-    int globalLosses = 0;
-    int globalGamesPlayed = 0;
+    int wins = 0;
+    int losses = 0;
+    int gamesPlayed = 0;
 
-    char globalGames[5] = {'-', '-', '-', '-', '-'};
-    const char gameOutcomes[2] = {'W', 'L'};
+    char games[5] = {'-', '-', '-', '-', '-'};
+    const char GAME_OUTCOMES[2] = {'W', 'L'};
 };
 
 struct Dice
 {
-    const int diceSumMin = 2;
-    const int diceSumMax = 12;
+    const int DICE_SUM_MIN = 2;
+    const int DICE_SUM_MAX = 12;
 
-    int globalDie1 = 0;
-    int globalDie2 = 0;
-    int globalDiceSum = 0;
+    int die1 = 0;
+    int die2 = 0;
+    int diceSum = 0;
 };
 
 struct Game
@@ -66,21 +63,21 @@ struct Game
     const int ROULETTE_COLUMN_MIN = 0;
     const int ROULETTE_COLUMN_MAX = 12;
     
-    const char validRoulettePicks[3] = { 'r', 'g' };
-    int globalCurrentMinigame;
+    const char VALID_ROULETTE_PICKS[3] = { 'r', 'g' };
+    int currentMinigame;
     
-    bool globalIsGameOver = false;
-    bool globalIsQuitting = false;
+    bool isGameOver = false;
+    bool isQuitting = false;
 };
 
 struct Casino
 {
-    Dice& globalDice;
-    Player& globalPlayer;
-    PlayerStats& globalPlayerStats;
-    Game& globalGame;
-    std::array<Minigame, Constants::minigameAmount>& globalMinigames;
-    std::array<EMinigameType, Constants::minigameAmount>& globalMinigameTypes;
+    Dice& dice;
+    Player& player;
+    PlayerStats& playerStats;
+    Game& game;
+    std::array<Minigame, Constants::MINIGAME_AMOUNT>& minigames;
+    std::array<EMinigameType, Constants::MINIGAME_AMOUNT>& minigameTypes;
 };
 
 enum class EOptions

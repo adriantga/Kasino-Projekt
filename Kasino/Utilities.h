@@ -6,6 +6,7 @@
 
 void ForceInput(int& aInput);
 bool IsCharacter(char aInput, char aValue);
+const char *FromMinigameToChar(EMinigameType& aMinigame);
 int GetRandomNumber(int aMin, int aMax);
 void ClearConsole();
 void ClearInput();
@@ -16,7 +17,7 @@ int Min(int aValue, int aMin);
 int Max(int aValue, int aMax);
 int Clamp(int aValue, int aMin, int aMax);
 bool IsInRange(int aValue, int aMin, int aMax);
-bool HasSubceded(int aCurrent, int aTarget);
+bool HasSubceeded(int aCurrent, int aTarget);
 bool HasExceeded(int aCurrent, int aTarget);
 bool IsEven(int aValue);
 int GetRoll();

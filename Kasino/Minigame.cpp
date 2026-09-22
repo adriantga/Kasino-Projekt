@@ -56,28 +56,8 @@ void Minigame::Initialize(const EMinigameType& aMinigameType)
         myWinLimit = 3000;
         myGameIndex = MINIGAME_ROULETTE;
         myIsForcedWinAmount = false;
-        myAlternativeRewardMultiplier = 36;
         break;
     }
-}
-
-const char *Minigame::FromMinigameToChar(EMinigameType& aMinigame)
-{
-    switch (aMinigame)
-    {
-    case EMinigameType::GuessTheDiceSum:
-        return "Guess The Dice Sum";
-    case EMinigameType::OddOrEven:
-        return "Odd or Even";
-    case EMinigameType::YesOrNo:
-        return "Yes or No";
-    case EMinigameType::HigherOrLower:
-        return "Higher or Lower";
-    case EMinigameType::Roulette:
-        return "Roulette";
-    }
-    
-    return "";
 }
 
 void Minigame::EnterGameMenu(Casino& aCasino)
@@ -124,7 +104,10 @@ void Minigame::PlayGame(Casino& aCasino)
     
     myCachedReward = 0;
     
-    // Force update the bets before overriding them inside the stakes check! (if high stakes is picked)
+    /*
+     * Force update the min and max bets so they don't get
+     * carried over from i.e. high stakes to low stakes.
+     */
     UpdateBets();
     
     if (myHasStakes)
@@ -228,7 +211,7 @@ void Minigame::ShowInstructions(Casino& aCasino)
     {
     case EMinigameType::GuessTheDiceSum:
         WriteLine(
-                "Your only goal is to guess the sum of the dice. If you do, you'll get a decent payout.\nYour guess should not exceed 12 or fall behind 2!");
+                "I'll roll two dice and your only goal from that point onwards is to guess the sum, produced by both dice.\nIt's important to note that your guess should not exceed 12 or subceed 2.");
         break;
     case EMinigameType::OddOrEven:
         WriteLine(
@@ -279,14 +262,14 @@ void Minigame::OnPlay(Casino& aCasino)
         
         ForceInput(playerGuess);
 
-        while (playerGuess < aCasino.globalDice.diceSumMin || playerGuess > aCasino.globalDice.diceSumMax)
+        while (playerGuess < aCasino.dice.DICE_SUM_MIN || playerGuess > aCasino.dice.DICE_SUM_MAX)
         {
             std::cout << "Please enter a valid guess!" << '\n';
             std::cin >> playerGuess;
         }
         
         BroadcastDiceResult(aCasino, true);
-        isWinner = playerGuess == aCasino.globalDice.globalDiceSum;
+        isWinner = playerGuess == aCasino.dice.diceSum;
         break;
     case EMinigameType::OddOrEven:
         {
@@ -299,8 +282,8 @@ void Minigame::OnPlay(Casino& aCasino)
             myHasPlayerPickedFirst = IsCharacter(picked, myFirstChoice);
             myHasPlayerPickedSecond = IsCharacter(picked, mySecondChoice);
 
-            bool isEven = IsEven(aCasino.globalDice.globalDie1) && IsEven(aCasino.globalDice.globalDie2);
-            bool isOdd = !IsEven(aCasino.globalDice.globalDie1) && !IsEven(aCasino.globalDice.globalDie2);
+            bool isEven = IsEven(aCasino.dice.die1) && IsEven(aCasino.dice.die2);
+            bool isOdd = !IsEven(aCasino.dice.die1) && !IsEven(aCasino.dice.die2);
 
             while (!myHasPlayerPickedFirst && !myHasPlayerPickedSecond)
             {
@@ -479,7 +462,7 @@ void Minigame::OnPlay(Casino& aCasino)
             int correctRow = 0;
             int landedCol = -1;
 
-            int landing = GetRandomNumber(aCasino.globalGame.ROULETTE_STRAIGHT_MIN, aCasino.globalGame.ROULETTE_STRAIGHT_MAX);
+            int landing = GetRandomNumber(aCasino.game.ROULETTE_STRAIGHT_MIN, aCasino.game.ROULETTE_STRAIGHT_MAX);
             winAmount = landing == 0 ? myBet * myAlternativeRewardMultiplier : myBet * myRewardMultiplier;
             std::array<int, 12> correctRowArray;
 
@@ -492,9 +475,9 @@ void Minigame::OnPlay(Casino& aCasino)
                 std::cin >> playerDecision;
             }
 
-            playerDecision = Clamp(playerDecision, aCasino.globalGame.ROULETTE_BETTING_TYPE_MIN, aCasino.globalGame.ROULETTE_BETTING_TYPE_MAX);
+            playerDecision = Clamp(playerDecision, aCasino.game.ROULETTE_BETTING_TYPE_MIN, aCasino.game.ROULETTE_BETTING_TYPE_MAX);
 
-            if (playerDecision == aCasino.globalGame.ROULETTE_STRAIGHT)
+            if (playerDecision == aCasino.game.ROULETTE_STRAIGHT)
             {
                 WriteLine("What's your guess? (0-36)");
 
@@ -509,11 +492,11 @@ void Minigame::OnPlay(Casino& aCasino)
                     std::cin >> playerInput;
                 }
 
-                playerInput = Clamp(playerInput, aCasino.globalGame.ROULETTE_STRAIGHT_MIN, aCasino.globalGame.ROULETTE_STRAIGHT_MAX);
+                playerInput = Clamp(playerInput, aCasino.game.ROULETTE_STRAIGHT_MIN, aCasino.game.ROULETTE_STRAIGHT_MAX);
 
                 isWinner = playerInput == landing;
             }
-            else if (playerDecision == aCasino.globalGame.ROULETTE_RED_BLACK)
+            else if (playerDecision == aCasino.game.ROULETTE_RED_BLACK)
             {
                 WriteLine("What's your guess? ('r' for red, 'b' for black)");
 
@@ -521,7 +504,7 @@ void Minigame::OnPlay(Casino& aCasino)
                 mySecondChoice = 'B';
 
                 int cachedRoll = GetRoll();
-                bool isRedPicked = HasSubceded(cachedRoll, 50) && cachedRoll > 0;
+                bool isRedPicked = HasSubceeded(cachedRoll, 50) && cachedRoll > 0;
 
                 correctPick = isRedPicked ? myFirstChoice : mySecondChoice;
 
@@ -552,7 +535,7 @@ void Minigame::OnPlay(Casino& aCasino)
 
                 isWinner = isCorrectPick;
             }
-            else if (playerDecision == aCasino.globalGame.ROULETTE_ODD_EVEN)
+            else if (playerDecision == aCasino.game.ROULETTE_ODD_EVEN)
             {
                 myFirstChoice = 'O';
                 mySecondChoice = 'E';
@@ -590,7 +573,7 @@ void Minigame::OnPlay(Casino& aCasino)
                 int correctRowIndex = GetRandomNumber(0, 3);
                 correctRowArray = BuildRow(correctRowIndex);
                 correctRow = correctRowIndex;
-                landedCol = GetRandomNumber(aCasino.globalGame.ROULETTE_ROW_MIN, aCasino.globalGame.ROULETTE_ROW_MAX);
+                landedCol = GetRandomNumber(aCasino.game.ROULETTE_ROW_MIN, aCasino.game.ROULETTE_ROW_MAX);
 
                 WriteLine("Which row are you picking? (0-3)");
 
@@ -604,7 +587,7 @@ void Minigame::OnPlay(Casino& aCasino)
                     std::cin >> playerRowPick;
                 }
 
-                playerRowPick = Clamp(playerRowPick, 0, aCasino.globalGame.ROULETTE_ROW_MAX);
+                playerRowPick = Clamp(playerRowPick, 0, aCasino.game.ROULETTE_ROW_MAX);
 
                 winAmount = correctRow == 0
                                 ? myBet * myAlternativeRewardMultiplier
@@ -612,8 +595,8 @@ void Minigame::OnPlay(Casino& aCasino)
                 isWinner = playerRowPick == correctRowIndex;
             }
 
-            bool hasNumbers = playerDecision == aCasino.globalGame.ROULETTE_STRAIGHT || playerDecision == aCasino.globalGame.ROULETTE_ODD_EVEN;
-            bool hasRow = playerDecision == aCasino.globalGame.ROULETTE_COLUMN_ROW;
+            bool hasNumbers = playerDecision == aCasino.game.ROULETTE_STRAIGHT || playerDecision == aCasino.game.ROULETTE_ODD_EVEN;
+            bool hasRow = playerDecision == aCasino.game.ROULETTE_COLUMN_ROW;
 
             if (hasRow)
             {

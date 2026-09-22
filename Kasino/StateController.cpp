@@ -12,13 +12,13 @@ void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
     ClearConsole();
     if (aIsInGame)
     {
-        int minigamesCount = int(aCasino.globalMinigames.size());
+        int minigamesCount = int(aCasino.minigames.size());
         
         aChoice = Clamp(aChoice, 1, minigamesCount + 2);
         
-        if (aChoice > aCasino.globalMinigames.size())
+        if (aChoice > aCasino.minigames.size())
         {
-            if (aChoice == aCasino.globalMinigames.size() + 1)
+            if (aChoice == aCasino.minigames.size() + 1)
             {
                 SwitchTo(EOptions::CashOut, aCasino);
             }
@@ -29,8 +29,8 @@ void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
         }
         else
         {
-            aCasino.globalGame.globalCurrentMinigame = aChoice - 1;
-            aCasino.globalMinigames[aCasino.globalGame.globalCurrentMinigame].EnterGameMenu(aCasino);
+            aCasino.game.currentMinigame = aChoice - 1;
+            aCasino.minigames[aCasino.game.currentMinigame].EnterGameMenu(aCasino);
         }
         
         return;
@@ -39,7 +39,7 @@ void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
     switch (aChoice)
     {
     case 1:
-        if (aCasino.globalPlayer.globalHasEnteredName)
+        if (aCasino.player.hasEnteredName)
         {
             ChangeState(EStates::Game, aCasino);
         }

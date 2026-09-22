@@ -69,8 +69,6 @@ public:
     int myMaxAllowedBet = 0;
     
     bool myHasStakes = false;
-    
-    const char *FromMinigameToChar(EMinigameType& aMinigame);
 
     int myGameIndex = 0;
     

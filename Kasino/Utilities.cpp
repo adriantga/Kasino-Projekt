@@ -7,7 +7,7 @@
 #include "Kasino.h"
 #include "Stats.h"
 
-constexpr int globalLowerCaseOffset = 32;
+constexpr int GLOBAL_LOWER_CASE_OFFSET = 32;
 
 // Initialize random number generator
 std::random_device rnd;
@@ -17,6 +17,25 @@ int GetRandomNumber(int aMin, int aMax)
 {
     std::uniform_int_distribution<int> generator(aMin, aMax);
     return generator(distributor);
+}
+
+const char *FromMinigameToChar(EMinigameType& aMinigame)
+{
+    switch (aMinigame)
+    {
+    case EMinigameType::GuessTheDiceSum:
+        return "Guess The Dice Sum";
+    case EMinigameType::OddOrEven:
+        return "Odd or Even";
+    case EMinigameType::YesOrNo:
+        return "Yes or No";
+    case EMinigameType::HigherOrLower:
+        return "Higher or Lower";
+    case EMinigameType::Roulette:
+        return "Roulette";
+    }
+    
+    return "";
 }
 
 void DrawTitle(const char aTitleText[])
@@ -29,7 +48,7 @@ void DrawTitle(const char aTitleText[])
 int GetBetAmount(Casino& aCasino, int gameIndex)
 {
     WriteLine("How much are you betting?");
-    Minigame selectedMinigame = aCasino.globalMinigames[gameIndex];
+    Minigame selectedMinigame = aCasino.minigames[gameIndex];
 
     int result = 0;
     std::cin >> result;
@@ -90,9 +109,9 @@ void DrawMenuLine()
 
 void RollDice(Casino& aCasino)
 {
-    aCasino.globalDice.globalDie1 = RollDie();
-    aCasino.globalDice.globalDie2 = RollDie();
-    aCasino.globalDice.globalDiceSum = aCasino.globalDice.globalDie1 + aCasino.globalDice.globalDie2;
+    aCasino.dice.die1 = RollDie();
+    aCasino.dice.die2 = RollDie();
+    aCasino.dice.diceSum = aCasino.dice.die1 + aCasino.dice.die2;
 }
 
 bool IsCharacter(char aInput, char aValue)
@@ -141,7 +160,7 @@ bool IsInRange(int aValue, int aMin, int aMax)
     return aValue >= aMin && aValue <= aMax;
 }
 
-bool HasSubceded(int aCurrent, int aTarget)
+bool HasSubceeded(int aCurrent, int aTarget)
 {
     return aCurrent < aTarget;
 }
@@ -176,12 +195,12 @@ void BroadcastDiceResult(Casino& aCasino, bool aShowSum)
 {
     WriteLine("--------------- RESULT ---------------");
 
-    std::cout << "DIE 1 - " << aCasino.globalDice.globalDie1 << '\n';
-    std::cout << "DIE 2 - " << aCasino.globalDice.globalDie2 << '\n';
+    std::cout << "DIE 1 - " << aCasino.dice.die1 << '\n';
+    std::cout << "DIE 2 - " << aCasino.dice.die2 << '\n';
 
     if (aShowSum)
     {
-        std::cout << "SUM - " << aCasino.globalDice.globalDiceSum << '\n';
+        std::cout << "SUM - " << aCasino.dice.diceSum << '\n';
     }
 
     DrawBreakerLine();
@@ -203,7 +222,7 @@ void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLo
         WriteLine("You didn't win anything this time.");
         RemoveBalance(aLoseAmount, aMinigame, aCasino);
 
-        if (aCasino.globalPlayer.globalMoney == 0)
+        if (aCasino.player.money == 0)
         {
             Pause();
             GameOver(aCasino);
@@ -216,7 +235,7 @@ void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLo
     Pause();
     ClearInput();
     ClearConsole();
-    aCasino.globalMinigames[aCasino.globalGame.globalCurrentMinigame].EnterGameMenu(aCasino);
+    aCasino.minigames[aCasino.game.currentMinigame].EnterGameMenu(aCasino);
 }
 
 std::array<int, 12> BuildRow(int aRowStart)
@@ -241,7 +260,7 @@ bool IsMatching(int current[], int target[])
 
 char ToLower(char aCharacter)
 {
-    return aCharacter + globalLowerCaseOffset;
+    return aCharacter + GLOBAL_LOWER_CASE_OFFSET;
 }
 
 void ForceInput(int& aInput)
