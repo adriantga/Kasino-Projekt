@@ -48,24 +48,24 @@ struct Game
 {
     const int ROULETTE_BETTING_TYPE_MIN = 1;
     const int ROULETTE_BETTING_TYPE_MAX = 4;
-    
+
     const int ROULETTE_STRAIGHT_MIN = 0;
     const int ROULETTE_STRAIGHT_MAX = 36;
-    
+
     const int ROULETTE_STRAIGHT = 1;
     const int ROULETTE_RED_BLACK = 2;
     const int ROULETTE_ODD_EVEN = 3;
     const int ROULETTE_COLUMN_ROW = 4;
-    
+
     const int ROULETTE_ROW_MIN = 1;
     const int ROULETTE_ROW_MAX = 3;
-    
+
     const int ROULETTE_COLUMN_MIN = 0;
     const int ROULETTE_COLUMN_MAX = 12;
-    
-    const char VALID_ROULETTE_PICKS[3] = { 'r', 'g' };
+
+    const char VALID_ROULETTE_PICKS[3] = {'r', 'g'};
     int currentMinigame;
-    
+
     bool isGameOver = false;
     bool isQuitting = false;
 };

@@ -19,7 +19,7 @@ int GetRandomNumber(int aMin, int aMax)
     return generator(distributor);
 }
 
-const char *FromMinigameToChar(EMinigameType& aMinigame)
+const char* FromMinigameToChar(EMinigameType& aMinigame)
 {
     switch (aMinigame)
     {
@@ -34,7 +34,7 @@ const char *FromMinigameToChar(EMinigameType& aMinigame)
     case EMinigameType::Roulette:
         return "Roulette";
     }
-    
+
     return "";
 }
 
@@ -52,29 +52,31 @@ int GetBetAmount(Casino& aCasino, int gameIndex)
 
     int result = 0;
     std::cin >> result;
-    
+
     while (std::cin.fail())
     {
         std::cout << "Please pick a valid number!" << '\n';
         ClearInput();
         std::cin >> result;
     }
-    
+
     while (result < selectedMinigame.myMinAllowedBet || result > selectedMinigame.myMaxAllowedBet)
     {
-        std::cout << "Invalid bet($" << selectedMinigame.myMinAllowedBet << "-" << selectedMinigame.myMaxAllowedBet << ")\n";
+        std::cout << "Invalid bet($" << selectedMinigame.myMinAllowedBet << "-" << selectedMinigame.myMaxAllowedBet <<
+            ")\n";
         std::cin >> result;
     }
-    
+
     ClearInput();
     return result;
 }
 
-void DrawMenu(Casino& aCasino, int& aInput, const char aTitleText[], const char aOptions[], int aNumOptions, const char aExtraOptions[], bool aShowBalance)
+void DrawMenu(Casino& aCasino, int& aInput, const char aTitleText[], const char aOptions[], int aNumOptions,
+              const char aExtraOptions[], bool aShowBalance)
 {
     DrawTitle(aTitleText);
     WriteLine(aOptions);
-    
+
     if (std::strlen(aExtraOptions) > 0)
     {
         DrawBreakerLine(false);
@@ -240,16 +242,16 @@ void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLo
 
 std::array<int, 12> BuildRow(int aRowStart)
 {
-    std::array<int, 12> result; 
-    
+    std::array<int, 12> result;
+
     int num = aRowStart;
-    
+
     for (int i = 0; i < result.size(); i++)
     {
         result[i] = num;
         num += 3;
     }
-    
+
     return result;
 }
 

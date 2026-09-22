@@ -55,21 +55,21 @@ void ShowStats(Casino& aCasino)
     std::cout << "Wins: " << aCasino.playerStats.wins << '\n';
     std::cout << "Losses: " << aCasino.playerStats.losses << '\n';
     std::cout << "================= GAME OUTCOMES ==================" << '\n';
-    
-    
+
+
     for (int i = 0; i < Constants::MINIGAME_AMOUNT; i++)
     {
         Minigame minigame = aCasino.minigames[i];
         EMinigameType minigameType = aCasino.minigameTypes[i];
         const char* minigameName = FromMinigameToChar(minigameType);
-        
+
         std::cout << minigameName << " Profit: " << minigame.myWinAmount << '\n';
         std::cout << minigameName << " Loss: " << minigame.myLossAmount << '\n';
-        
+
         // The last line-breaker is unnecessary
         if (i != Constants::MINIGAME_AMOUNT - 1) DrawBreakerLine();
     }
-    
+
     std::cout << "================== GAME HISTORY ==================" << '\n';
 
     for (char match : aCasino.playerStats.games)

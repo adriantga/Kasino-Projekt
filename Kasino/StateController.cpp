@@ -13,9 +13,9 @@ void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
     if (aIsInGame)
     {
         int minigamesCount = int(aCasino.minigames.size());
-        
+
         aChoice = Clamp(aChoice, 1, minigamesCount + 2);
-        
+
         if (aChoice > aCasino.minigames.size())
         {
             if (aChoice == aCasino.minigames.size() + 1)
@@ -32,7 +32,7 @@ void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
             aCasino.game.currentMinigame = aChoice - 1;
             aCasino.minigames[aCasino.game.currentMinigame].EnterGameMenu(aCasino);
         }
-        
+
         return;
     }
 

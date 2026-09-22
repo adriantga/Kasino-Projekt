@@ -16,26 +16,32 @@
 int main()
 {
     Dice dice;
-    
+
     bool playerHasEnteredName = false;
     std::string playerName = "N/A";
     Player player = {Constants::STARTING_BALANCE, playerName, playerHasEnteredName};
-    
+
     PlayerStats playerStats;
     Game game;
-    
-    std::array<EMinigameType, Constants::MINIGAME_AMOUNT> minigameTypes = { EMinigameType::GuessTheDiceSum, EMinigameType::OddOrEven, EMinigameType::YesOrNo, EMinigameType::HigherOrLower, EMinigameType::Roulette };
+
+    std::array<EMinigameType, Constants::MINIGAME_AMOUNT> minigameTypes = {
+        EMinigameType::GuessTheDiceSum, EMinigameType::OddOrEven, EMinigameType::YesOrNo, EMinigameType::HigherOrLower,
+        EMinigameType::Roulette
+    };
 
     constexpr int LOW_STAKES_MIN_BET = 1;
     constexpr int LOW_STAKES_MAX_BET = 30;
     constexpr int HIGH_STAKES_MIN_BET = 50;
-    
+
     int highestBet = player.money;
-    
-    std::array<int, 4> standardBets = { LOW_STAKES_MIN_BET, highestBet };
-    std::array<int, 4> stakeBets = { LOW_STAKES_MIN_BET, LOW_STAKES_MAX_BET, HIGH_STAKES_MIN_BET, highestBet };
-    
-    std::array<Minigame, minigameTypes.size()> minigames = { Minigame{stakeBets, true}, Minigame{standardBets, false}, Minigame{stakeBets, true}, Minigame{standardBets, false}, Minigame{standardBets, false} };
+
+    std::array<int, 4> standardBets = {LOW_STAKES_MIN_BET, highestBet};
+    std::array<int, 4> stakeBets = {LOW_STAKES_MIN_BET, LOW_STAKES_MAX_BET, HIGH_STAKES_MIN_BET, highestBet};
+
+    std::array<Minigame, minigameTypes.size()> minigames = {
+        Minigame{stakeBets, true}, Minigame{standardBets, false}, Minigame{stakeBets, true},
+        Minigame{standardBets, false}, Minigame{standardBets, false}
+    };
     for (int i = 0; i < minigames.size(); i++)
     {
         minigames[i].Initialize(minigameTypes[i]);
@@ -83,7 +89,8 @@ void BroadcastPlayerBalance(bool aStylize, Casino& aCasino)
 
 bool IsValidName(const std::string& aS)
 {
-    return aS.size() >= Constants::PLAYER_NAME_MIN_SIZE && aS.size() <= Constants::PLAYER_NAME_MAX_SIZE && strspn(aS.c_str(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\x8F\x86\x84\x8E\x94\x99") == aS.length();
+    return aS.size() >= Constants::PLAYER_NAME_MIN_SIZE && aS.size() <= Constants::PLAYER_NAME_MAX_SIZE && strspn(
+        aS.c_str(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\x8F\x86\x84\x8E\x94\x99") == aS.length();
 }
 
 // Resets all stats after the player has lost the entire game.
@@ -93,11 +100,11 @@ void ResetGame(Casino& aCasino)
     {
         minigame.Reset();
     }
-    
+
     aCasino.playerStats.wins = 0;
     aCasino.playerStats.losses = 0;
     aCasino.playerStats.gamesPlayed = 0;
-    
+
     ResetBalance(aCasino);
     ResetStats(aCasino);
 }
@@ -153,7 +160,8 @@ void TauntOrImpress(Casino& aCasino, int aWinAmount, int aLossAmount, int aImpre
     }
     else if (shouldTaunt)
     {
-        std::cout << "Sad to see you struggling, " << aCasino.player.name << ". Can't tell if you're naive or just plain unlucky!\n";
+        std::cout << "Sad to see you struggling, " << aCasino.player.name <<
+            ". Can't tell if you're naive or just plain unlucky!\n";
     }
     else if (!shouldBeImpressed && !shouldTaunt)
     {
@@ -206,7 +214,7 @@ bool AskPlayerAgain(bool aIsInGame, Casino& aCasino)
         ClearConsole();
         Pick(aCasino.game.currentMinigame, true, aCasino);
     }
-    
+
     return true;
 }
 
@@ -235,7 +243,7 @@ void CashOut(Casino& aCasino)
     {
         if (minigame.myCantPlay) cantPlayAmount++;
     }
-    
+
     // Um... alright.
     if (cantPlayAmount != aCasino.minigames.size())
     {
@@ -268,27 +276,27 @@ void EnterNamePicker(Casino& aCasino)
         EnterGamePicker(aCasino);
         return;
     }
-    
+
     char confirmName = 'Y';
     char denyName = 'N';
-    
+
     WriteLine("What's your name? (Must be between 2-16 characters)");
 
     std::string myPlayerNameInput;
     std::cin >> myPlayerNameInput;
-    
+
     while (std::cin.fail() || !IsValidName(myPlayerNameInput))
     {
         WriteLine("Please enter letters only! / Ensure the name is between 2-16 characters.");
         ClearInput();
         std::cin >> myPlayerNameInput;
     }
-    
+
     ClearInput();
     const char* playerName = myPlayerNameInput.c_str();
-    
-    std::cout << "Your name is: " << playerName  << ". Continue? (y to confirm, n to deny)" << '\n';
-    
+
+    std::cout << "Your name is: " << playerName << ". Continue? (y to confirm, n to deny)" << '\n';
+
     char confirmInput;
     std::cin >> confirmInput;
     while (std::cin.fail())
@@ -297,23 +305,23 @@ void EnterNamePicker(Casino& aCasino)
         std::cin >> confirmInput;
         WriteLine("Please confirm or deny!");
     }
-    
+
     bool hasConfirmedName = IsCharacter(confirmInput, confirmName);
     bool hasDeniedName = IsCharacter(confirmInput, denyName);
-    
+
     if (!hasConfirmedName && !hasDeniedName)
     {
         std::cin >> confirmInput;
-        
+
         hasConfirmedName = IsCharacter(confirmInput, confirmName);
         hasDeniedName = IsCharacter(confirmInput, denyName);
     }
-    
+
     if (hasConfirmedName)
     {
         aCasino.player.hasEnteredName = true;
         aCasino.player.name = myPlayerNameInput;
-        
+
         ClearConsole();
         EnterGamePicker(aCasino);
     }
@@ -327,33 +335,33 @@ void EnterNamePicker(Casino& aCasino)
 void EnterGamePicker(Casino& aCasino)
 {
     const int OPTIONS = int(aCasino.minigameTypes.size()) + 2;
-    
+
     int input;
-    
+
     // Sooner or later I'll have to change this based on 
     DrawTitle("GAME PICKER");
-    
+
     int minigameCount = int(aCasino.minigameTypes.size());
-    
+
     for (int i = 0; i < minigameCount; i++)
     {
         EMinigameType minigameType = aCasino.minigameTypes[i];
         std::cout << "[" << (i + 1) << "] " << FromMinigameToChar(minigameType) << '\n';
     }
-    
+
     DrawBreakerLine();
-    
+
     std::cout << "[" << (minigameCount + 1) << "] " << "Cash Out" << '\n';
     std::cout << "[" << (minigameCount + 2) << "] " << "Back To Menu" << '\n';
-    
+
     DrawMenuLine();
-    
+
     BroadcastPlayerBalance(false, aCasino);
-    
+
     ForceInput(input);
-    
+
     input = Clamp(input, 1, OPTIONS);
-    
+
     Pick(input, true, aCasino);
 }
 
