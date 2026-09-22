@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <complex>
+
 #include "Helpers.h"
 
 struct Constants;
@@ -32,7 +34,7 @@ class Minigame
     int myRangeEnd = 0;
     
     // Store 4 because 2 are for low-stakes and 2 are for high stakes.
-    std::array<int, 4> myAllowedBets;
+    std::array<int, 4> myAllowedBets = { 0, 0, 0, 0 };
 
     // Only used by 'Roulette'
     int myAlternativeRewardMultiplier = 1;
@@ -50,13 +52,12 @@ class Minigame
     bool myHasPlayerPickedFirst = false;
     bool myHasPlayerPickedSecond = false;
     
-    bool myHasStakes = false;
-    
     EMinigameType myMinigameType;
     
     // METHODS
     void ShowInstructions();
     void OnPlay(Casino& aCasino);
+    void UpdateBets();
 
 public:
     int myWinAmount = 0;
@@ -67,14 +68,20 @@ public:
     int myMinAllowedBet = 0;
     int myMaxAllowedBet = 0;
     
+    // Should be public for various reasons.
+    // 1. There are two distinct lists
+    // 2. Might require usage in the future (by other classes)
+    bool myHasStakes = false;
+    
     const char *FromMinigameToChar(EMinigameType& aMinigame);
 
     int myGameIndex = 0;
     
     bool myCantPlay = false;
     
-    Minigame();
-    Minigame(std::array<int, 4>& aAllowedBets);
+    Minigame(std::array<int, 4>& aAllowedBets, bool aHasStakes);
+    
+    void SetAllowedBets(std::array<int, 4>& aTargetBets);
     
     void Initialize(EMinigameType& aMinigameType);
     void PlayGame(Casino &aCasino);

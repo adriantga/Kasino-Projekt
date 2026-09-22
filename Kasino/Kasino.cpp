@@ -12,6 +12,7 @@
  * GOALS:
  * - Create separate classes for each game mode/table (can't inherit which I don't agree with)
  * - Optimize the game (eventually)
+ * 
  */
 
 int main()
@@ -29,17 +30,16 @@ int main()
     
     std::array<EMinigameType, shouldShowInstructions.size()> minigameTypes = { EMinigameType::GuessTheDiceSum, EMinigameType::OddOrEven, EMinigameType::YesOrNo, EMinigameType::HigherOrLower, EMinigameType::Roulette };
 
-    // This is very stupid but it'll do for now. Will probably create a template the minigames will base themselves on
     constexpr int LOW_STAKES_MIN_BET = 1;
     constexpr int LOW_STAKES_MAX_BET = 30;
     constexpr int HIGH_STAKES_MIN_BET = 50;
     
     int highestBet = player.myMoney;
+    
     std::array<int, 4> standardBets = { LOW_STAKES_MIN_BET, highestBet };
     std::array<int, 4> stakeBets = { LOW_STAKES_MIN_BET, LOW_STAKES_MAX_BET, HIGH_STAKES_MIN_BET, highestBet };
-
-    // Prepared for inheritance!
-    std::array<Minigame, minigameTypes.size()> minigames = { Minigame{stakeBets}, Minigame{standardBets}, Minigame{standardBets}, Minigame{standardBets}, Minigame{standardBets} };
+    
+    std::array<Minigame, minigameTypes.size()> minigames = { Minigame{stakeBets, true}, Minigame{standardBets, false}, Minigame{stakeBets, true}, Minigame{standardBets, false}, Minigame{standardBets, false} };
     for (int i = 0; i < minigames.size(); i++)
     {
         minigames[i].Initialize(minigameTypes[i]);

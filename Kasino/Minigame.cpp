@@ -2,14 +2,18 @@
 #include "Utilities.h"
 #include <iostream>
 
-Minigame::Minigame()
+
+// NOTE to class: Why are you being stupid?
+Minigame::Minigame(std::array<int, 4>& aAllowedBets, bool aHasStakes)
 {
-    // do nothing
+    SetAllowedBets(aAllowedBets);
+    myHasStakes = aHasStakes;
 }
 
-Minigame::Minigame(std::array<int, 4>& aAllowedBets)
+void Minigame::UpdateBets()
 {
-    myAllowedBets = aAllowedBets;
+    myMinAllowedBet = myAllowedBets[LOW_NO_STAKES_MIN];
+    myMaxAllowedBet = myAllowedBets[LOW_NO_STAKES_MAX];
 }
 
 void Minigame::Initialize(EMinigameType& aMinigameType)
@@ -57,9 +61,8 @@ void Minigame::Initialize(EMinigameType& aMinigameType)
         myAlternativeRewardMultiplier = 36;
         break;
     }
-    
-    myMinAllowedBet = myAllowedBets[LOW_NO_STAKES_MIN];
-    myMaxAllowedBet = myAllowedBets[LOW_NO_STAKES_MAX];
+
+    UpdateBets();
 }
 
 const char *Minigame::FromMinigameToChar(EMinigameType& aMinigame)
@@ -90,7 +93,6 @@ void Minigame::PlayGame(Casino& aCasino)
     }
     
     myCachedReward = 0;
-    
     
     if (myHasStakes)
     {
@@ -179,6 +181,12 @@ void Minigame::PlayGame(Casino& aCasino)
     }
     
     OnPlay(aCasino);
+}
+
+void Minigame::SetAllowedBets(std::array<int, 4>& aTargetBets)
+{
+    myAllowedBets = aTargetBets;
+    UpdateBets();
 }
 
 void Minigame::Reset()
