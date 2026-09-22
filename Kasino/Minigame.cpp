@@ -66,7 +66,7 @@ void Minigame::EnterGameMenu(Casino& aCasino)
     DrawBreakerLine();
     std::cout << "Welcome to the " << FromMinigameToChar(myMinigameType) << " table!\n";
     DrawBreakerLine();
-    WriteLine("What would you like to do?\n[1] Play Game\n[2] Show Instructions\n[3] Leave Table");
+    WriteLine("What would you like to do?\n[1] Play Game\n[2] Show Rules\n[3] Leave Table");
     DrawBreakerLine();
     BroadcastPlayerBalance(false, aCasino);
     DrawBreakerLine();
@@ -86,7 +86,7 @@ void Minigame::EnterGameMenu(Casino& aCasino)
         PlayGame(aCasino);
         break;
     case SHOW_INSTRUCTIONS:
-        ShowInstructions(aCasino);
+        ShowRules(aCasino);
         break;
     case LEAVE_TABLE:
         EnterGamePicker(aCasino);
@@ -205,43 +205,47 @@ void Minigame::Reset()
     myCantPlay = false;
 }
 
-void Minigame::ShowInstructions(Casino& aCasino)
+void Minigame::ShowRules(Casino& aCasino)
 {
+    DrawMenuLine();
+    std::cout << FromMinigameToChar(myMinigameType) << " RULES\n";
+    DrawMenuLine();
+    
     switch (myMinigameType)
     {
     case EMinigameType::GuessTheDiceSum:
         WriteLine(
-                "I'll roll two dice and your only goal from that point onwards is to guess the sum, produced by both dice.\nIt's important to note that your guess should not exceed 12 or subceed 2.");
+                "I'll roll two dice and your only goal from that point\nonwards is to guess the sum produced the aforementioned\nrolled dice. It's important to note: Your guess should\n**NOT** exceed 12 or subceed 2!");
         break;
     case EMinigameType::OddOrEven:
         WriteLine(
-                "Here you must guess if the dice are even or odd. If both dice aren't even or odd, or if you guess incorrectly, the house wins.");
+                "Here you must guess if the dice are even or odd. If both\ndice don't show even or odd numbers, or if you guess\nincorrectly(i.e. guessing odd but both dice show even),\nthe house wins.");
         break;
     case EMinigameType::YesOrNo:
-        WriteLine("Your sole objective is to guess whether the number picked is within the given range");
-        WriteLine("Use 'y' if you think the number is in range and 'n' to guess if it is not.");
-        std::cout << "Every time you have " << myRewardIncreaseThreshold <<
-            " consecutive correct guesses in a row, your reward might increase!" << '\n';
-        WriteLine("** NOTE ** If you quit before guessing, you'll automatically lose.");
+        WriteLine("Your sole objective is to guess whether the number picked\nis within the given range. ", false);
+        WriteLine("Use 'y' if you think the number\nis in range and 'n' to guess if it is not. ", false);
+        std::cout << "Every time you\nhave " << myRewardIncreaseThreshold <<
+            " consecutive correct guesses in a row, your reward\nmight increase!" << '\n';
+        WriteLine("\nNOTE: If you quit before guessing, you'll automatically\nlose!");
         break;
     case EMinigameType::HigherOrLower:
         WriteLine(
-                "The goal is simple: Guess whether or not the number visible on the screen is lower than the next one");
-        WriteLine("Guess correctly and you'll get rewarded. However, a wrong guess will cost you everything!");
-        WriteLine("(By quitting, you indirectly forfeit any possible winnings, thus the round becoming a loss)");
+                "The goal is simple: Guess whether or not the number visible\non the screen is lower than the next one. ", false);
+        WriteLine("Guess correctly\nand you'll get rewarded. However, one wrong guess will\nturn your fortune into demise!\n");
+        WriteLine("(By quitting without any guesses, you'll forfeit\nyour profit)");
         break;
     case EMinigameType::Roulette:
         WriteLine(
-                "Your main objective is to guess what color the ball will land on.");
-        WriteLine("First, you'll have to pick what type of bet you want to make.\n");
+                "Your main objective is to guess what color the ball will\nland on. ", false);
+        WriteLine("First, you'll have to pick how you want to bet:");
 
-        WriteLine("** STRAIGHT **: Requires you to bet on a rouge. You're only able to guess 0-36");
-        WriteLine("** RED/BLACK **: Picking this will require you to pick either red or black");
+        WriteLine("** STRAIGHT **: Requires you to bet on a rouge. You're\nonly able to guess 0-36");
+        WriteLine("** RED/BLACK **: Picking this will require you to pick\neither red or black");
         WriteLine("** ODD/EVEN **: You'll need to guess either odd or even.");
-        WriteLine("** COLUMN BET **: Allows you to bet from 0-3. In this case, zero is standalone.\n");
+        WriteLine("** COLUMN BET **: Allows you to bet from 0-3. In this case,\nzero is standalone.\n");
 
         WriteLine(
-            "If you guess correctly, your pay out stays the same. However, betting on 0 will give you 36x the outcome!");
+            "If you guess correctly, your pay out stays the same.\n(If you bet on 0 and it lands, you'll win 36x your bet!");
         break;
     }
     

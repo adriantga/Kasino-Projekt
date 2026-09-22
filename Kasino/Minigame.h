@@ -55,7 +55,7 @@ class Minigame
     EMinigameType myMinigameType;
     
     void PlayGame(Casino &aCasino);
-    void ShowInstructions(Casino& aCasino);
+    void ShowRules(Casino& aCasino);
     void OnPlay(Casino& aCasino);
     void UpdateBets();
 
