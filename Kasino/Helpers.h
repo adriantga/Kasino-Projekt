@@ -66,7 +66,6 @@ struct Game
     const int ROULETTE_COLUMN_MIN = 0;
     const int ROULETTE_COLUMN_MAX = 12;
 
-    const char VALID_ROULETTE_PICKS[3] = {'r', 'g'};
     int currentMinigame;
 
     bool isGameOver = false;

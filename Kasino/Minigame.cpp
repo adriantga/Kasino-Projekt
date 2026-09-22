@@ -506,7 +506,7 @@ void Minigame::OnPlay(Casino& aCasino)
             else if (playerDecision == aCasino.game.ROULETTE_RED_BLACK)
             {
                 WriteLine("What's your guess? ('r' for red, 'b' for black)");
-
+                
                 myFirstChoice = 'R';
                 mySecondChoice = 'B';
 
