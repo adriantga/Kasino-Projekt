@@ -31,7 +31,7 @@ int main()
     constexpr int LOW_STAKES_MAX_BET = 30;
     constexpr int HIGH_STAKES_MIN_BET = 50;
     
-    int highestBet = player.myMoney;
+    int highestBet = player.globalMoney;
     
     std::array<int, 4> standardBets = { LOW_STAKES_MIN_BET, highestBet };
     std::array<int, 4> stakeBets = { LOW_STAKES_MIN_BET, LOW_STAKES_MAX_BET, HIGH_STAKES_MIN_BET, highestBet };
@@ -46,7 +46,7 @@ int main()
 
     ResetStats(aCasino);
     ResetBalance(aCasino);
-    if (!aCasino.game.isQuitting)
+    if (!aCasino.globalGame.globalIsQuitting)
     {
         ChangeState(EStates::MainMenu, aCasino);
     }
@@ -66,19 +66,19 @@ void RefuseGame(bool& aCantPlay, Casino& casino)
 
 void ResetBalance(Casino& aCasino)
 {
-    aCasino.player.myMoney = Constants::startingBalance;
+    aCasino.globalPlayer.globalMoney = Constants::startingBalance;
 }
 
 void BroadcastPlayerBalance(bool aStylize, Casino& aCasino)
 {
-    if (!aCasino.game.isGameOver)
+    if (!aCasino.globalGame.globalIsGameOver)
     {
         if (aStylize)
         {
             DrawBreakerLine();
         }
 
-        std::cout << aCasino.player.playerName << " : $" << aCasino.player.myMoney << '\n';
+        std::cout << aCasino.globalPlayer.globalPlayerName << " : $" << aCasino.globalPlayer.globalMoney << '\n';
     }
 }
 
@@ -90,14 +90,14 @@ bool IsValidName(const std::string& aS)
 // Resets all stats after the player has lost the entire game.
 void ResetGame(Casino& aCasino)
 {
-    for (Minigame& minigame : aCasino.minigames)
+    for (Minigame& minigame : aCasino.globalMinigames)
     {
         minigame.Reset();
     }
     
-    aCasino.playerStats.wins = 0;
-    aCasino.playerStats.losses = 0;
-    aCasino.playerStats.gamesPlayed = 0;
+    aCasino.globalPlayerStats.globalWins = 0;
+    aCasino.globalPlayerStats.globalLosses = 0;
+    aCasino.globalPlayerStats.globalGamesPlayed = 0;
     
     ResetBalance(aCasino);
     ResetStats(aCasino);
@@ -106,22 +106,22 @@ void ResetGame(Casino& aCasino)
 void AddBalance(int aAmount, int& aMinigame, Casino& aCasino)
 {
     aAmount = Min(aAmount, 0);
-    aCasino.player.myMoney += aAmount;
+    aCasino.globalPlayer.globalMoney += aAmount;
     aMinigame += aAmount;
 }
 
 void RemoveBalance(int aAmount, int& aMinigame, Casino& aCasino)
 {
     aAmount = Min(aAmount, 1);
-    aCasino.player.myMoney -= aAmount;
-    aCasino.player.myMoney = Min(aCasino.player.myMoney, 0);
+    aCasino.globalPlayer.globalMoney -= aAmount;
+    aCasino.globalPlayer.globalMoney = Min(aCasino.globalPlayer.globalMoney, 0);
     aMinigame += aAmount;
 }
 
 void GameOver(Casino& aCasino)
 {
     ClearConsole();
-    aCasino.game.isGameOver = true;
+    aCasino.globalGame.globalIsGameOver = true;
     Exit(aCasino);
 
     WriteLine("SECURITY GUARD: 'Hey! You're completely out of cash!'");
@@ -138,7 +138,7 @@ void GameOver(Casino& aCasino)
 
 void Exit(Casino& aCasino)
 {
-    aCasino.game.isQuitting = true;
+    aCasino.globalGame.globalIsQuitting = true;
 }
 
 void TauntOrImpress(Casino& aCasino, int aWinAmount, int aLossAmount, int aImpressWinAmt, int aTauntLossAmt)
@@ -150,15 +150,15 @@ void TauntOrImpress(Casino& aCasino, int aWinAmount, int aLossAmount, int aImpre
 
     if (shouldBeImpressed)
     {
-        std::cout << "Well, " << aCasino.player.playerName << ". Seems like you're on a winning streak! Keep it up!\n";
+        std::cout << "Well, " << aCasino.globalPlayer.globalPlayerName << ". Seems like you're on a winning streak! Keep it up!\n";
     }
     else if (shouldTaunt)
     {
-        std::cout << "Sad to see you struggling, " << aCasino.player.playerName << ". Can't tell if you're naive or just plain unlucky!\n";
+        std::cout << "Sad to see you struggling, " << aCasino.globalPlayer.globalPlayerName << ". Can't tell if you're naive or just plain unlucky!\n";
     }
     else if (!shouldBeImpressed && !shouldTaunt)
     {
-        std::cout << "Welcome " << aCasino.player.playerName << '\n';
+        std::cout << "Welcome " << aCasino.globalPlayer.globalPlayerName << '\n';
     }
 }
 
@@ -167,9 +167,9 @@ bool AskPlayerAgain(bool aIsInGame, Casino& aCasino)
 {
     ClearConsole();
 
-    if (aCasino.game.isGameOver)
+    if (aCasino.globalGame.globalIsGameOver)
     {
-        aCasino.game.isGameOver = false;
+        aCasino.globalGame.globalIsGameOver = false;
         ResetGame(aCasino);
         ChangeState(EStates::MainMenu, aCasino);
         return false;
@@ -187,13 +187,13 @@ bool AskPlayerAgain(bool aIsInGame, Casino& aCasino)
         {
             if (!aIsInGame)
             {
-                aCasino.game.isQuitting = true;
+                aCasino.globalGame.globalIsQuitting = true;
             }
             else
             {
                 ClearInput();
                 ClearConsole();
-                aCasino.minigames[aCasino.game.currentMinigame].EnterGameMenu(aCasino);
+                aCasino.globalMinigames[aCasino.globalGame.globalCurrentMinigame].EnterGameMenu(aCasino);
             }
             break;
         }
@@ -205,7 +205,7 @@ bool AskPlayerAgain(bool aIsInGame, Casino& aCasino)
     if (isYes)
     {
         ClearConsole();
-        Pick(aCasino.game.currentMinigame, true, aCasino);
+        Pick(aCasino.globalGame.globalCurrentMinigame, true, aCasino);
     }
     
     return true;
@@ -232,13 +232,13 @@ void About(Casino& aCasino)
 void CashOut(Casino& aCasino)
 {
     int cantPlayAmount = 0;
-    for (Minigame minigame : aCasino.minigames)
+    for (Minigame minigame : aCasino.globalMinigames)
     {
         if (minigame.myCantPlay) cantPlayAmount++;
     }
     
     // Um... alright.
-    if (cantPlayAmount != aCasino.minigames.size())
+    if (cantPlayAmount != aCasino.globalMinigames.size())
     {
         WriteLine("'It's too early to cash out' is what your inner voice is telling you.");
         WriteLine("Maybe your inside voice is right...");
@@ -249,7 +249,7 @@ void CashOut(Casino& aCasino)
         return;
     }
 
-    std::cout << "You decided to cash out $" << aCasino.player.myMoney << '\n';
+    std::cout << "You decided to cash out $" << aCasino.globalPlayer.globalMoney << '\n';
     Pause();
     WriteLine("Before you walk out the door, you turn around and the game master dead in the eye.");
     Pause();
@@ -264,7 +264,7 @@ void CashOut(Casino& aCasino)
 
 void EnterNamePicker(Casino& aCasino)
 {
-    if (aCasino.player.hasEnteredName)
+    if (aCasino.globalPlayer.globalHasEnteredName)
     {
         EnterGamePicker(aCasino);
         return;
@@ -312,8 +312,8 @@ void EnterNamePicker(Casino& aCasino)
     
     if (hasConfirmedName)
     {
-        aCasino.player.hasEnteredName = true;
-        aCasino.player.playerName = myPlayerNameInput;
+        aCasino.globalPlayer.globalHasEnteredName = true;
+        aCasino.globalPlayer.globalPlayerName = myPlayerNameInput;
         
         ClearConsole();
         EnterGamePicker(aCasino);
@@ -327,19 +327,19 @@ void EnterNamePicker(Casino& aCasino)
 
 void EnterGamePicker(Casino& aCasino)
 {
-    const int OPTIONS = int(aCasino.minigameTypes.size()) + 2;
+    const int OPTIONS = int(aCasino.globalMinigameTypes.size()) + 2;
     
     int input;
     
     // Sooner or later I'll have to change this based on 
     DrawTitle("GAME PICKER");
     
-    int minigameCount = int(aCasino.minigameTypes.size());
+    int minigameCount = int(aCasino.globalMinigameTypes.size());
     
     for (int i = 0; i < minigameCount; i++)
     {
-        Minigame minigame = aCasino.minigames[i];
-        EMinigameType minigameType = aCasino.minigameTypes[i];
+        Minigame minigame = aCasino.globalMinigames[i];
+        EMinigameType minigameType = aCasino.globalMinigameTypes[i];
         
         std::cout << "[" << (i + 1) << "] " << minigame.FromMinigameToChar(minigameType) << '\n';
     }

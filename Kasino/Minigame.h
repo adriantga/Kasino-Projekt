@@ -29,7 +29,7 @@ class Minigame
     int myCachedReward = 0;
     bool myUseCachedReward = false;
 
-    // Used by 'Roulette' and 'Yes or No' but differently!
+    // Used by 'Roulette' and 'Yes or No'
     int myRangeStart = 0;
     int myRangeEnd = 0;
     
@@ -44,7 +44,7 @@ class Minigame
     int myAlternativeRewardMultiplier = 1;
     int myBaseReward = 0;
     
-    bool myPlayerCanQuit = false;
+    bool myShouldPlayerQuit = false;
     bool myIsPlayerQuitting = false;
     bool myIsForcedVictory = false;
     bool myIsForcedWinAmount = true;

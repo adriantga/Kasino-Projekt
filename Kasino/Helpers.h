@@ -6,6 +6,9 @@ enum class EMinigameType;
 class Minigame;
 struct Constants;
 
+// Unsure of what's considered a global variable in this case, so I'll assume
+// the source is this specific header.
+
 struct Constants
 {
     static const int minigameAmount = 5;
@@ -16,22 +19,21 @@ struct Constants
 
 struct Player
 {
-    int myMoney = 0;
-    std::string& playerName;
-    bool& hasEnteredName;
+    int globalMoney = 0;
+    std::string& globalPlayerName;
+    bool& globalHasEnteredName;
 };
 
 struct PlayerStats
 {
-    const int matchesDisplayed = 6;
     const int winIndex = 0;
     const int lossIndex = 1;
 
-    int wins = 0;
-    int losses = 0;
-    int gamesPlayed = 0;
+    int globalWins = 0;
+    int globalLosses = 0;
+    int globalGamesPlayed = 0;
 
-    char games[5] = {'-', '-', '-', '-', '-'};
+    char globalGames[5] = {'-', '-', '-', '-', '-'};
     const char gameOutcomes[2] = {'W', 'L'};
 };
 
@@ -40,9 +42,9 @@ struct Dice
     const int diceSumMin = 2;
     const int diceSumMax = 12;
 
-    int die1 = 0;
-    int die2 = 0;
-    int diceSum = 0;
+    int globalDie1 = 0;
+    int globalDie2 = 0;
+    int globalDiceSum = 0;
 };
 
 struct Game
@@ -65,20 +67,20 @@ struct Game
     const int ROULETTE_COLUMN_MAX = 12;
     
     const char validRoulettePicks[3] = { 'r', 'g' };
-    int currentMinigame;
+    int globalCurrentMinigame;
     
-    bool isGameOver = false;
-    bool isQuitting = false;
+    bool globalIsGameOver = false;
+    bool globalIsQuitting = false;
 };
 
 struct Casino
 {
-    Dice& dice;
-    Player& player;
-    PlayerStats& playerStats;
-    Game& game;
-    std::array<Minigame, Constants::minigameAmount>& minigames;
-    std::array<EMinigameType, Constants::minigameAmount>& minigameTypes;
+    Dice& globalDice;
+    Player& globalPlayer;
+    PlayerStats& globalPlayerStats;
+    Game& globalGame;
+    std::array<Minigame, Constants::minigameAmount>& globalMinigames;
+    std::array<EMinigameType, Constants::minigameAmount>& globalMinigameTypes;
 };
 
 enum class EOptions

@@ -38,7 +38,7 @@ void Minigame::Initialize(const EMinigameType& aMinigameType)
         myRewardIncreaseThreshold = 3;
         myWinLimit = 4000;
         myGameIndex = MINIGAME_YES_OR_NO;
-        myPlayerCanQuit = true;
+        myShouldPlayerQuit = true;
         myIsForcedVictory = true;
         break;
     case EMinigameType::HigherOrLower:
@@ -47,7 +47,7 @@ void Minigame::Initialize(const EMinigameType& aMinigameType)
         myUseCachedReward = true;
         myWinLimit = 3500;
         myGameIndex = MINIGAME_HIGHER_OR_LOWER;
-        myPlayerCanQuit = true;
+        myShouldPlayerQuit = true;
         myIsForcedVictory = true;
         break;
     case EMinigameType::Roulette:
@@ -279,14 +279,14 @@ void Minigame::OnPlay(Casino& aCasino)
         
         ForceInput(playerGuess);
 
-        while (playerGuess < aCasino.dice.diceSumMin || playerGuess > aCasino.dice.diceSumMax)
+        while (playerGuess < aCasino.globalDice.diceSumMin || playerGuess > aCasino.globalDice.diceSumMax)
         {
             std::cout << "Please enter a valid guess!" << '\n';
             std::cin >> playerGuess;
         }
         
         BroadcastDiceResult(aCasino, true);
-        isWinner = playerGuess == aCasino.dice.diceSum;
+        isWinner = playerGuess == aCasino.globalDice.globalDiceSum;
         break;
     case EMinigameType::OddOrEven:
         {
@@ -299,8 +299,8 @@ void Minigame::OnPlay(Casino& aCasino)
             myHasPlayerPickedFirst = IsCharacter(picked, myFirstChoice);
             myHasPlayerPickedSecond = IsCharacter(picked, mySecondChoice);
 
-            bool isEven = IsEven(aCasino.dice.die1) && IsEven(aCasino.dice.die2);
-            bool isOdd = !IsEven(aCasino.dice.die1) && !IsEven(aCasino.dice.die2);
+            bool isEven = IsEven(aCasino.globalDice.globalDie1) && IsEven(aCasino.globalDice.globalDie2);
+            bool isOdd = !IsEven(aCasino.globalDice.globalDie1) && !IsEven(aCasino.globalDice.globalDie2);
 
             while (!myHasPlayerPickedFirst && !myHasPlayerPickedSecond)
             {
@@ -479,7 +479,7 @@ void Minigame::OnPlay(Casino& aCasino)
             int correctRow = 0;
             int landedCol = -1;
 
-            int landing = GetRandomNumber(aCasino.game.ROULETTE_STRAIGHT_MIN, aCasino.game.ROULETTE_STRAIGHT_MAX);
+            int landing = GetRandomNumber(aCasino.globalGame.ROULETTE_STRAIGHT_MIN, aCasino.globalGame.ROULETTE_STRAIGHT_MAX);
             winAmount = landing == 0 ? myBet * myAlternativeRewardMultiplier : myBet * myRewardMultiplier;
             std::array<int, 12> correctRowArray;
 
@@ -492,9 +492,9 @@ void Minigame::OnPlay(Casino& aCasino)
                 std::cin >> playerDecision;
             }
 
-            playerDecision = Clamp(playerDecision, aCasino.game.ROULETTE_BETTING_TYPE_MIN, aCasino.game.ROULETTE_BETTING_TYPE_MAX);
+            playerDecision = Clamp(playerDecision, aCasino.globalGame.ROULETTE_BETTING_TYPE_MIN, aCasino.globalGame.ROULETTE_BETTING_TYPE_MAX);
 
-            if (playerDecision == aCasino.game.ROULETTE_STRAIGHT)
+            if (playerDecision == aCasino.globalGame.ROULETTE_STRAIGHT)
             {
                 WriteLine("What's your guess? (0-36)");
 
@@ -509,11 +509,11 @@ void Minigame::OnPlay(Casino& aCasino)
                     std::cin >> playerInput;
                 }
 
-                playerInput = Clamp(playerInput, aCasino.game.ROULETTE_STRAIGHT_MIN, aCasino.game.ROULETTE_STRAIGHT_MAX);
+                playerInput = Clamp(playerInput, aCasino.globalGame.ROULETTE_STRAIGHT_MIN, aCasino.globalGame.ROULETTE_STRAIGHT_MAX);
 
                 isWinner = playerInput == landing;
             }
-            else if (playerDecision == aCasino.game.ROULETTE_RED_BLACK)
+            else if (playerDecision == aCasino.globalGame.ROULETTE_RED_BLACK)
             {
                 WriteLine("What's your guess? ('r' for red, 'b' for black)");
 
@@ -552,7 +552,7 @@ void Minigame::OnPlay(Casino& aCasino)
 
                 isWinner = isCorrectPick;
             }
-            else if (playerDecision == aCasino.game.ROULETTE_ODD_EVEN)
+            else if (playerDecision == aCasino.globalGame.ROULETTE_ODD_EVEN)
             {
                 myFirstChoice = 'O';
                 mySecondChoice = 'E';
@@ -590,7 +590,7 @@ void Minigame::OnPlay(Casino& aCasino)
                 int correctRowIndex = GetRandomNumber(0, 3);
                 correctRowArray = BuildRow(correctRowIndex);
                 correctRow = correctRowIndex;
-                landedCol = GetRandomNumber(aCasino.game.ROULETTE_ROW_MIN, aCasino.game.ROULETTE_ROW_MAX);
+                landedCol = GetRandomNumber(aCasino.globalGame.ROULETTE_ROW_MIN, aCasino.globalGame.ROULETTE_ROW_MAX);
 
                 WriteLine("Which row are you picking? (0-3)");
 
@@ -604,7 +604,7 @@ void Minigame::OnPlay(Casino& aCasino)
                     std::cin >> playerRowPick;
                 }
 
-                playerRowPick = Clamp(playerRowPick, 0, aCasino.game.ROULETTE_ROW_MAX);
+                playerRowPick = Clamp(playerRowPick, 0, aCasino.globalGame.ROULETTE_ROW_MAX);
 
                 winAmount = correctRow == 0
                                 ? myBet * myAlternativeRewardMultiplier
@@ -612,8 +612,8 @@ void Minigame::OnPlay(Casino& aCasino)
                 isWinner = playerRowPick == correctRowIndex;
             }
 
-            bool hasNumbers = playerDecision == aCasino.game.ROULETTE_STRAIGHT || playerDecision == aCasino.game.ROULETTE_ODD_EVEN;
-            bool hasRow = playerDecision == aCasino.game.ROULETTE_COLUMN_ROW;
+            bool hasNumbers = playerDecision == aCasino.globalGame.ROULETTE_STRAIGHT || playerDecision == aCasino.globalGame.ROULETTE_ODD_EVEN;
+            bool hasRow = playerDecision == aCasino.globalGame.ROULETTE_COLUMN_ROW;
 
             if (hasRow)
             {
@@ -641,7 +641,7 @@ void Minigame::OnPlay(Casino& aCasino)
     if (myIsForcedWinAmount) winAmount = (myUseCachedReward ? myBet + (myCachedReward * myRewardMultiplier) : myBet * myRewardMultiplier);
     bool hasWonMoney = winAmount > 0;
     
-    if (myIsForcedVictory) isWinner = (!myPlayerCanQuit ? hasWonMoney : hasWonMoney && myIsPlayerQuitting);
+    if (myIsForcedVictory) isWinner = (!myShouldPlayerQuit ? hasWonMoney : hasWonMoney && myIsPlayerQuitting);
     
     BroadcastWinOrLoss(aCasino, isWinner, winAmount, myBet,
                            isWinner ? myWinAmount : myLossAmount);

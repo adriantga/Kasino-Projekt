@@ -29,7 +29,7 @@ void DrawTitle(const char aTitleText[])
 int GetBetAmount(Casino& aCasino, int gameIndex)
 {
     WriteLine("How much are you betting?");
-    Minigame selectedMinigame = aCasino.minigames[gameIndex];
+    Minigame selectedMinigame = aCasino.globalMinigames[gameIndex];
 
     int result = 0;
     std::cin >> result;
@@ -90,9 +90,9 @@ void DrawMenuLine()
 
 void RollDice(Casino& aCasino)
 {
-    aCasino.dice.die1 = RollDie();
-    aCasino.dice.die2 = RollDie();
-    aCasino.dice.diceSum = aCasino.dice.die1 + aCasino.dice.die2;
+    aCasino.globalDice.globalDie1 = RollDie();
+    aCasino.globalDice.globalDie2 = RollDie();
+    aCasino.globalDice.globalDiceSum = aCasino.globalDice.globalDie1 + aCasino.globalDice.globalDie2;
 }
 
 bool IsCharacter(char aInput, char aValue)
@@ -176,12 +176,12 @@ void BroadcastDiceResult(Casino& aCasino, bool aShowSum)
 {
     WriteLine("--------------- RESULT ---------------");
 
-    std::cout << "DIE 1 - " << aCasino.dice.die1 << '\n';
-    std::cout << "DIE 2 - " << aCasino.dice.die2 << '\n';
+    std::cout << "DIE 1 - " << aCasino.globalDice.globalDie1 << '\n';
+    std::cout << "DIE 2 - " << aCasino.globalDice.globalDie2 << '\n';
 
     if (aShowSum)
     {
-        std::cout << "SUM - " << aCasino.dice.diceSum << '\n';
+        std::cout << "SUM - " << aCasino.globalDice.globalDiceSum << '\n';
     }
 
     DrawBreakerLine();
@@ -203,7 +203,7 @@ void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLo
         WriteLine("You didn't win anything this time.");
         RemoveBalance(aLoseAmount, aMinigame, aCasino);
 
-        if (aCasino.player.myMoney == 0)
+        if (aCasino.globalPlayer.globalMoney == 0)
         {
             Pause();
             GameOver(aCasino);
@@ -216,7 +216,7 @@ void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLo
     Pause();
     ClearInput();
     ClearConsole();
-    aCasino.minigames[aCasino.game.currentMinigame].EnterGameMenu(aCasino);
+    aCasino.globalMinigames[aCasino.globalGame.globalCurrentMinigame].EnterGameMenu(aCasino);
 }
 
 std::array<int, 12> BuildRow(int aRowStart)
