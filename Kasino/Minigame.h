@@ -31,9 +31,6 @@ class Minigame
     int myRangeStart = 0;
     int myRangeEnd = 0;
 
-    // I store 4 values because 2 are for low-stakes/no stakes, and 2 are for high stakes.
-    std::array<int, 4> myAllowedBets = {0, 0, 0, 0};
-
     char myFirstChoice = ' ';
     char mySecondChoice = ' ';
     char myQuitChoice = 'Q';
@@ -55,7 +52,6 @@ class Minigame
     void PlayGame(Casino& aCasino);
     void ShowRules(Casino& aCasino);
     void OnPlay(Casino& aCasino);
-    void UpdateBets();
 
 public:
     int myWinAmount = 0;
@@ -63,6 +59,9 @@ public:
     int myWinLimit = 0;
 
     int myBet = 0;
+    
+    // I store 3 values because 2 are for low-stakes/no stakes, and 1 is for high stakes.
+    std::array<int, 3> myAllowedBets = {0, 0};
     int myMinAllowedBet = 0;
     int myMaxAllowedBet = 0;
 
@@ -72,12 +71,11 @@ public:
 
     bool myCantPlay = false;
 
-    Minigame(std::array<int, 4>& aAllowedBets, bool aHasStakes);
-
-    void SetAllowedBets(std::array<int, 4>& aTargetBets);
-
+    Minigame(Player& aPlayer, std::array<int, 3>& aAllowedBets, bool aHasStakes);
+    
     void Initialize(const EMinigameType& aMinigameType);
     void EnterGameMenu(Casino& aCasino);
+    void UpdateBets(Player& aPlayer);
 
     void Reset();
 };

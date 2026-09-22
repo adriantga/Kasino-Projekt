@@ -8,6 +8,7 @@ struct Game;
 struct Rewards;
 struct Constants;
 
+void InitializeStakeBets(Player& aPlayer, std::array<int, 4>& standardBets, std::array<int, 4>& stakeBets);
 void EnterGamePicker(Casino& aCasino);
 void ResetBalance(Casino& aCasino);
 bool IsValidName(const std::string& aS);

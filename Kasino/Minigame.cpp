@@ -3,16 +3,17 @@
 #include <iostream>
 #include "StateController.h"
 
-Minigame::Minigame(std::array<int, 4>& aAllowedBets, bool aHasStakes)
+Minigame::Minigame(Player& aPlayer, std::array<int, 3>& aAllowedBets, bool aHasStakes)
 {
-    SetAllowedBets(aAllowedBets);
+    myAllowedBets = aAllowedBets;
     myHasStakes = aHasStakes;
+    UpdateBets(aPlayer);
 }
 
-void Minigame::UpdateBets()
+void Minigame::UpdateBets(Player& aPlayer)
 {
     myMinAllowedBet = myAllowedBets[LOW_NO_STAKES_MIN];
-    myMaxAllowedBet = myAllowedBets[LOW_NO_STAKES_MAX];
+    myMaxAllowedBet = myHasStakes ? myAllowedBets[LOW_NO_STAKES_MAX] : aPlayer.money;
 }
 
 void Minigame::Initialize(const EMinigameType& aMinigameType)
@@ -108,7 +109,7 @@ void Minigame::PlayGame(Casino& aCasino)
      * Force update the min and max bets so they don't get
      * carried over from i.e. high stakes to low stakes.
      */
-    UpdateBets();
+    UpdateBets(aCasino.player);
 
     if (myHasStakes)
     {
@@ -123,6 +124,8 @@ void Minigame::PlayGame(Casino& aCasino)
         myHasPlayerPickedFirst = IsCharacter(playerHighLowInput, myFirstChoice);
         myHasPlayerPickedSecond = IsCharacter(playerHighLowInput, mySecondChoice);
 
+        myMaxAllowedBet = aCasino.player.money;
+        
         while (!myHasPlayerPickedFirst && !myHasPlayerPickedSecond)
         {
             WriteLine("Please write 'h' for high stakes or 'l' for low stakes");
@@ -144,7 +147,6 @@ void Minigame::PlayGame(Casino& aCasino)
         if (myHasPlayerPickedFirst)
         {
             myMinAllowedBet = myAllowedBets[HIGH_STAKES_MIN];
-            myMaxAllowedBet = myAllowedBets[HIGH_STAKES_MAX];
         }
     }
 
@@ -190,12 +192,6 @@ void Minigame::PlayGame(Casino& aCasino)
     }
 
     OnPlay(aCasino);
-}
-
-void Minigame::SetAllowedBets(std::array<int, 4>& aTargetBets)
-{
-    myAllowedBets = aTargetBets;
-    UpdateBets();
 }
 
 void Minigame::Reset()

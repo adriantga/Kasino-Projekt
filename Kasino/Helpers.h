@@ -19,6 +19,9 @@ struct Player
     int money = 0;
     std::string& name;
     bool& hasEnteredName;
+    
+    std::array<int, 3> standardBets;
+    std::array<int, 3> stakeBets;
 };
 
 struct PlayerStats

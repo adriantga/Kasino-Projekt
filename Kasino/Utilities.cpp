@@ -228,12 +228,15 @@ void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLo
         {
             Pause();
             GameOver(aCasino);
+            Exit(aCasino);
+            return;
         }
     }
 
+
     AddPlayedGame(aCasino, aIsWinner);
     BroadcastPlayerBalance(true, aCasino);
-
+    
     Pause();
     ClearInput();
     ClearConsole();

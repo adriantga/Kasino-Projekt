@@ -13,6 +13,18 @@
  * - Create separate classes for each game mode/table (can't inherit which I don't agree with)
  * - Optimize the game (eventually)
  */
+void InitializeStakeBets(Player& aPlayer, std::array<int, 3>& standardBets, std::array<int, 3>& stakeBets)
+{
+    constexpr int LOW_STAKES_MIN_BET = 1;
+    constexpr int LOW_STAKES_MAX_BET = 30;
+    constexpr int HIGH_STAKES_MIN_BET = 50;
+
+    int highestBet = aPlayer.money;
+
+    standardBets = {LOW_STAKES_MIN_BET, highestBet};
+    stakeBets = {LOW_STAKES_MIN_BET, LOW_STAKES_MAX_BET, HIGH_STAKES_MIN_BET};
+}
+
 int main()
 {
     Dice dice;
@@ -28,19 +40,12 @@ int main()
         EMinigameType::GuessTheDiceSum, EMinigameType::OddOrEven, EMinigameType::YesOrNo, EMinigameType::HigherOrLower,
         EMinigameType::Roulette
     };
-
-    constexpr int LOW_STAKES_MIN_BET = 1;
-    constexpr int LOW_STAKES_MAX_BET = 30;
-    constexpr int HIGH_STAKES_MIN_BET = 50;
-
-    int highestBet = player.money;
-
-    std::array<int, 4> standardBets = {LOW_STAKES_MIN_BET, highestBet};
-    std::array<int, 4> stakeBets = {LOW_STAKES_MIN_BET, LOW_STAKES_MAX_BET, HIGH_STAKES_MIN_BET, highestBet};
-
+    
+    InitializeStakeBets(player, player.standardBets, player.stakeBets);
+    
     std::array<Minigame, minigameTypes.size()> minigames = {
-        Minigame{stakeBets, true}, Minigame{standardBets, false}, Minigame{stakeBets, true},
-        Minigame{standardBets, false}, Minigame{standardBets, false}
+        Minigame{player, player.stakeBets, true}, Minigame{player, player.standardBets, false}, Minigame{player, player.stakeBets, true},
+        Minigame{player, player.standardBets, false}, Minigame{player, player.standardBets, false}
     };
     for (int i = 0; i < minigames.size(); i++)
     {
@@ -140,6 +145,8 @@ void GameOver(Casino& aCasino)
     Pause();
     WriteLine("==========================================================================================");
     WriteLine("GAME OVER. You have been kicked out of the casino.\n");
+    
+    Pause();
 }
 
 void Exit(Casino& aCasino)
@@ -173,14 +180,6 @@ void TauntOrImpress(Casino& aCasino, int aWinAmount, int aLossAmount, int aImpre
 bool AskPlayerAgain(bool aIsInGame, Casino& aCasino)
 {
     ClearConsole();
-
-    if (aCasino.game.isGameOver)
-    {
-        aCasino.game.isGameOver = false;
-        ResetGame(aCasino);
-        ChangeState(EStates::MainMenu, aCasino);
-        return false;
-    }
 
     WriteLine("Would you like to play again? (y/n) ");
     char input;
