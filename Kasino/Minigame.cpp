@@ -1,9 +1,8 @@
 ﻿#include "Minigame.h"
 #include "Utilities.h"
 #include <iostream>
+#include "StateController.h"
 
-
-// NOTE to class: Why are you being stupid?
 Minigame::Minigame(std::array<int, 4>& aAllowedBets, bool aHasStakes)
 {
     SetAllowedBets(aAllowedBets);
@@ -16,11 +15,10 @@ void Minigame::UpdateBets()
     myMaxAllowedBet = myAllowedBets[LOW_NO_STAKES_MAX];
 }
 
-void Minigame::Initialize(EMinigameType& aMinigameType)
+void Minigame::Initialize(const EMinigameType& aMinigameType)
 {
     myMinigameType = aMinigameType;
     
-    // The win limit index will be gone once subclasses are involved!
     switch (aMinigameType)
     {
     case EMinigameType::GuessTheDiceSum:
@@ -61,8 +59,6 @@ void Minigame::Initialize(EMinigameType& aMinigameType)
         myAlternativeRewardMultiplier = 36;
         break;
     }
-
-    UpdateBets();
 }
 
 const char *Minigame::FromMinigameToChar(EMinigameType& aMinigame)
@@ -84,6 +80,36 @@ const char *Minigame::FromMinigameToChar(EMinigameType& aMinigame)
     return "";
 }
 
+void Minigame::EnterGameMenu(Casino& aCasino)
+{
+    int input;
+    DrawBreakerLine();
+    std::cout << "Welcome to the " << FromMinigameToChar(myMinigameType) << " table!\n";
+    DrawBreakerLine();
+    WriteLine("What would you like to do?\n[1] Play Game\n[2] Show Instructions\n[3] Leave Table");
+    DrawBreakerLine();
+    BroadcastPlayerBalance(false, aCasino);
+    DrawBreakerLine();
+    
+    ForceInput(input);
+    ClearConsole();
+    
+    input = Max(input, LEAVE_TABLE);
+
+    switch (input)
+    {
+    case PLAY_GAME:
+        PlayGame(aCasino);
+        break;
+    case SHOW_INSTRUCTIONS:
+        ShowInstructions(aCasino);
+        break;
+    case LEAVE_TABLE:
+        EnterGamePicker(aCasino);
+        break;
+    }
+}
+
 void Minigame::PlayGame(Casino& aCasino)
 {
     if (HasExceeded(myWinAmount, myWinLimit))
@@ -93,6 +119,9 @@ void Minigame::PlayGame(Casino& aCasino)
     }
     
     myCachedReward = 0;
+    
+    // Force update bets
+    UpdateBets();
     
     if (myHasStakes)
     {
@@ -136,13 +165,6 @@ void Minigame::PlayGame(Casino& aCasino)
     
     TauntOrImpress(aCasino, myWinAmount, myLossAmount, myWinImpressAmount,
                        myLossTauntAmount);
-
-    if (aCasino.shouldShowInstructions[myGameIndex])
-    {
-        ShowInstructions();
-    }
-    
-    aCasino.shouldShowInstructions[myGameIndex] = false;
     
     myRangeStart = GetRoll();
     myRangeEnd = GetRoll();
@@ -196,17 +218,17 @@ void Minigame::Reset()
     myCantPlay = false;
 }
 
-void Minigame::ShowInstructions()
+void Minigame::ShowInstructions(Casino& aCasino)
 {
     switch (myMinigameType)
     {
     case EMinigameType::GuessTheDiceSum:
         WriteLine(
-                "Your only goal is to guess the sum of the dice. Your guess should not exceed 12 or fall behind 2!\nIf you do end exceeding or falling behind the boundary, we'll assume you mean 2 or 12.");
+                "Your only goal is to guess the sum of the dice. If you do, you'll get a decent payout.\nYour guess should not exceed 12 or fall behind 2!");
         break;
     case EMinigameType::OddOrEven:
         WriteLine(
-                "Here you must guess if the dice are even or odd. If both dice aren't even or odd, the house wins.");
+                "Here you must guess if the dice are even or odd. If both dice aren't even or odd, or if you guess incorrectly, the house wins.");
         break;
     case EMinigameType::YesOrNo:
         WriteLine("Your sole objective is to guess whether the number picked is within the given range");
@@ -235,6 +257,10 @@ void Minigame::ShowInstructions()
             "If you guess correctly, your pay out stays the same. However, betting on 0 will give you 36x the outcome!");
         break;
     }
+    
+    Pause();
+    ClearConsole();
+    EnterGameMenu(aCasino);
 }
 
 void Minigame::OnPlay(Casino& aCasino)

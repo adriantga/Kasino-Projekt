@@ -10,6 +10,10 @@ enum class EMinigameType;
 
 class Minigame
 {
+    static const int PLAY_GAME = 1;
+    static const int SHOW_INSTRUCTIONS = 2;
+    static const int LEAVE_TABLE = 3;
+    
     const int MINIGAME_GUESS_THE_DICE_SUM { 0 };
     const int MINIGAME_ODD_OR_EVEN = { 1 };
     const int MINIGAME_YES_OR_NO = { 2 };
@@ -33,10 +37,10 @@ class Minigame
     int myRangeStart = 0;
     int myRangeEnd = 0;
     
-    // Store 4 because 2 are for low-stakes and 2 are for high stakes.
+    // I store 4 because 2 are for low-stakes/no stakes, and 2 are for high stakes.
     std::array<int, 4> myAllowedBets = { 0, 0, 0, 0 };
 
-    // Only used by 'Roulette'
+    // Only used by 'Roulette' at the moment
     int myAlternativeRewardMultiplier = 1;
     int myBaseReward = 0;
     
@@ -54,8 +58,8 @@ class Minigame
     
     EMinigameType myMinigameType;
     
-    // METHODS
-    void ShowInstructions();
+    void PlayGame(Casino &aCasino);
+    void ShowInstructions(Casino& aCasino);
     void OnPlay(Casino& aCasino);
     void UpdateBets();
 
@@ -68,9 +72,6 @@ public:
     int myMinAllowedBet = 0;
     int myMaxAllowedBet = 0;
     
-    // Should be public for various reasons.
-    // 1. There are two distinct lists
-    // 2. Might require usage in the future (by other classes)
     bool myHasStakes = false;
     
     const char *FromMinigameToChar(EMinigameType& aMinigame);
@@ -83,8 +84,8 @@ public:
     
     void SetAllowedBets(std::array<int, 4>& aTargetBets);
     
-    void Initialize(EMinigameType& aMinigameType);
-    void PlayGame(Casino &aCasino);
+    void Initialize(const EMinigameType& aMinigameType);
+    void EnterGameMenu(Casino& aCasino);
     
     void Reset();
 };

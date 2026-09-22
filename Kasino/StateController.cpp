@@ -2,6 +2,8 @@
 #include "Kasino.h"
 #include "StateController.h"
 
+#include <iostream>
+
 #include "Minigame.h"
 #include "Utilities.h"
 
@@ -10,7 +12,9 @@ void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
     ClearConsole();
     if (aIsInGame)
     {
-        aCasino.player.pickedMinigame = aChoice;
+        int minigamesCount = int(aCasino.minigames.size());
+        
+        aChoice = Clamp(aChoice, 1, minigamesCount + 2);
         
         if (aChoice > aCasino.minigames.size())
         {
@@ -25,11 +29,10 @@ void Pick(int aChoice, bool aIsInGame, Casino& aCasino)
         }
         else
         {
-            aCasino.minigames[aChoice - 1].PlayGame(aCasino);
+            aCasino.game.currentMinigame = aChoice - 1;
+            aCasino.minigames[aCasino.game.currentMinigame].EnterGameMenu(aCasino);
         }
         
-        // A sin has been committed.
-        aChoice = Clamp(aChoice, 1, int(aCasino.minigames.size() + 2));
         return;
     }
 

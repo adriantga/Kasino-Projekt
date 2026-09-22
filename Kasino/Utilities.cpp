@@ -214,7 +214,9 @@ void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLo
     BroadcastPlayerBalance(true, aCasino);
 
     Pause();
-    AskPlayerAgain(true, aCasino);
+    ClearInput();
+    ClearConsole();
+    aCasino.minigames[aCasino.game.currentMinigame].EnterGameMenu(aCasino);
 }
 
 std::array<int, 12> BuildRow(int aRowStart)
@@ -247,6 +249,7 @@ void ForceInput(int& aInput)
     std::cin >> aInput;
     while (std::cin.fail())
     {
+        WriteLine("Invalid input! Please only enter numbers.");
         ClearInput();
         std::cin >> aInput;
     }

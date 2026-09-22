@@ -10,7 +10,7 @@ struct Constants;
 
 void EnterGamePicker(Casino& aCasino);
 void ResetBalance(Casino& aCasino);
-bool IsValidName(std::string& aS);
+bool IsValidName(const std::string& aS);
 void About(Casino& aCasino);
 void Exit(Casino& aCasino);
 void CashOut(Casino& aCasino);

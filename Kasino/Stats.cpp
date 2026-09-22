@@ -61,11 +61,12 @@ void ShowStats(Casino& aCasino)
     {
         Minigame minigame = aCasino.minigames[i];
         EMinigameType minigameType = aCasino.minigameTypes[i];
+        const char* minigameName = minigame.FromMinigameToChar(minigameType);
         
-        std::cout << minigame.FromMinigameToChar(minigameType) << " Profit: " << minigame.myWinAmount << '\n';
-        std::cout << minigame.FromMinigameToChar(minigameType) << " Loss: " << minigame.myLossAmount << '\n';
+        std::cout << minigameName << " Profit: " << minigame.myWinAmount << '\n';
+        std::cout << minigameName << " Loss: " << minigame.myLossAmount << '\n';
         
-        // The last line-breaker is unneccessary
+        // The last line-breaker is unnecessary
         if (i != Constants::minigameAmount - 1) DrawBreakerLine();
     }
     

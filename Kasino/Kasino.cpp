@@ -12,23 +12,20 @@
  * GOALS:
  * - Create separate classes for each game mode/table (can't inherit which I don't agree with)
  * - Optimize the game (eventually)
- * 
  */
-
 int main()
 {
     Dice dice;
     
     bool playerHasEnteredName = false;
     std::string playerName = "N/A";
-    Player player = {Constants::startingBalance, -1, playerName, playerHasEnteredName};
+    Player player = {Constants::startingBalance, playerName, playerHasEnteredName};
     
     PlayerStats playerStats;
     Game game;
     
-    std::array<bool, Constants::minigameAmount> shouldShowInstructions = { true, true, true, true, true };
     
-    std::array<EMinigameType, shouldShowInstructions.size()> minigameTypes = { EMinigameType::GuessTheDiceSum, EMinigameType::OddOrEven, EMinigameType::YesOrNo, EMinigameType::HigherOrLower, EMinigameType::Roulette };
+    std::array<EMinigameType, Constants::minigameAmount> minigameTypes = { EMinigameType::GuessTheDiceSum, EMinigameType::OddOrEven, EMinigameType::YesOrNo, EMinigameType::HigherOrLower, EMinigameType::Roulette };
 
     constexpr int LOW_STAKES_MIN_BET = 1;
     constexpr int LOW_STAKES_MAX_BET = 30;
@@ -45,7 +42,7 @@ int main()
         minigames[i].Initialize(minigameTypes[i]);
     }
 
-    Casino aCasino = {dice, player, playerStats, game, shouldShowInstructions, minigames, minigameTypes};
+    Casino aCasino = {dice, player, playerStats, game, minigames, minigameTypes};
 
     ResetStats(aCasino);
     ResetBalance(aCasino);
@@ -85,8 +82,7 @@ void BroadcastPlayerBalance(bool aStylize, Casino& aCasino)
     }
 }
 
-// What a terrible way to do this LOL
-bool IsValidName(std::string& aS)
+bool IsValidName(const std::string& aS)
 {
     return aS.size() >= Constants::PLAYER_NAME_MIN_SIZE && aS.size() <= Constants::PLAYER_NAME_MAX_SIZE && strspn(aS.c_str(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\x8F\x86\x84\x8E\x94\x99") == aS.length();
 }
@@ -105,11 +101,6 @@ void ResetGame(Casino& aCasino)
     
     ResetBalance(aCasino);
     ResetStats(aCasino);
-    
-    // I originally intended for player name to reset to give off the impression
-    // that they were kicked out. I can otherwise pass it off as a "nightmare"
-
-    aCasino.game.isShowingInstructions = true;
 }
 
 void AddBalance(int aAmount, int& aMinigame, Casino& aCasino)
@@ -171,6 +162,7 @@ void TauntOrImpress(Casino& aCasino, int aWinAmount, int aLossAmount, int aImpre
     }
 }
 
+// TODO: REPURPOSE
 bool AskPlayerAgain(bool aIsInGame, Casino& aCasino)
 {
     ClearConsole();
@@ -201,7 +193,7 @@ bool AskPlayerAgain(bool aIsInGame, Casino& aCasino)
             {
                 ClearInput();
                 ClearConsole();
-                ChangeState(EStates::Game, aCasino);
+                aCasino.minigames[aCasino.game.currentMinigame].EnterGameMenu(aCasino);
             }
             break;
         }
@@ -213,10 +205,9 @@ bool AskPlayerAgain(bool aIsInGame, Casino& aCasino)
     if (isYes)
     {
         ClearConsole();
-        Pick(aCasino.player.pickedMinigame, true, aCasino);
+        Pick(aCasino.game.currentMinigame, true, aCasino);
     }
-
-    aCasino.game.isShowingInstructions = false;
+    
     return true;
 }
 
@@ -350,13 +341,13 @@ void EnterGamePicker(Casino& aCasino)
         Minigame minigame = aCasino.minigames[i];
         EMinigameType minigameType = aCasino.minigameTypes[i];
         
-        std::cout << (i + 1) << ". " << minigame.FromMinigameToChar(minigameType) << '\n';
+        std::cout << "[" << (i + 1) << "] " << minigame.FromMinigameToChar(minigameType) << '\n';
     }
     
     DrawBreakerLine();
     
-    std::cout << (minigameCount + 1) << ". " << "Cash Out" << '\n';
-    std::cout << (minigameCount + 2) << ". " << "Back To Menu" << '\n';
+    std::cout << "[" << (minigameCount + 1) << "] " << "Cash Out" << '\n';
+    std::cout << "[" << (minigameCount + 2) << "] " << "Back To Menu" << '\n';
     
     DrawMenuLine();
     
@@ -372,7 +363,7 @@ void EnterGamePicker(Casino& aCasino)
 void EnterMainMenu(Casino& aCasino)
 {
     int input;
-    DrawMenu(aCasino, input, "THE ULTIMATE CASINO", "1. Play Game\n2. About\n3. Stats\n4. Quit", 4);
+    DrawMenu(aCasino, input, "THE ULTIMATE CASINO", "[1] Play Game\n[2] About\n[3] Stats\n[4] Quit", 4);
     Pick(input, false, aCasino);
 }
 

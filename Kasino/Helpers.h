@@ -17,7 +17,6 @@ struct Constants
 struct Player
 {
     int myMoney = 0;
-    int pickedMinigame = -1;
     std::string& playerName;
     bool& hasEnteredName;
 };
@@ -65,12 +64,11 @@ struct Game
     const int ROULETTE_COLUMN_MIN = 0;
     const int ROULETTE_COLUMN_MAX = 12;
     
-    const char validRoulettePicks[3] = { 'r', 'g', 'b' };
-
+    const char validRoulettePicks[3] = { 'r', 'g' };
+    int currentMinigame;
+    
     bool isGameOver = false;
     bool isQuitting = false;
-
-    bool isShowingInstructions = true;
 };
 
 struct Casino
@@ -79,7 +77,6 @@ struct Casino
     Player& player;
     PlayerStats& playerStats;
     Game& game;
-    std::array<bool, Constants::minigameAmount>& shouldShowInstructions;
     std::array<Minigame, Constants::minigameAmount>& minigames;
     std::array<EMinigameType, Constants::minigameAmount>& minigameTypes;
 };
