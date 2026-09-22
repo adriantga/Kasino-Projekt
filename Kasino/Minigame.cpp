@@ -94,6 +94,10 @@ void Minigame::EnterGameMenu(Casino& aCasino)
     ForceInput(input);
     ClearConsole();
     
+    constexpr int PLAY_GAME = 1;
+    constexpr int SHOW_INSTRUCTIONS = 2;
+    constexpr int LEAVE_TABLE = 3;
+    
     input = Max(input, LEAVE_TABLE);
 
     switch (input)
@@ -120,7 +124,7 @@ void Minigame::PlayGame(Casino& aCasino)
     
     myCachedReward = 0;
     
-    // Force update bets
+    // Force update the bets before overriding them inside the stakes check! (if high stakes is picked)
     UpdateBets();
     
     if (myHasStakes)
@@ -138,15 +142,15 @@ void Minigame::PlayGame(Casino& aCasino)
 
         while (!myHasPlayerPickedFirst && !myHasPlayerPickedSecond)
         {
+            WriteLine("Please write 'h' for high stakes or 'l' for low stakes");
+            
             while (std::cin.fail())
             {
                 ClearInput();
                 std::cin >> playerHighLowInput;
-                WriteLine("Please enter a valid character!");
             }
             
             std::cin >> playerHighLowInput;
-            WriteLine("Please write 'h' for high stakes or 'l' for low stakes");
             
             myHasPlayerPickedFirst = IsCharacter(playerHighLowInput, myFirstChoice);
             myHasPlayerPickedSecond = IsCharacter(playerHighLowInput, mySecondChoice);
@@ -300,6 +304,11 @@ void Minigame::OnPlay(Casino& aCasino)
 
             while (!myHasPlayerPickedFirst && !myHasPlayerPickedSecond)
             {
+                if (!myHasPlayerPickedFirst && !myHasPlayerPickedSecond)
+                {
+                    WriteLine("Please write 'e' for even or 'o' for odd");
+                }
+                
                 while (std::cin.fail())
                 {
                     ClearInput();
@@ -336,6 +345,11 @@ void Minigame::OnPlay(Casino& aCasino)
             
             while (!myIsPlayerQuitting)
             {
+                if (!myHasPlayerPickedFirst && !myHasPlayerPickedSecond)
+                {
+                    WriteLine("Please write 'y' for yes or 'n' for no");
+                }
+                
                 while (std::cin.fail())
                 {
                     ClearInput();
@@ -410,6 +424,11 @@ void Minigame::OnPlay(Casino& aCasino)
 
             while (!myIsPlayerQuitting)
             {
+                if (!myHasPlayerPickedFirst && !myHasPlayerPickedSecond)
+                {
+                    WriteLine("Please write 'h' for higher or 'l' for lower");
+                }
+                
                 while (std::cin.fail())
                 {
                     ClearInput();

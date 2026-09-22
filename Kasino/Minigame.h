@@ -10,10 +10,6 @@ enum class EMinigameType;
 
 class Minigame
 {
-    static const int PLAY_GAME = 1;
-    static const int SHOW_INSTRUCTIONS = 2;
-    static const int LEAVE_TABLE = 3;
-    
     const int MINIGAME_GUESS_THE_DICE_SUM { 0 };
     const int MINIGAME_ODD_OR_EVEN = { 1 };
     const int MINIGAME_YES_OR_NO = { 2 };
@@ -37,9 +33,13 @@ class Minigame
     int myRangeStart = 0;
     int myRangeEnd = 0;
     
-    // I store 4 because 2 are for low-stakes/no stakes, and 2 are for high stakes.
+    // I store 4 values because 2 are for low-stakes/no stakes, and 2 are for high stakes.
     std::array<int, 4> myAllowedBets = { 0, 0, 0, 0 };
 
+    char myFirstChoice = ' ';
+    char mySecondChoice = ' ';
+    char myQuitChoice = 'Q';
+    
     // Only used by 'Roulette' at the moment
     int myAlternativeRewardMultiplier = 1;
     int myBaseReward = 0;
@@ -48,10 +48,6 @@ class Minigame
     bool myIsPlayerQuitting = false;
     bool myIsForcedVictory = false;
     bool myIsForcedWinAmount = true;
-    
-    char myFirstChoice = ' ';
-    char mySecondChoice = ' ';
-    char myQuitChoice = 'Q';
     
     bool myHasPlayerPickedFirst = false;
     bool myHasPlayerPickedSecond = false;
