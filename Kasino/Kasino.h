@@ -11,7 +11,7 @@ struct Constants;
 void InitializeStakeBets(Player& aPlayer, std::array<int, 4>& standardBets, std::array<int, 4>& stakeBets);
 void EnterGamePicker(Casino& aCasino);
 void ResetBalance(Casino& aCasino);
-bool IsValidName(const std::string& aS);
+bool IsValidName(char* aS);
 void About(Casino& aCasino);
 void Exit(Casino& aCasino);
 void CashOut(Casino& aCasino);

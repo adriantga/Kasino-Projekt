@@ -30,7 +30,7 @@ int main()
     Dice dice;
 
     bool playerHasEnteredName = false;
-    std::string playerName = "N/A";
+    const char* playerName = "N/A";
     Player player = {Constants::STARTING_BALANCE, playerName, playerHasEnteredName};
 
     PlayerStats playerStats;
@@ -92,10 +92,11 @@ void BroadcastPlayerBalance(bool aStylize, Casino& aCasino)
     }
 }
 
-bool IsValidName(const std::string& aS)
+bool IsValidName(char* aS)
 {
-    return aS.size() >= Constants::PLAYER_NAME_MIN_SIZE && aS.size() <= Constants::PLAYER_NAME_MAX_SIZE && strspn(
-        aS.c_str(), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\x8F\x86\x84\x8E\x94\x99") == aS.length();
+    // Time to fix this baloney
+    return strlen(aS) >= Constants::PLAYER_NAME_MIN_SIZE && strlen(aS) <= Constants::PLAYER_NAME_MAX_SIZE && strspn(
+        aS, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\x8F\x86\x84\x8E\x94\x99") == strlen(aS);
 }
 
 // Resets all stats after the player has lost the entire game.
@@ -281,7 +282,7 @@ void EnterNamePicker(Casino& aCasino)
 
     WriteLine("What's your name? (Must be between 2-16 characters)");
 
-    std::string myPlayerNameInput;
+    char myPlayerNameInput[17];
     std::cin >> myPlayerNameInput;
 
     while (std::cin.fail() || !IsValidName(myPlayerNameInput))
@@ -292,9 +293,8 @@ void EnterNamePicker(Casino& aCasino)
     }
 
     ClearInput();
-    const char* playerName = myPlayerNameInput.c_str();
 
-    std::cout << "Your name is: " << playerName << ". Continue? (y to confirm, n to deny)" << '\n';
+    std::cout << "Your name is: " << myPlayerNameInput << ". Continue? (y to confirm, n to deny)" << '\n';
 
     char confirmInput;
     std::cin >> confirmInput;

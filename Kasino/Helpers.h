@@ -17,7 +17,7 @@ struct Constants
 struct Player
 {
     int money = 0;
-    std::string& name;
+    const char*& name;
     bool& hasEnteredName;
     
     std::array<int, 3> standardBets;
