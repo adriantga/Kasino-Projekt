@@ -161,7 +161,7 @@ void TauntOrImpress(Casino& aCasino, int aWinAmount, int aLossAmount, int aImpre
 
     bool shouldBeImpressed = HasExceeded(winLossDifference, aImpressWinAmt);
     bool shouldTaunt = HasSubceeded(winLossDifference, -aTauntLossAmt);
-
+    
     if (shouldBeImpressed)
     {
         std::cout << "Well, " << aCasino.player.name << ". Seems like you're on a winning streak! Keep it up!\n";

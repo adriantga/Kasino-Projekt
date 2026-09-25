@@ -47,6 +47,7 @@ void DrawTitle(const char aTitleText[])
 
 int GetBetAmount(Casino& aCasino, int gameIndex)
 {
+    BroadcastPlayerBalance(false, aCasino);
     WriteLine("How much are you betting?");
     Minigame selectedMinigame = aCasino.minigames[gameIndex];
 
