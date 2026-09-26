@@ -5,15 +5,32 @@
 
 Minigame::Minigame(Player& aPlayer, std::array<int, 3>& aAllowedBets, bool aHasStakes)
 {
-    myAllowedBets = aAllowedBets;
-    myHasStakes = aHasStakes;
+    this->myAllowedBets = aAllowedBets;
+    this->myHasStakes = aHasStakes;
     UpdateBets(aPlayer);
 }
 
 void Minigame::UpdateBets(Player& aPlayer)
 {
-    myMinAllowedBet = myAllowedBets[LOW_NO_STAKES_MIN];
-    myMaxAllowedBet = myHasStakes ? myAllowedBets[LOW_NO_STAKES_MAX] : aPlayer.money;
+    if (!myHasStakes)
+    {
+        myMinAllowedBet = myAllowedBets[LOW_NO_STAKES_MIN];
+        myMaxAllowedBet = aPlayer.money;
+    }
+    else
+    {
+        if (myIsPlayingHighStakes)
+        {
+            myMinAllowedBet = myAllowedBets[HIGH_STAKES_MIN];
+            myMaxAllowedBet = aPlayer.money;
+        }
+        else
+        {
+            myMinAllowedBet = myAllowedBets[LOW_NO_STAKES_MIN];
+            myMaxAllowedBet = myAllowedBets[LOW_NO_STAKES_MAX];
+        }
+        
+    }
 }
 
 void Minigame::Initialize(const EMinigameType& aMinigameType)
@@ -104,12 +121,15 @@ void Minigame::PlayGame(Casino& aCasino)
     }
 
     myCachedReward = 0;
-
+    
+    myIsPlayingHighStakes = false;
+    
     /*
      * Force update the min and max bets so they don't get
      * carried over from i.e. high stakes to low stakes.
      */
     UpdateBets(aCasino.player);
+    
 
     if (myHasStakes)
     {
@@ -128,6 +148,7 @@ void Minigame::PlayGame(Casino& aCasino)
         
         while (!myHasPlayerPickedFirst && !myHasPlayerPickedSecond)
         {
+            std::cout << myIsPlayingHighStakes << '\n';
             WriteLine("Please write 'h' for high stakes or 'l' for low stakes");
 
             while (std::cin.fail())
@@ -140,21 +161,32 @@ void Minigame::PlayGame(Casino& aCasino)
 
             myHasPlayerPickedFirst = IsCharacter(playerHighLowInput, myFirstChoice);
             myHasPlayerPickedSecond = IsCharacter(playerHighLowInput, mySecondChoice);
+            myIsPlayingHighStakes = myHasPlayerPickedFirst;
         }
 
         ClearInput();
 
         if (myHasPlayerPickedFirst)
         {
+            myIsPlayingHighStakes = true;
             myMinAllowedBet = myAllowedBets[HIGH_STAKES_MIN];
+            myMaxAllowedBet = aCasino.player.money;
+        }
+        else
+        {
+            myIsPlayingHighStakes = false;
+
+            myMinAllowedBet = myAllowedBets[LOW_NO_STAKES_MIN];
+            myMaxAllowedBet = myAllowedBets[LOW_NO_STAKES_MAX];
         }
     }
-
-    myBet = GetBetAmount(aCasino, myGameIndex);
+    
+    UpdateBets(aCasino.player);
+    myBet = GetBetAmount(aCasino, myGameIndex, myIsPlayingHighStakes);
 
     TauntOrImpress(aCasino, myWinAmount, myLossAmount, myWinImpressAmount,
                    myLossTauntAmount);
-
+    
     myRangeStart = GetRoll();
     myRangeEnd = GetRoll();
 

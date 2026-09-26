@@ -17,7 +17,6 @@ class Minigame
     const int LOW_NO_STAKES_MIN = {0};
     const int LOW_NO_STAKES_MAX = {1};
     const int HIGH_STAKES_MIN = {2};
-    const int HIGH_STAKES_MAX = {3};
 
     int myRewardMultiplier = 1;
     int myWinImpressAmount = 500;
@@ -46,6 +45,8 @@ class Minigame
 
     bool myHasPlayerPickedFirst = false;
     bool myHasPlayerPickedSecond = false;
+    
+    bool myIsPlayingHighStakes = false;
 
     EMinigameType myMinigameType;
 
@@ -73,6 +74,8 @@ public:
 
     Minigame(Player& aPlayer, std::array<int, 3>& aAllowedBets, bool aHasStakes);
     
+    
+    bool IsPlayingHighStakes() const { return myIsPlayingHighStakes; }
     void Initialize(const EMinigameType& aMinigameType);
     void EnterGameMenu(Casino& aCasino);
     void UpdateBets(Player& aPlayer);

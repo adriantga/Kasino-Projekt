@@ -148,6 +148,7 @@ void GameOver(Casino& aCasino)
     WriteLine("GAME OVER. You have been kicked out of the casino.\n");
     
     Pause();
+    Exit(aCasino);
 }
 
 void Exit(Casino& aCasino)
@@ -212,7 +213,7 @@ bool AskPlayerAgain(bool aIsInGame, Casino& aCasino)
     if (isYes)
     {
         ClearConsole();
-        Pick(aCasino.game.currentMinigame, true, aCasino);
+        Pick(aCasino.game.currentMinigame + 1, true, aCasino);
     }
 
     return true;
@@ -241,7 +242,10 @@ void CashOut(Casino& aCasino)
     int cantPlayAmount = 0;
     for (Minigame minigame : aCasino.minigames)
     {
-        if (minigame.myCantPlay) cantPlayAmount++;
+        if (minigame.myCantPlay)
+        {
+            cantPlayAmount++;
+        }
     }
 
     // Um... alright.

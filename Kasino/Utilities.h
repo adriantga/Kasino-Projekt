@@ -27,7 +27,7 @@ void WriteLine(const char aTextToType[], bool aNewLine = true);
 void DrawMenu(Casino& aCasino, int& aInput, const char aTitleText[], const char aOptions[], int aNumOptions = 3,
               const char aExtraOptions[] = "", bool aShowBalance = false);
 void DrawTitle(const char aTitleText[]);
-int GetBetAmount(Casino& aCasino, int gameIndex);
+int GetBetAmount(Casino& aCasino, int gameIndex, bool& aIsPlayingHighStakes);
 void BroadcastDiceResult(Casino& aCasino, bool aShowSum = false);
 void BroadcastWinOrLoss(Casino& aCasino, bool aIsWinner, int aWinAmount, int aLoseAmount,
                         int& aMinigame);

@@ -5,6 +5,7 @@
 #include "Minigame.h"
 
 #include "Kasino.h"
+#include "StateController.h"
 #include "Stats.h"
 
 constexpr int GLOBAL_LOWER_CASE_OFFSET = 32;
@@ -45,13 +46,28 @@ void DrawTitle(const char aTitleText[])
     DrawMenuLine();
 }
 
-int GetBetAmount(Casino& aCasino, int gameIndex)
+int GetBetAmount(Casino& aCasino, int gameIndex, bool& aIsPlayingHighStakes)
 {
+    Minigame& selectedMinigame = aCasino.minigames[gameIndex];
+    
+    int playerMoney = aCasino.player.money;
+    bool canPlay = !HasSubceeded(playerMoney, selectedMinigame.myMinAllowedBet);
+    
     BroadcastPlayerBalance(false, aCasino);
+    
+    if (!canPlay && aIsPlayingHighStakes && selectedMinigame.myHasStakes)
+    {
+        ClearConsole();
+        WriteLine("As you try to pull out money from your wallet, you notice that your wallet is emptier than you thought.");
+        WriteLine("'You are low on funds. Come back when you have more', the security guard says.");
+        Pause();
+        selectedMinigame.EnterGameMenu(aCasino);
+        return selectedMinigame.myMinAllowedBet;
+    }
+    
     WriteLine("How much are you betting?");
-    Minigame selectedMinigame = aCasino.minigames[gameIndex];
 
-    int result = 0;
+    int result;
     std::cin >> result;
 
     while (std::cin.fail())
@@ -60,12 +76,22 @@ int GetBetAmount(Casino& aCasino, int gameIndex)
         ClearInput();
         std::cin >> result;
     }
-
-    while (result < selectedMinigame.myMinAllowedBet || result > selectedMinigame.myMaxAllowedBet)
+    
+    bool isBetBiggerThanBank = HasExceeded(result, playerMoney);
+    while (isBetBiggerThanBank || result < selectedMinigame.myMinAllowedBet || result > selectedMinigame.myMaxAllowedBet)
     {
-        std::cout << "Invalid bet($" << selectedMinigame.myMinAllowedBet << "-" << selectedMinigame.myMaxAllowedBet <<
-            ")\n";
+        if (isBetBiggerThanBank)
+        {
+            std::cout << "You don't have the money you're betting!" << '\n';
+        }
+        else
+        {
+            std::cout << "Invalid bet($" << selectedMinigame.myMinAllowedBet << "-" << selectedMinigame.myMaxAllowedBet <<
+                ")\n";    
+        }
+        
         std::cin >> result;
+        isBetBiggerThanBank = HasExceeded(result, playerMoney);
     }
 
     ClearInput();
